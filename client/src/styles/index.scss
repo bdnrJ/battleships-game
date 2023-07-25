@@ -5,3 +5,10 @@
 body{
     background-color:antiquewhite
 }
+
+@import "../styles/views/games.scss";
+@import "../styles/views/Game/Board.scss";
+@import "../styles/views/Game/Cell.scss";
+@import "../styles/views/Game/Ship.scss";
+@import "../styles/views/Game/FirstStage.scss";
+

@@ -1,0 +1,20 @@
+.setupcell {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.--active{
+        background-color: green;
+    }
+
+    &.--dropped{
+        background-color: blue;
+    }
+
+    &.--error{
+        background-color: red;
+    }
+}
