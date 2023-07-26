@@ -2,8 +2,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { RouterProvider, Outlet, createBrowserRouter } from "react-router-dom";
 import Home from './components/Home';
-import GameTest1 from './views/GameTest1';
-import Game from './views/Game/Game';
+import Game from './views/Game';
 
 export const Layout = () => {
   return (
@@ -26,7 +25,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/game",
-        element: <Game/>
+        element: <Game />
       },
     ]
   },

@@ -6,9 +6,7 @@ body{
     background-color:antiquewhite
 }
 
-@import "../styles/views/games.scss";
-@import "../styles/views/Game/Board.scss";
-@import "../styles/views/Game/Cell.scss";
-@import "../styles/views/Game/Ship.scss";
-@import "../styles/views/Game/FirstStage.scss";
-
+@import "./views/game.scss";
+@import './game/board.scss';
+@import './game/cell.scss';
+@import './game/ship.scss';

@@ -1,20 +1,20 @@
-.setupcell {
+.cell{
     width: 40px;
     height: 40px;
-    border: 1px solid #ccc;
+    border: 2px solid white;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    &.--active{
-        background-color: green;
-    }
-
-    &.--dropped{
-        background-color: blue;
+    &.--used{
+        background-color: burlywood;
     }
 
     &.--error{
         background-color: red;
+    }
+
+    &.--can{
+        background-color: green;
     }
 }
