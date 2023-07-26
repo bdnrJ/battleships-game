@@ -1,0 +1,50 @@
+.navbar{
+    background-color: white;
+    width: 100%;
+    height: 75px;
+    padding: 0px 5% 0px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .navbar--logo{
+        img{
+            height: 75px;
+            width: auto;
+        }
+    }
+
+    .navbar--links{
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        gap: 20px;
+
+        button{
+            cursor: pointer;
+            background-color: transparent;
+            border: 1px solid transparent;
+            font-size: 17px;
+            transition: all 0.2s ease-in;
+            
+            &:hover{
+                color: lighten(black, 75%);
+            }
+        }
+    }
+
+    .navbar--account{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .navbar--account{
+        font-size: 30px;
+
+        button{
+            cursor: pointer;
+            all: unset;
+        }
+    }
+}
