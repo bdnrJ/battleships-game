@@ -1,5 +1,6 @@
 import { PoolConnection, RowDataPacket, ResultSetHeader  } from 'mysql2/promise';
 import createDatabaseConnection from '../config/database.js';
+import bcrypt from "bcrypt";
 
 export interface User {
     id?: number;
@@ -15,9 +16,12 @@ class UserModel {
         const connection: PoolConnection = await createDatabaseConnection();
 
         const insertQuery = 'INSERT INTO users (nickname, password, email) VALUES (?, ?, ?)';
+
+        const hashedPassword = bcrypt.hashSync(user.password, 10); 
+
         const [result] = (await connection.execute(insertQuery, [
             user.nickname,
-            user.password,
+            hashedPassword,
             user.email,
         ])) as ResultSetHeader[]; // Use type assertion to specify the expected return type
 

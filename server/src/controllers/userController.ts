@@ -3,6 +3,11 @@ import UserModel, { User } from '../models/user.js';
 import { log } from 'console';
 
 export async function createUser(req: Request, res: Response): Promise<void> {
+
+    if(!req.body.nickname || !req.body.password || !req.body.email){
+        res.status(400).json({message: 'Username, password and email are required to create an user'})
+    }
+
     try {
         const newUser: User = {
             nickname: req.body.nickname,
@@ -12,9 +17,16 @@ export async function createUser(req: Request, res: Response): Promise<void> {
             deleted_at: null,
         };
 
-        const userId: number = await UserModel.createUser(newUser);
+        try{
+            const userId: number = await UserModel.createUser(newUser);
+            res.status(201).json({ id: userId, message: 'User created successfully' });
 
-        res.status(201).json({ id: userId, message: 'User created successfully' });
+        }catch(err: any){
+            if (err.errno === 1062) {
+                res.status(400).json({message: "Username or email already used!"})
+            }
+        }
+
     } catch (err) {
         console.error('Error creating user:', err);
         res.status(500).json({ message: 'An error occurred while creating the user' });

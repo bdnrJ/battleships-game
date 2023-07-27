@@ -55,3 +55,5 @@ dist-ssr
 logs/
 config.json
 *.log
+
+logs.txt
