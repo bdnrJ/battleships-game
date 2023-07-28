@@ -3,6 +3,8 @@ import Footer from './components/Footer';
 import { RouterProvider, Outlet, createBrowserRouter } from "react-router-dom";
 import Home from './components/Home';
 import Game from './views/Game';
+import Signin from './views/Signin';
+import Signup from './views/Signup';
 
 export const Layout = () => {
   return (
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
         element: <Game />
       },
     ]
+  },
+  {
+    path: "/signin",
+    element: <Signin />
+  },
+  {
+    path: "/signup",
+    element: <Signup />
   },
 ])
 

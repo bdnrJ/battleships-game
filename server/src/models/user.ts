@@ -52,6 +52,19 @@ class UserModel {
 
         return result.affectedRows > 0;
     }
+
+    static async getUserByEmail(userEmail: string): Promise<User | null>{
+        const connection: PoolConnection = await createDatabaseConnection();
+
+        const searchQuery = "SELECT * FROM users WHERE email = ?";
+
+        const [rows] = (await connection.execute(searchQuery, [userEmail])) as RowDataPacket[]; // Use type assertion
+
+        connection.release();
+
+        if (rows.length === 0) return null;
+        return rows[0] as User;
+    }
 }
 
 export default UserModel;

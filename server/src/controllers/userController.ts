@@ -2,17 +2,26 @@ import { Request, Response } from 'express';
 import UserModel, { User } from '../models/user.js';
 import { log } from 'console';
 
+interface createUserRequest {
+    nickname: string;
+    password: string;
+    email: string;
+}
+  
+
 export async function createUser(req: Request, res: Response): Promise<void> {
 
-    if(!req.body.nickname || !req.body.password || !req.body.email){
+    const {nickname, password, email} : createUserRequest = req.body;
+
+    if(!nickname || !password || !email){
         res.status(400).json({message: 'Username, password and email are required to create an user'})
     }
 
     try {
         const newUser: User = {
-            nickname: req.body.nickname,
-            password: req.body.password,
-            email: req.body.email,
+            nickname: nickname,
+            password: password,
+            email: email.toLowerCase(),
             created_at: new Date(),
             deleted_at: null,
         };
@@ -34,7 +43,6 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 }
 
 export async function getUserById(req: Request, res: Response): Promise<void> {
-    console.log("gowno")
     try {
         const userId: number = parseInt(req.params.id, 10);
 
@@ -67,4 +75,3 @@ export async function deleteUser(req: Request, res: Response): Promise<void> {
         res.status(500).json({ message: 'An error occurred while deleting the user' });
     }
 }
-

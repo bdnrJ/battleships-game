@@ -23,6 +23,14 @@ const Navbar = () => {
             name: "Ranking",
             direction: "/ranking"
         },
+        {
+            name: "SignIn",
+            direction: "/signin"
+        },
+        {
+            name: "SignUp",
+            direction: "/signup"
+        },
     ]
 
     return (
