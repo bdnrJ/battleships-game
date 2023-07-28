@@ -1,12 +1,16 @@
 @import "./property";
 @import "./rest";
 @import "./_colors";
+@import "./global";
 
 body{
     background-color:antiquewhite
 }
 
 @import "./views/game.scss";
+@import "./views/signin.scss";
+
+
 @import './game/board.scss';
 @import './game/cell.scss';
 @import './game/ship.scss';

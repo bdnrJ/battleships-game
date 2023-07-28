@@ -1,53 +1,81 @@
-import axios from "axios";
-import React, { useState } from "react";
+import axiosClient from "../axios-client";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+type userInput = {
+  email: string;
+  password: string;
+};
 
 const Signin = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const schema = z.object({
+    email: z.string().min(1, "required"),
+    password: z.string().min(1, "required"),
+  });
 
-  const onLogin = async () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<userInput>({ resolver: zodResolver(schema) });
+
+  const onLogin = async (userInput: userInput) => {
     try {
-      const response = await axios.post("http://localhost:3000/api/signin", {
-        email: email,
-        password: password,
-      }, {withCredentials: true});
+      const response = await axiosClient.post(
+        "/signin",
+        {
+          email: userInput.email,
+          password: userInput.password,
+        },
+        { withCredentials: true }
+      );
 
       console.log(response.data); // Handle the response from the server as needed
     } catch (error) {
       console.error("Error while logging in:", error);
-      // Handle the error or show a message to the user
     }
   };
 
   const onGetUsersTest = async () => {
-    try{
-      const res = await axios.get(`http://localhost:3000/api/users/1`, {
-        withCredentials: true
+    try {
+      const res = await axiosClient.get(`/users/1`, {
+        withCredentials: true,
       });
 
       console.log(res);
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   return (
     <div className="signin">
-      <input
-        type="text"
-        placeholder="login"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-
-      <button onClick={onLogin}>Sign in</button>
-      <button onClick={onGetUsersTest}>Get user</button>
+      <form onSubmit={handleSubmit(onLogin)} className="g__form">
+        <div className="g__form--title">
+          Sign in
+        </div>
+        <div className="g__form__inputs">
+          <div className="g__form__inputs--inputwrapper">
+            <label htmlFor="email">
+              <input className={`g__form--input ${errors.email && "--error"}`} type="text" {...register("email", {required: true})} placeholder='Email'/>
+            </label>
+            <div className="g__form__inputs--inputwrapper--error">
+              {errors.email && <span className={`g__form--inputError`}>{errors.email.message}</span>}
+            </div>
+          </div>
+          <div className="g__form__inputs--inputwrapper">
+            <label htmlFor="password">
+              <input className={`g__form--input ${errors.password && "--error"}`} type="password" {...register("password", {required: true})} placeholder='Password'/>
+            </label>
+            <div className="g__form__inputs--inputwrapper--error">
+              {errors.password && <span className={`g__form--inputError`}>{errors.password.message}</span>}
+            </div>
+          </div>
+        </div>
+        <input type="submit" value={"Sign in"} className="g__form--submit"/>
+        <button onClick={onGetUsersTest}>Get user</button>
+      </form>
     </div>
   );
 };
