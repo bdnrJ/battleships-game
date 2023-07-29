@@ -51,3 +51,7 @@ function App() {
 }
 
 export default App
+
+//TODO
+// walidacja na backend i fron
+// register na front
