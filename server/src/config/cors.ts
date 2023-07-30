@@ -1,9 +1,8 @@
-// corsConfig.ts
-import cors from "cors";
+import cors, { CorsOptions } from 'cors';
 
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"]; // Replace with your actual frontend URL(s)
+export const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"]; // Replace with your actual frontend URL(s)
 
-const corsOptions: cors.CorsOptions = {
+const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);

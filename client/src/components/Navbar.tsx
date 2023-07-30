@@ -40,7 +40,7 @@ const Navbar = () => {
             </div>
             <div className="navbar--links">
                 {links.map((link) => (
-                    <Link to={link.direction}>
+                    <Link to={link.direction} key={link.direction}>
                         <button>
                             {link.name}
                         </button>

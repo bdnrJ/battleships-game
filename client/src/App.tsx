@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Game from './views/Game';
 import Signin from './views/Signin';
 import Signup from './views/Signup';
+import Rooms from './views/Rooms';
 
 export const Layout = () => {
   return (
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
         path: "/game",
         element: <Game />
       },
+      {
+        path: "/rooms",
+        element: <Rooms />
+      },
     ]
   },
   {
@@ -52,6 +57,3 @@ function App() {
 
 export default App
 
-//TODO
-// walidacja na backend i fron
-// register na front
