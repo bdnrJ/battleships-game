@@ -3,4 +3,9 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
+    .rooms--room{
+        display: flex;
+        flex-direction: column;
+    }
 }

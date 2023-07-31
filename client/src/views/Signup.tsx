@@ -43,7 +43,7 @@ const Signup = () => {
         nickname: userData.nickname,
         email: userData.email,
         password: userData.password,
-        confirmPassowrd: userData.confirmPassword
+        confirmPassword: userData.confirmPassword
       });
 
       navigate("/");
