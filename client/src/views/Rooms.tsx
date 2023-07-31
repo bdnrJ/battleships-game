@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import socket from '../socket';
 
 const Rooms = () => {
-  const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState<any[]>([]);
 
   useEffect(() => {
     // Emit the event to request the list of available rooms

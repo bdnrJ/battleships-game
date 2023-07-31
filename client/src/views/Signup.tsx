@@ -132,7 +132,7 @@ const Signup = () => {
         </div>
         <div className="g__form--link">
           <span>Already have an account?</span>
-          <Link to="/singin" >
+          <Link to="/signin" >
             <button>Sign in</button>
           </Link>
         </div>

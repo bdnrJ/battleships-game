@@ -10,6 +10,30 @@ type userInput = {
   password: string;
 };
 
+const setCookie = (name: string, value: any, days = 7, path = "/") => {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie =
+    name +
+    "=" +
+    encodeURIComponent(value) +
+    "; expires=" +
+    expires +
+    "; path=" +
+    path;
+};
+
+const getCookie = (name: string) => {
+  return document.cookie.split("; ").reduce((r, v) => {
+    const parts = v.split("=");
+    return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+  }, "");
+  
+};
+
+const deleteCookie = (name: string, path: string) => {
+  setCookie(name, "", -1, path);
+};
+
 const Signin = () => {
   const [loginError, setLoginError] = useState<string>("");
   const schema = z.object({
@@ -36,7 +60,20 @@ const Signin = () => {
         { withCredentials: true }
       );
 
-      navigate('/');
+      const userFromResponse = JSON.stringify( {
+        nickname: response.data.userInfo.nickname,
+        email: response.data.userInfo.email,
+      });
+
+      console.log(userFromResponse);
+
+      setCookie(
+        "userInfo",
+        userFromResponse,
+        7
+      );
+
+      navigate("/");
     } catch (error: any) {
       setLoginError(error.response.data.message);
     }
@@ -88,11 +125,13 @@ const Signin = () => {
         </div>
         <div className="g__form--link">
           <span>You dont have an account?</span>
-          <Link to="/signup" >
+          <Link to="/signup">
             <button>Sign up</button>
           </Link>
         </div>
       </form>
+      <button>
+      </button>
     </div>
   );
 };
