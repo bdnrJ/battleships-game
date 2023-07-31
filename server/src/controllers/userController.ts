@@ -20,10 +20,12 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 
     if(!nickname || !password || !email || !confirmPassword){
         res.status(400).json({message: 'username, password and email are required to create an user'})
+        return
     }
 
     if(password !== confirmPassword){
         res.status(400).json({message: "paswords do not match"})
+        return
     }
 
     if (!nicknameRegex.test(nickname) || !emailRegex.test(email) || !passwordRegex.test(password)) {

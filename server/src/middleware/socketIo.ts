@@ -5,6 +5,13 @@ import { Express } from 'express';
 import { allowedOrigins } from '../config/cors.js';
 import { log } from 'console';
 
+interface GameRoom {
+  roomName: string,
+  hostName: string,
+  hasPassword: boolean,
+  password: string,
+}
+
 export default function setupSocketIO(app: Express) {
   const httpServer: HttpServer = createServer(app);
   const io: Server = new Server(httpServer, {
@@ -15,7 +22,7 @@ export default function setupSocketIO(app: Express) {
   });
 
   // Room data storage (You can replace this with your actual room management logic)
-  const rooms: any = [];
+  const rooms: GameRoom[] = [];
 
   io.on('connection', (socket) => {
     console.log(`New client connected: ${socket.id}`);
@@ -28,12 +35,14 @@ export default function setupSocketIO(app: Express) {
 
     emitRoomsList();
 
-    socket.on('createRoom', ({ roomName }) => {
+    socket.on('createRoom', ({ roomName, hostName, hasPassword, password }: GameRoom) => {
       // Implement your logic to create a new room on the server
       // For demonstration purposes, we'll just add a new room to the 'rooms' array
       const newRoom = {
-        id: new Date().getTime(), // You can use a unique ID generator or database-generated IDs
-        name: roomName,
+        roomName: roomName,
+        hostName: hostName,
+        hasPassword: hasPassword,
+        password: password
       };
 
       rooms.push(newRoom);
