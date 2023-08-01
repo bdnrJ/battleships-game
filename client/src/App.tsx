@@ -6,6 +6,7 @@ import Game from './views/Game';
 import Signin from './views/Signin';
 import Signup from './views/Signup';
 import Rooms from './views/Rooms';
+import GameRoom from './views/GameRoom';
 
 export const Layout = () => {
   return (
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
         path: "/rooms",
         element: <Rooms />
       },
+      {
+        path: "/room/:roomId",
+        element: <GameRoom />
+      }
     ]
   },
   {

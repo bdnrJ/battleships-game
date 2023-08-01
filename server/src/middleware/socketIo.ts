@@ -1,16 +1,15 @@
-// Assuming you have the 'allowedOrigins' variable defined in your cors.js file
 import { Server } from 'socket.io';
 import { createServer, Server as HttpServer } from 'http';
 import { Express } from 'express';
 import { allowedOrigins } from '../config/cors.js';
-import { log } from 'console';
 
 interface GameRoom {
-  id: string,
-  roomName: string,
-  hostName: string,
-  hasPassword: boolean,
-  password: string,
+  id: string;
+  roomName: string;
+  hostName: string;
+  hasPassword: boolean;
+  password: string;
+  clients: string[];
 }
 
 export default function setupSocketIO(app: Express) {
@@ -22,48 +21,122 @@ export default function setupSocketIO(app: Express) {
     },
   });
 
-  // Room data storage (You can replace this with your actual room management logic)
   const rooms: GameRoom[] = [];
+
+  const emitRoomsList = () => {
+    // io.emit('roomsList', rooms.map((room) => ({ ...room, clients: room.clients.length })));
+    io.emit('roomsList', rooms);
+    console.log("emitted rooms");
+    console.log(rooms);
+  };
+
+  const cleanupRooms = () => {
+    console.log("cleander rooms");
+    rooms.forEach((room, index) => {
+      if (room.clients.length === 0) {
+        rooms.splice(index, 1);
+      }
+    });
+  };
+
 
   io.on('connection', (socket) => {
     console.log(`New client connected: ${socket.id}`);
 
-    // Emit the list of available rooms whenever a new client connects or a room is updated
-    const emitRoomsList = () => {
-      io.emit('roomsList', rooms);
+    const onRoomLeave = (roomId: string) => {
+      const room = rooms.find((roomX) => roomX.id === roomId);
+      if (room) {
+        room.clients = room.clients.filter((client) => client !== socket.id);
+        cleanupRooms();
+      }
+      console.log("someone left room");
+    }
+    // Function to check if a client is already in a room
+    const isClientInRoom = (roomId: string) => {
+      return rooms.some((room) => room.clients.includes(socket.id) && room.id !== roomId);
     };
 
-    emitRoomsList();
-
     socket.on('createRoom', ({ roomName, hostName, hasPassword, password, id }: GameRoom) => {
-      // Implement your logic to create a new room on the server
-      // For demonstration purposes, we'll just add a new room to the 'rooms' array
+      if (isClientInRoom(id)) {
+        socket.emit('roomError', 'You are already in a room.');
+        return;
+      }
+
+      // Check if the room already exists
+      const existingRoom = rooms.find((room) => room.id === id);
+      if (existingRoom) {
+        socket.emit('roomError', 'A room with the same ID already exists.');
+        return;
+      }
+
       const newRoom = {
         id: id,
         roomName: roomName,
         hostName: hostName,
         hasPassword: hasPassword,
-        password: password
+        password: password,
+        clients: [socket.id],
       };
 
       rooms.push(newRoom);
+
+      console.log("room has been created")
+      socket.emit('createdAndJoined', newRoom)
+      emitRoomsList();
+    });
+
+    socket.on('joinRoom', (roomId: string) => {
+      console.log("joined into room")
+      if (isClientInRoom(roomId)) {
+        socket.emit('roomError', 'You are already in a room.');
+        return;
+      }
+
+      const room = rooms.find((r) => r.id === roomId);
+      if (!room) {
+        socket.emit('roomError', 'Room does not exist.');
+        return;
+      }
+
+      if (room.clients.length >= 2) {
+        socket.emit('roomError', 'Room is full.');
+        return;
+      }
+
+      if(room.clients.find((client) => client === socket.id)){
+        console.log("you cant play with yourself bitch");
+        return;
+      }
+
+      // Join the room
+      socket.join(roomId);
+      room.clients.push(socket.id);
+
+      // Emit a 'roomJoined' event to the client that joined the room
+      socket.emit('roomJoined', room);
 
       // Emit the updated list of rooms to all connected clients
       emitRoomsList();
     });
 
-    socket.on('joinRoom', (roomId: string) => {
-      const room = rooms.find((room) => room.id === roomId);
-      if(room){
-        socket.join(roomId)
-        console.log(socket.id + " has joined " + roomId + " room");
-        io.to(roomId).emit("roomJoined", room);
-      }
-    });
+    socket.on('leaveRoom', (roomId: string) => {
+      console.log("left a room");
+      onRoomLeave(roomId);
+    })
+
+    socket.on('getRooms', () => {
+      emitRoomsList();
+    })
 
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id}`);
-      // Clean up any resources related to the disconnected client if needed
+      // Remove the client from any rooms when disconnected
+      rooms.forEach((room) => {
+        room.clients = room.clients.filter((client) => client !== socket.id);
+      });
+
+      //Remove empty rooms
+      cleanupRooms()
     });
   });
 

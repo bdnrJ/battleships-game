@@ -1,5 +1,4 @@
-import React from 'react'
-import { GameRoom } from '../views/Rooms'
+import { GameRoom } from '../context/RoomContext'
 import socket from '../utils/socket'
 
 type Props = {
@@ -7,6 +6,8 @@ type Props = {
 }
 
 const Room = ({gameRoom}: Props) => {
+
+    if(gameRoom.clients.length === 0 || gameRoom.clients.length === 2) return null;
 
     const onRoomJoin = () => {
         socket.emit('joinRoom', gameRoom.id);
@@ -19,6 +20,7 @@ const Room = ({gameRoom}: Props) => {
             <span>Password: {gameRoom.hasPassword}</span>
             <span>Password xd lmao: {gameRoom.password}</span>
             <span>id: {gameRoom.id}</span>
+            <span>players: {gameRoom.clients.length}/2</span>
             <button onClick={onRoomJoin} >Join Room</button>
         </div>
     )

@@ -3,8 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { GameRoom } from '../../views/Rooms';
-import { useState } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GameRoom, RoomContext } from '../../context/RoomContext';
+import socket from '../../utils/socket';
 
 type Props = {
     createRoom: (room: GameRoom) => void,
@@ -18,21 +20,25 @@ type roomInput = {
 }
 
 const CreateRoom = ({ createRoom, closePopup }: Props) => {
-
+    const navigate = useNavigate();
+    const { setRoom } = useContext(RoomContext);
     const [hostName, setHostName] = useState<string>(
         getCookie('userInfo')
             ? JSON.parse(getCookie('userInfo')).nickname
             : `Anon - ${uuidv4().substr(0, 8)}`
     )
 
+    useEffect(() => {
+        socket.on('createdAndJoined', ((data) => {
+            setRoom(data);
+            navigate(`/room/${data.id}`)
+        }))
 
-    // const schema = z.object({
-    //     roomName: z.string().min(3, "min 3 chars required"),
-    //     hasPassword: z.boolean(),
-    //     password: z.string().min(3, "min 3 chars").refine((value, data) => !data.hasPassword || value.trim() !== '', {
-    //         message: "required",
-    //     }),
-    // });
+
+        return () => {
+            socket.off('createdAndJoined');
+        };
+    }, []);
 
     const schema = z.object({
         roomName: z.string().min(3, "min 3 chars required"),
@@ -57,18 +63,18 @@ const CreateRoom = ({ createRoom, closePopup }: Props) => {
 
     const hasPassword: boolean = watch('hasPassword', false);
 
-    const onSubmit = (data: roomInput) => {
-        console.log(data)
+    const onSubmit = async (data: roomInput) => {
         const newRoom: GameRoom = {
             id: uuidv4(),
             hostName: hostName,
             roomName: data.roomName,
             hasPassword: data.hasPassword,
             password: data.password,
+            clients: []
         }
 
-        createRoom(newRoom);
-        closePopup();
+        await createRoom(newRoom);
+        // setRoom(newRoom);
     };
 
     return (
@@ -127,7 +133,6 @@ const CreateRoom = ({ createRoom, closePopup }: Props) => {
                     Create Room
                 </button>
             </form>
-            <button onClick={() => console.log(errors)} >xsxds</button>
         </div>
     );
 };
