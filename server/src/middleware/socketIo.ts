@@ -6,6 +6,7 @@ import { allowedOrigins } from '../config/cors.js';
 import { log } from 'console';
 
 interface GameRoom {
+  id: string,
   roomName: string,
   hostName: string,
   hasPassword: boolean,
@@ -30,15 +31,15 @@ export default function setupSocketIO(app: Express) {
     // Emit the list of available rooms whenever a new client connects or a room is updated
     const emitRoomsList = () => {
       io.emit('roomsList', rooms);
-      console.log(rooms);
     };
 
     emitRoomsList();
 
-    socket.on('createRoom', ({ roomName, hostName, hasPassword, password }: GameRoom) => {
+    socket.on('createRoom', ({ roomName, hostName, hasPassword, password, id }: GameRoom) => {
       // Implement your logic to create a new room on the server
       // For demonstration purposes, we'll just add a new room to the 'rooms' array
       const newRoom = {
+        id: id,
         roomName: roomName,
         hostName: hostName,
         hasPassword: hasPassword,
@@ -49,6 +50,15 @@ export default function setupSocketIO(app: Express) {
 
       // Emit the updated list of rooms to all connected clients
       emitRoomsList();
+    });
+
+    socket.on('joinRoom', (roomId: string) => {
+      const room = rooms.find((room) => room.id === roomId);
+      if(room){
+        socket.join(roomId)
+        console.log(socket.id + " has joined " + roomId + " room");
+        io.to(roomId).emit("roomJoined", room);
+      }
     });
 
     socket.on('disconnect', () => {

@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import socket from '../utils/socket';
 import Modal from '../components/modals/Modal';
 import CreateRoom from '../components/modals/CreateRoom';
+import Room from '../components/Room';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface GameRoom {
+  id: string,
   roomName: string,
   hostName: string,
   hasPassword: boolean,
@@ -38,12 +41,7 @@ const Rooms = () => {
   return (
     <div className="rooms">
       {rooms.map((room) => (
-        <div className="rooms--room" key={room.hostName + room.roomName}>
-          <span>Host: {room.hostName}</span>
-          <span>Name: {room.roomName}</span>
-          <span>Password: {room.hasPassword}</span>
-          <span>Password xd lmao: {room.password}</span>
-        </div>
+        <Room gameRoom={room} />
       ))}
       <button onClick={() => setIsCreateRoomVisible(true)}>Create Room</button>
       {isCreateRoomVisible &&
