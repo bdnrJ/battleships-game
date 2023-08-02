@@ -10,6 +10,7 @@ interface GameRoom {
   hasPassword: boolean;
   password: string;
   clients: string[];
+  clientNicknames: string[],
 }
 
 export default function setupSocketIO(app: Express) {
@@ -27,13 +28,13 @@ export default function setupSocketIO(app: Express) {
     // io.emit('roomsList', rooms.map((room) => ({ ...room, clients: room.clients.length })));
     io.emit('roomsList', rooms);
     console.log("emitted rooms");
-    console.log(rooms);
+    // console.log(rooms);
   };
 
   const cleanupRooms = () => {
-    console.log("cleaned rooms");
     rooms.forEach((room, index) => {
       if (room.clients.length === 0) {
+        console.log("cleaned rooms");
         rooms.splice(index, 1);
       }
     });
@@ -43,19 +44,24 @@ export default function setupSocketIO(app: Express) {
   io.on('connection', (socket) => {
     console.log(`New client connected: ${socket.id}`);
 
-    const onRoomLeave = (roomId: string) => {
+    const onRoomLeave = (roomId: string, nickname: string) => {
       const room = rooms.find((roomX) => roomX.id === roomId);
       if (room) {
+        //removing client ids and their frontend nicknames (kinda hacky)
         room.clients = room.clients.filter((client) => client !== socket.id);
+        room.clientNicknames = room.clientNicknames.filter((client) => client !== nickname)
+
+        //if 0 clients left this will clear them
         cleanupRooms();
 
-        if(room){
+        //if room wasnt delted by cleanup - emit message
+        if (room) {
           const someoneLeft = {
             updatedRoom: room,
             idOfUserThatLeft: socket.id
           }
 
-          io.to(roomId).emit('someoneLeft', someoneLeft);
+          io.to(roomId).emit('someoneLeft', someoneLeft, nickname);
         }
         console.log("someone left room");
       }
@@ -65,7 +71,7 @@ export default function setupSocketIO(app: Express) {
       return rooms.some((room) => room.clients.includes(socket.id) && room.id !== roomId);
     };
 
-    socket.on('createRoom', ({ roomName, hostName, hasPassword, password, id }: GameRoom) => {
+    socket.on('createRoom', ({ roomName, hostName, hasPassword, password, id }: GameRoom, nickname: string) => {
       if (isClientInRoom(id)) {
         socket.emit('roomError', 'You are already in a room.');
         return;
@@ -85,16 +91,19 @@ export default function setupSocketIO(app: Express) {
         hasPassword: hasPassword,
         password: password,
         clients: [],
+        clientNicknames: []
       };
 
       rooms.push(newRoom);
 
-      const thisNewRoom =  rooms.find((r) => r.id === id);
-      if(!thisNewRoom){
+      const thisNewRoom = rooms.find((r) => r.id === id);
+      if (!thisNewRoom) {
         console.log("total error");
         return;
       }
+      //first create and then join as client to prevent bugs with wrong messages displaying on the fronted
       thisNewRoom.clients.push(socket.id);
+      thisNewRoom.clientNicknames.push(nickname);
       socket.join(id);
 
       console.log("room has been created")
@@ -102,8 +111,7 @@ export default function setupSocketIO(app: Express) {
       emitRoomsList();
     });
 
-    socket.on('joinRoom', (roomId: string) => {
-      console.log("joined into room")
+    socket.on('joinRoom', (roomId: string, nickname: string) => {
       if (isClientInRoom(roomId)) {
         socket.emit('roomError', 'You are already in a room.');
         return;
@@ -120,41 +128,50 @@ export default function setupSocketIO(app: Express) {
         return;
       }
 
-      if(room.clients.find((client) => client === socket.id)){
+      if (room.clients.find((client) => client === socket.id)) {
         console.log("you cant play with yourself bitch");
         return;
       }
 
       // Join the room
 
+      console.log("joined into room")
       socket.join(roomId);
+
       room.clients.push(socket.id);
+      room.clientNicknames.push(nickname);
+
       socket.emit('roomJoined', room);
-      
-      io.to(roomId).emit('someoneJoined', room);
+
+      io.to(roomId).emit('someoneJoined', room, nickname);
 
       emitRoomsList();
     });
 
-    socket.on('someoneJoinedRoom', (roomId: string) => {
-
-    })
-
-    socket.on('leaveRoom', (roomId: string) => {
-      console.log("left a room");
-      onRoomLeave(roomId);
+    socket.on('leaveRoom', (roomId: string, nickname: string) => {
+      onRoomLeave(roomId, nickname);
     })
 
     socket.on('getRooms', () => {
       emitRoomsList();
     })
 
+    socket.on('sendMessage', (message: string, roomId: string, nickname: string) => {
+      console.log("send message by " + nickname)
+      io.to(roomId).emit('recieveMessage', message, nickname);
+    })
+
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id}`);
       // Remove the client from any rooms when disconnected
       rooms.forEach((room) => {
-        if(room.clients.includes(socket.id)){
-          onRoomLeave(room.id);
+        if (room.clients.includes(socket.id)) {
+          //hacky way of getting nickname of user that left
+          //this exists becasue if someone closes their web browser entirely
+          //frontend has no way of firing function responsible for proper cleanup
+          const clientIdx = room.clients.findIndex((client) => client === socket.id);
+          const userNicknameThatLeft = room.clientNicknames[clientIdx];
+          onRoomLeave(room.id, userNicknameThatLeft);
         }
         room.clients = room.clients.filter((client) => client !== socket.id);
       });

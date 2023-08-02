@@ -1,16 +1,19 @@
+import { useContext } from 'react'
 import { GameRoomType } from '../context/RoomContext'
 import socket from '../utils/socket'
+import { UserContext } from '../context/UserContext'
 
 type Props = {
     gameRoom: GameRoomType
 }
 
-const Room = ({gameRoom}: Props) => {
+const Room = ({ gameRoom }: Props) => {
 
-    if(gameRoom.clients.length === 0 || gameRoom.clients.length === 2) return null;
+    const { user } = useContext(UserContext);
+    if (gameRoom.clients.length === 0 || gameRoom.clients.length === 2) return null;
 
     const onRoomJoin = () => {
-        socket.emit('joinRoom', gameRoom.id);
+        socket.emit('joinRoom', gameRoom.id, user.nickname);
     }
 
     return (

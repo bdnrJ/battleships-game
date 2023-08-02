@@ -2,9 +2,10 @@ import axiosClient from "../axios-client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setCookie } from "../utils/cookies";
+import { UserContext } from "../context/UserContext";
 
 type userInput = {
   email: string;
@@ -17,6 +18,7 @@ const Signin = () => {
     email: z.string().min(1, "required"),
     password: z.string().min(1, "required"),
   });
+  const {user, setUser} = useContext(UserContext);
   const navigate = useNavigate();
 
   const {
@@ -37,16 +39,18 @@ const Signin = () => {
         { withCredentials: true }
       );
 
-      const userFromResponse = JSON.stringify( {
+      let userFromResponse = {
         nickname: response.data.userInfo.nickname,
         email: response.data.userInfo.email,
-      });
+      }
 
-      console.log(userFromResponse);
+      setUser(userFromResponse);
+
+      const userFromResponseParsed = JSON.stringify(userFromResponse);
 
       setCookie(
         "userInfo",
-        userFromResponse,
+        userFromResponseParsed,
         7
       );
 

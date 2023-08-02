@@ -1,4 +1,3 @@
-import { getCookie } from '../../utils/cookies';
 import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -7,6 +6,7 @@ import { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GameRoomType, RoomContext } from '../../context/RoomContext';
 import socket from '../../utils/socket';
+import { UserContext } from '../../context/UserContext';
 
 type Props = {
     createRoom: (room: GameRoomType) => void,
@@ -22,11 +22,7 @@ type roomInput = {
 const CreateRoom = ({ createRoom, closePopup }: Props) => {
     const navigate = useNavigate();
     const { setRoom } = useContext(RoomContext);
-    const [hostName, setHostName] = useState<string>(
-        getCookie('userInfo')
-            ? JSON.parse(getCookie('userInfo')).nickname
-            : (getCookie('anonNickname'))
-    )
+    const {user} = useContext(UserContext);
 
     useEffect(() => {
         socket.on('createdAndJoined', ((data) => {
@@ -54,7 +50,7 @@ const CreateRoom = ({ createRoom, closePopup }: Props) => {
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm<roomInput>({
         defaultValues: {
-            roomName: hostName + ' game room',
+            roomName: user.nickname + ' game room',
             hasPassword: false,
             password: '',
         },
@@ -66,11 +62,12 @@ const CreateRoom = ({ createRoom, closePopup }: Props) => {
     const onSubmit = async (data: roomInput) => {
         const newRoom: GameRoomType = {
             id: uuidv4(),
-            hostName: hostName,
+            hostName: user.nickname,
             roomName: data.roomName,
             hasPassword: data.hasPassword,
             password: data.password,
-            clients: []
+            clients: [],
+            clientNicknames: [],
         }
 
         await createRoom(newRoom);

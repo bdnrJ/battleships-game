@@ -6,8 +6,16 @@
         width: 400px;
         color: white;
 
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+
+
+        .gameroom__chatbox--messages{
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .gameroom__chatbox--input{
+            
+        }
     }
 }

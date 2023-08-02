@@ -6,6 +6,7 @@ import Room from '../components/Room';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { GameRoomType, RoomContext } from '../context/RoomContext';
+import { UserContext } from '../context/UserContext';
 
 
 
@@ -13,6 +14,7 @@ const Rooms = () => {
   const [isCreateRoomVisible, setIsCreateRoomVisible] = useState<boolean>(false);
   const [rooms, setRooms] = useState<GameRoomType[]>([]);
   const {setRoom} = useContext(RoomContext);
+  const {user} = useContext(UserContext);
   const navigate = useNavigate();
 
   //to make useeffect work once for tests :)
@@ -46,7 +48,7 @@ const Rooms = () => {
 
   // Function to create a new room
   const createRoom = (gameRoom: GameRoomType) => {
-    socket.emit('createRoom', gameRoom); // You can change the room name as needed
+    socket.emit('createRoom', gameRoom, user.nickname); // You can change the room name as needed
   };
 
   return (

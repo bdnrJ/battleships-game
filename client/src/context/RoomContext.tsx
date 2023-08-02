@@ -11,7 +11,8 @@ export type GameRoomType = {
     hostName: string,
     hasPassword: boolean,
     password: string,
-    clients: string[]
+    clients: string[],
+    clientNicknames: string[]
 }
 
 interface RoomContextProps{
@@ -25,7 +26,8 @@ const defaultRoom: GameRoomType = {
     hostName: "",
     hasPassword: false,
     password: "",
-    clients: []
+    clients: [],
+    clientNicknames: [],
 }
 
 export const RoomContext = createContext<RoomContextProps>({
@@ -36,6 +38,7 @@ export const RoomContext = createContext<RoomContextProps>({
         hasPassword: false,
         password: "",
         clients: [],
+        clientNicknames: [],
     },
     setRoom: () => {}
 })
