@@ -7,6 +7,8 @@ import Signin from './views/Signin';
 import Signup from './views/Signup';
 import Rooms from './views/Rooms';
 import GameRoom from './views/GameRoom';
+import { getCookie, setCookie } from './utils/cookies';
+import { v4 as uuidv4 } from 'uuid';
 
 export const Layout = () => {
   return (
@@ -52,6 +54,10 @@ const router = createBrowserRouter([
 ])
 
 function App() {
+
+  if(!getCookie('anonNickname')){
+    setCookie('anonNickname', `Anon-${uuidv4().substr(0, 8)}`, 999);
+  }
 
   return (
     <div className="App">

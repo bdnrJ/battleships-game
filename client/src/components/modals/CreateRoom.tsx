@@ -5,11 +5,11 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GameRoom, RoomContext } from '../../context/RoomContext';
+import { GameRoomType, RoomContext } from '../../context/RoomContext';
 import socket from '../../utils/socket';
 
 type Props = {
-    createRoom: (room: GameRoom) => void,
+    createRoom: (room: GameRoomType) => void,
     closePopup: () => void,
 }
 
@@ -25,7 +25,7 @@ const CreateRoom = ({ createRoom, closePopup }: Props) => {
     const [hostName, setHostName] = useState<string>(
         getCookie('userInfo')
             ? JSON.parse(getCookie('userInfo')).nickname
-            : `Anon - ${uuidv4().substr(0, 8)}`
+            : (getCookie('anonNickname'))
     )
 
     useEffect(() => {
@@ -64,7 +64,7 @@ const CreateRoom = ({ createRoom, closePopup }: Props) => {
     const hasPassword: boolean = watch('hasPassword', false);
 
     const onSubmit = async (data: roomInput) => {
-        const newRoom: GameRoom = {
+        const newRoom: GameRoomType = {
             id: uuidv4(),
             hostName: hostName,
             roomName: data.roomName,

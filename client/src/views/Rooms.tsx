@@ -5,13 +5,13 @@ import CreateRoom from '../components/modals/CreateRoom';
 import Room from '../components/Room';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
-import { GameRoom, RoomContext } from '../context/RoomContext';
+import { GameRoomType, RoomContext } from '../context/RoomContext';
 
 
 
 const Rooms = () => {
   const [isCreateRoomVisible, setIsCreateRoomVisible] = useState<boolean>(false);
-  const [rooms, setRooms] = useState<GameRoom[]>([]);
+  const [rooms, setRooms] = useState<GameRoomType[]>([]);
   const {setRoom} = useContext(RoomContext);
   const navigate = useNavigate();
 
@@ -45,7 +45,7 @@ const Rooms = () => {
   }, []); // Empty dependency array to run the effect only once when the component mounts
 
   // Function to create a new room
-  const createRoom = (gameRoom: GameRoom) => {
+  const createRoom = (gameRoom: GameRoomType) => {
     socket.emit('createRoom', gameRoom); // You can change the room name as needed
   };
 

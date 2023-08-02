@@ -5,7 +5,7 @@ type Props = {
     children: ReactNode,
 }
 
-export type GameRoom = {
+export type GameRoomType = {
     id: string,
     roomName: string,
     hostName: string,
@@ -15,11 +15,11 @@ export type GameRoom = {
 }
 
 interface RoomContextProps{
-    room: GameRoom,
-    setRoom: Dispatch<SetStateAction<GameRoom>>
+    room: GameRoomType,
+    setRoom: Dispatch<SetStateAction<GameRoomType>>
 }
 
-const defaultRoom: GameRoom = {
+const defaultRoom: GameRoomType = {
     id: "",
     roomName: "",
     hostName: "",
@@ -41,7 +41,7 @@ export const RoomContext = createContext<RoomContextProps>({
 })
 
 export const RoomProvider = ({children}: Props) => {
-    const [room, setRoom] = useState<GameRoom>(defaultRoom);
+    const [room, setRoom] = useState<GameRoomType>(defaultRoom);
 
     return (
         <RoomContext.Provider value={{room, setRoom}}>

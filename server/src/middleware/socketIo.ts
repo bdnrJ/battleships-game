@@ -31,7 +31,7 @@ export default function setupSocketIO(app: Express) {
   };
 
   const cleanupRooms = () => {
-    console.log("cleander rooms");
+    console.log("cleaned rooms");
     rooms.forEach((room, index) => {
       if (room.clients.length === 0) {
         rooms.splice(index, 1);
@@ -48,8 +48,17 @@ export default function setupSocketIO(app: Express) {
       if (room) {
         room.clients = room.clients.filter((client) => client !== socket.id);
         cleanupRooms();
+
+        if(room){
+          const someoneLeft = {
+            updatedRoom: room,
+            idOfUserThatLeft: socket.id
+          }
+
+          io.to(roomId).emit('someoneLeft', someoneLeft);
+        }
+        console.log("someone left room");
       }
-      console.log("someone left room");
     }
     // Function to check if a client is already in a room
     const isClientInRoom = (roomId: string) => {
@@ -75,10 +84,18 @@ export default function setupSocketIO(app: Express) {
         hostName: hostName,
         hasPassword: hasPassword,
         password: password,
-        clients: [socket.id],
+        clients: [],
       };
 
       rooms.push(newRoom);
+
+      const thisNewRoom =  rooms.find((r) => r.id === id);
+      if(!thisNewRoom){
+        console.log("total error");
+        return;
+      }
+      thisNewRoom.clients.push(socket.id);
+      socket.join(id);
 
       console.log("room has been created")
       socket.emit('createdAndJoined', newRoom)
@@ -109,15 +126,19 @@ export default function setupSocketIO(app: Express) {
       }
 
       // Join the room
+
       socket.join(roomId);
       room.clients.push(socket.id);
-
-      // Emit a 'roomJoined' event to the client that joined the room
       socket.emit('roomJoined', room);
+      
+      io.to(roomId).emit('someoneJoined', room);
 
-      // Emit the updated list of rooms to all connected clients
       emitRoomsList();
     });
+
+    socket.on('someoneJoinedRoom', (roomId: string) => {
+
+    })
 
     socket.on('leaveRoom', (roomId: string) => {
       console.log("left a room");
@@ -132,6 +153,9 @@ export default function setupSocketIO(app: Express) {
       console.log(`Client disconnected: ${socket.id}`);
       // Remove the client from any rooms when disconnected
       rooms.forEach((room) => {
+        if(room.clients.includes(socket.id)){
+          onRoomLeave(room.id);
+        }
         room.clients = room.clients.filter((client) => client !== socket.id);
       });
 

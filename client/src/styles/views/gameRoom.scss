@@ -1,0 +1,13 @@
+.gameroom{
+
+    .gameroom__chatbox{
+        background-color: gray;
+        min-height: 50px;
+        width: 400px;
+        color: white;
+
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+}

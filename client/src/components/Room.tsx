@@ -1,8 +1,8 @@
-import { GameRoom } from '../context/RoomContext'
+import { GameRoomType } from '../context/RoomContext'
 import socket from '../utils/socket'
 
 type Props = {
-    gameRoom: GameRoom
+    gameRoom: GameRoomType
 }
 
 const Room = ({gameRoom}: Props) => {
