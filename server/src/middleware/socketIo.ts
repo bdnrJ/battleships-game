@@ -3,14 +3,26 @@ import { createServer, Server as HttpServer } from 'http';
 import { Express } from 'express';
 import { allowedOrigins } from '../config/cors.js';
 
+enum GameStage {
+  WAITING = 0,
+  PLACEMENT = 1,
+  PLAYING = 2,
+}
+
 interface GameRoom {
   id: string;
   roomName: string;
   hostName: string;
-  hasPassword: boolean;
-  password: string;
+
   clients: string[];
   clientNicknames: string[],
+  clientBoards: number[][][]
+  clientReady: number[]
+
+  gameState: number,
+
+  hasPassword: boolean;
+  password: string;
 }
 
 export default function setupSocketIO(app: Express) {
@@ -89,14 +101,18 @@ export default function setupSocketIO(app: Express) {
         return;
       }
 
-      const newRoom = {
+      const newRoom: GameRoom = {
         id: id,
         roomName: roomName,
         hostName: hostName,
+        clients: [],
+        clientNicknames: [],
+        clientBoards: [],
+        gameState: GameStage.WAITING,
+        clientReady: [],
+        
         hasPassword: hasPassword,
         password: password,
-        clients: [],
-        clientNicknames: []
       };
 
       rooms.push(newRoom);

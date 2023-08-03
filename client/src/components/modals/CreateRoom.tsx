@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GameRoomType, RoomContext } from '../../context/RoomContext';
+import { GameRoomType, GameStage, RoomContext } from '../../context/RoomContext';
 import socket from '../../utils/socket';
 import { UserContext } from '../../context/UserContext';
 
@@ -68,6 +68,9 @@ const CreateRoom = ({ createRoom, closePopup }: Props) => {
             password: data.password,
             clients: [],
             clientNicknames: [],
+            clientBoards: [],
+            clientReady: [],
+            gameState: GameStage.WAITING
         }
 
         await createRoom(newRoom);

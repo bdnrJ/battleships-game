@@ -1,6 +1,11 @@
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import Board from '../Game/Board';
 import Ship from '../Game/Ship';
+
+type Props = {
+    board: number[][],
+    setBoard: Dispatch<SetStateAction<number[][]>>
+}
 
 enum CellType {
     EMPTY = 0,
@@ -16,15 +21,14 @@ enum ShipType {
     DESTROYER = 1
 }
 
-const Game = () => {
-    const [boardState, setBoardState] = useState<number[][]>(Array(10).fill(Array(10).fill(0)));
+const Game = ({board, setBoard}: Props) => {
     const [isFlipped, setIsFlipped] = useState<boolean>(false);
     const [shipsCounter, setShipsCounter] = useState<number[]>([4, 3, 2, 1]);
 
     return (
         <div className="game">
             <div className="game--board">
-                <Board setShipsCounter={setShipsCounter} shipsCounter={shipsCounter} isFlipped={isFlipped} boardState={boardState} setBoardState={setBoardState} />
+                <Board setShipsCounter={setShipsCounter} shipsCounter={shipsCounter} isFlipped={isFlipped} boardState={board} setBoardState={setBoard} />
             </div>
             <div className="game--ships">
                 {shipsCounter[3] > 0 && <Ship shipType={ShipType.CARRIER} isFlipped={isFlipped} />}
@@ -33,7 +37,8 @@ const Game = () => {
                 {shipsCounter[0] > 0 && <Ship shipType={ShipType.DESTROYER} isFlipped={isFlipped} />}
 
                 <button onClick={() => setIsFlipped(!isFlipped)}>Flip</button>
-                <button onClick={() => console.log(boardState)}>check</button>
+                <button onClick={() => console.log(board)}>check</button>
+                <button onClick={() => console.log(board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0))}>sum</button>
             </div>
         </div>
     )

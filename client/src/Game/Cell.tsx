@@ -23,12 +23,6 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
         const rows = boardState.length;
         const cols = boardState[0].length;
 
-        const offsetsxd = [
-            [-1, -1], [-1, 0], [-1, 1],
-            [0, -1], [0, 1],
-            [1, -1], [1, 0], [1, 1],
-        ];
-
         const offsets = [];
 
         // set offsets based on the ship's length (horizontal or vertical placement)
@@ -47,24 +41,19 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
             }
         }
 
-        console.log('-----');
-        
+
         for (const [offsetRow, offsetCol] of offsets) {
             const newRow = rowIdx + offsetRow;
             const newCol = colIdx + offsetCol;
 
-            if(newCol > 10) return false;
+            if (newCol > 10) return false;
 
-            if(isFlipped && newRow < -1) return false;
-
-
-            console.log(`[${newRow}, ${newCol}]`);
-            
+            if (isFlipped && newRow < -1) return false;
 
             // Check if the cell is within the matrix boundaries
             if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
                 // Check if the cell is already occupied by a ship
-                if ([1,2,3,4].includes(boardState[newRow][newCol])) {
+                if ([1, 2, 3, 4].includes(boardState[newRow][newCol])) {
                     return false;
                 }
             }
@@ -80,7 +69,7 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 
 
         if (!shipLength) {
-            console.log("ship id is not defined (should not be possible)");
+            throw Error('ship id is not defined - seems like something else is being dragged which should not be possible')
             return;
         }
 

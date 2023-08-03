@@ -1,53 +1,73 @@
-import { createContext,Dispatch,ReactNode, SetStateAction, useEffect, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import axiosClient from "../axios-client";
 
 type Props = {
     children: ReactNode,
 }
 
-export type GameRoomType = {
-    id: string,
-    roomName: string,
-    hostName: string,
-    hasPassword: boolean,
-    password: string,
-    clients: string[],
-    clientNicknames: string[]
+export enum GameStage {
+    WAITING = 0,
+    PLACEMENT = 1,
+    PLAYING = 2,
 }
 
-interface RoomContextProps{
+
+export interface GameRoomType {
+    id: string;
+    roomName: string;
+    hostName: string;
+
+    clients: string[];
+    clientNicknames: string[],
+    clientBoards: number[][][]
+    clientReady: number[]
+
+    gameState: number,
+
+    hasPassword: boolean;
+    password: string;
+}
+interface RoomContextProps {
     room: GameRoomType,
     setRoom: Dispatch<SetStateAction<GameRoomType>>
 }
 
 const defaultRoom: GameRoomType = {
-    id: "",
-    roomName: "",
-    hostName: "",
-    hasPassword: false,
-    password: "",
+    id: '',
+    roomName: '',
+    hostName: '',
     clients: [],
     clientNicknames: [],
+    clientBoards: [],
+    gameState: GameStage.WAITING,
+    clientReady: [],
+
+    hasPassword: false,
+    password: '',
 }
 
 export const RoomContext = createContext<RoomContextProps>({
     room: {
-        id: "",
-        roomName: "",
-        hostName: "",
-        hasPassword: false,
-        password: "",
+        id: '',
+        roomName: '',
+        hostName: '',
         clients: [],
         clientNicknames: [],
+        clientBoards: [],
+        gameState: GameStage.WAITING,
+        clientReady: [],
+    
+        hasPassword: false,
+        password: '',
     },
-    setRoom: () => {}
+    setRoom: () => { }
 })
 
-export const RoomProvider = ({children}: Props) => {
+export const RoomProvider = ({ children }: Props) => {
     const [room, setRoom] = useState<GameRoomType>(defaultRoom);
 
     return (
-        <RoomContext.Provider value={{room, setRoom}}>
+        <RoomContext.Provider value={{ room, setRoom }}>
             {children}
         </RoomContext.Provider>
     )
