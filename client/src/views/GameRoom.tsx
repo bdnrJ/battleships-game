@@ -94,6 +94,13 @@ const GameRoom = () => {
             scrollToBottom()
         }))
 
+        socket.on('readinessChange', ((room: GameRoomType) => {
+            setRoom(room);
+        }))
+
+        socket.on('startPlayingStage', ((room: GameRoomType) => {
+            setRoom(room);
+        }))
 
         return () => {
             // this makes sure that unmounting component (leaving game room) notices server about it
@@ -106,6 +113,8 @@ const GameRoom = () => {
             socket.off('someoneJoined');
             socket.off('someoneLeft');
             socket.off('recieveMessage');
+            socket.off('readinessChange');
+            socket.off('startPlayingStage');
         };
     }, []);
 

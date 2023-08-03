@@ -1,6 +1,9 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
 import Board from '../Game/Board';
 import Ship from '../Game/Ship';
+import socket from '../utils/socket';
+import { UserContext } from '../context/UserContext';
+import { RoomContext } from '../context/RoomContext';
 
 type Props = {
     board: number[][],
@@ -24,6 +27,16 @@ enum ShipType {
 const Game = ({board, setBoard}: Props) => {
     const [isFlipped, setIsFlipped] = useState<boolean>(false);
     const [shipsCounter, setShipsCounter] = useState<number[]>([4, 3, 2, 1]);
+    const {user} = useContext(UserContext);
+    const {room} = useContext(RoomContext);
+
+    useEffect(() => {
+
+        if(board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50){
+            socket.emit('sendPlayerBoard', board, user.nickname, room.id);
+        }
+
+    }, [board])
 
     return (
         <div className="game">

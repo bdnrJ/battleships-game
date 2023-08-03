@@ -9,6 +9,8 @@ enum GameStage {
   PLAYING = 2,
 }
 
+type matrix = number[][]
+
 interface GameRoom {
   id: string;
   roomName: string;
@@ -16,8 +18,8 @@ interface GameRoom {
 
   clients: string[];
   clientNicknames: string[],
-  clientBoards: number[][][]
-  clientReady: number[]
+  clientBoards:  matrix[]
+  clientReady: boolean[]
 
   gameState: number,
 
@@ -35,6 +37,7 @@ export default function setupSocketIO(app: Express) {
   });
 
   const rooms: GameRoom[] = [];
+  const emptyMatrix: matrix = Array.from({ length: 10 }, () => Array(10).fill(0));
 
   const emitRoomsList = () => {
     // io.emit('roomsList', rooms.map((room) => ({ ...room, clients: room.clients.length })));
@@ -69,7 +72,9 @@ export default function setupSocketIO(app: Express) {
         //if room wasnt delted by cleanup - emit message
         if (room) {
 
-          if(!room.clientNicknames.includes(room.hostName)){
+          room.clientReady = [false, false];
+
+          if (!room.clientNicknames.includes(room.hostName)) {
             room.hostName = room.clientNicknames[0]
           }
 
@@ -101,16 +106,17 @@ export default function setupSocketIO(app: Express) {
         return;
       }
 
+      
       const newRoom: GameRoom = {
         id: id,
         roomName: roomName,
         hostName: hostName,
         clients: [],
         clientNicknames: [],
-        clientBoards: [],
+        clientBoards: [emptyMatrix, emptyMatrix],
         gameState: GameStage.WAITING,
-        clientReady: [],
-        
+        clientReady: [false, false],
+
         hasPassword: hasPassword,
         password: password,
       };
@@ -177,9 +183,50 @@ export default function setupSocketIO(app: Express) {
       emitRoomsList();
     })
 
+    socket.on('declareReady', (roomId: string, nickname: string) => {
+      console.log(`${nickname} declared ready`)
+      const room = rooms.find((r) => r.id === roomId);
+
+      if (!room) return;
+
+      const playerIdx = room.clientNicknames.findIndex((nick) => nick === nickname);
+
+      room.clientReady[playerIdx] = true;
+      
+      if (room.clientReady[0] && room.clientReady[1]) {
+        room.gameState = GameStage.PLACEMENT
+        io.to(roomId).emit('readinessChange', room)
+      } else {
+        io.to(roomId).emit('readinessChange', room)
+      }
+    })
+
     socket.on('sendMessage', (message: string, roomId: string, nickname: string) => {
       console.log("send message by " + nickname)
       io.to(roomId).emit('recieveMessage', message, nickname);
+    })
+
+    socket.on('sendPlayerBoard', (board: matrix, nickname: string, roomId: string) => {
+      const room = rooms.find((rm) => rm.id = roomId);
+
+      if(!room) return;
+
+      if(board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50){
+        const playerIdx = room.clientNicknames.findIndex((nick) => nick === nickname);
+
+        room.clientBoards[playerIdx] = board;
+
+        console.log(room.clientBoards[0]);
+        console.log(room.clientBoards[1]);
+
+        if(room.clientBoards[0].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50 &&  
+          room.clientBoards[0].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50){
+            room.gameState = GameStage.PLAYING;
+            console.log("game has started!")
+            console.log(room);
+            io.to(roomId).emit('startPlayingStage', room);
+        }
+      }
     })
 
     socket.on('disconnect', () => {

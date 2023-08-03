@@ -20,7 +20,7 @@ export interface GameRoomType {
     clients: string[];
     clientNicknames: string[],
     clientBoards: number[][][]
-    clientReady: number[]
+    clientReady: boolean[]
 
     gameState: number,
 

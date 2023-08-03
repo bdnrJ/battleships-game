@@ -13,9 +13,7 @@ const Ship = ({shipType, isFlipped}: Props) => {
     const [isDragged, setIsBeingDragged] = useState(false);
 
     const dragStart = (e: any) => {
-        console.log(e.target.id);
         setIsBeingDragged(true);
-        
     }
 
     const dragEnd = (e:any) => {

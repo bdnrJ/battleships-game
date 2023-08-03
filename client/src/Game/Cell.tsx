@@ -176,7 +176,7 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
         <div className={`cell ${board[rowId][columnId] !== 0 ? "--used" : ""}`} id={id.toString()}
             onDragOver={(e) => dragOver(e)}
             onDrop={(e) => dropShip(e)}
-            onDragExit={(e) => dragExit(e)}
+            onDragLeave={(e) => dragExit(e)}
         >
             {id}
         </div>

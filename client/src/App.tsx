@@ -7,6 +7,8 @@ import Signin from './views/Signin';
 import Signup from './views/Signup';
 import Rooms from './views/Rooms';
 import GameRoom from './views/GameRoom';
+import { useState } from 'react';
+
 
 export const Layout = () => {
   return (
@@ -26,10 +28,6 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
-      },
-      {
-        path: "/game",
-        element: <Game />
       },
       {
         path: "/rooms",
