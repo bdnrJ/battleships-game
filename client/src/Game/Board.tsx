@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import Cell from './Cell'
 
 type Props = {
@@ -10,13 +10,23 @@ type Props = {
 }
 
 
-const Board = ({boardState, setBoardState, isFlipped, setShipsCounter, shipsCounter} : Props) => {
+const Board = ({ boardState, setBoardState, isFlipped, setShipsCounter, shipsCounter }: Props) => {
 
     return (
         <div className="board">
             {boardState.map((row, rowIdx) => (
                 row.map((cell, columnIdx) => (
-                    <Cell shipsCounter={shipsCounter} setShipsCounter={setShipsCounter} isFlipped={isFlipped} setBoardState={setBoardState}  columnId={columnIdx} rowId={rowIdx} board={boardState} id={parseInt((rowIdx.toString() + columnIdx))}/>
+                    <Cell
+                        key={parseInt((rowIdx.toString() + columnIdx))}
+                        shipsCounter={shipsCounter}
+                        setShipsCounter={setShipsCounter}
+                        isFlipped={isFlipped}
+                        setBoardState={setBoardState}
+                        columnId={columnIdx}
+                        rowId={rowIdx}
+                        board={boardState}
+                        id={parseInt((rowIdx.toString() + columnIdx))}
+                    />
                 ))
             ))}
         </div>

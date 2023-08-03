@@ -51,11 +51,16 @@ export default function setupSocketIO(app: Express) {
         room.clients = room.clients.filter((client) => client !== socket.id);
         room.clientNicknames = room.clientNicknames.filter((client) => client !== nickname)
 
-        //if 0 clients left this will clear them
+        //if 0 clients left this will remove room
         cleanupRooms();
 
         //if room wasnt delted by cleanup - emit message
         if (room) {
+
+          if(!room.clientNicknames.includes(room.hostName)){
+            room.hostName = room.clientNicknames[0]
+          }
+
           const someoneLeft = {
             updatedRoom: room,
             idOfUserThatLeft: socket.id

@@ -1,4 +1,4 @@
-import React, { useState, SetStateAction } from 'react'
+import React, { SetStateAction } from 'react'
 
 type Props = {
     id: number
@@ -15,8 +15,6 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 
     const isPlacementPossible = (shipLength: string) => {
         if (isFlipped) {
-            console.log("1");
-
             if ((rowId - parseInt(shipLength)) < -1) {
                 return false;
             }
@@ -27,12 +25,12 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
                     return false;
             }
         } else {
-            //if ship is tried to be placed out of board borders
+            //if ship tried to be placed is out of board borders
             if ((columnId + parseInt(shipLength)) > 10) {
                 return false;
             }
 
-            //check if trying to place a ship on already occupied place, or out of borders
+            //check if trying to place a ship on already occupied place or out of borders
             for (let i = 0; i < parseInt(shipLength); i++) {
                 if ((id + i) / 10 < Math.ceil(id / 10) || [0, 10, 20, 30, 40, 50, 60, 70, 80, 90].includes(id))
                     if (document.getElementById((id + i).toString())?.classList.contains("--used"))

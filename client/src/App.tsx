@@ -61,7 +61,6 @@ function App() {
 
 
 //TODO
-//make rooms switch their ownership upon host leaving
 // after that start implementing actual gameplay into rooms, everything else is working i think
 
 export default App
