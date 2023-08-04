@@ -5,9 +5,10 @@ import socket from '../utils/socket';
 import { v4 } from 'uuid';
 import { UserContext } from '../context/UserContext';
 import { AiOutlineSend } from 'react-icons/ai';
-import Game from './Game';
+import Game from '../Game/ShipPlacement';
 import Waiting from '../Game/Waiting';
-import GamePlay from '../Game/GamePlay';
+import GamePlay from '../Game/GamePlay/GamePlay';
+import ShipPlacement from '../Game/ShipPlacement';
 
 type someoneLeftObject = {
     updatedRoom: GameRoomType,
@@ -135,10 +136,10 @@ const GameRoom = () => {
                             <Waiting />
                         }
                         {room.gameState === GameStage.PLACEMENT &&
-                            <Game board={boardState} setBoard={setBoardState} />
+                            <ShipPlacement board={boardState} setBoard={setBoardState} />
                         }
                         {room.gameState === GameStage.PLAYING &&
-                            <GamePlay />
+                            <GamePlay myBoard={boardState} setMyBoard={setBoardState} nicknames={room.clientNicknames}/>
                         }
                     </div>
                 </div>

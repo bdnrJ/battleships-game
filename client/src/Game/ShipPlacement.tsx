@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
-import Board from '../Game/Board';
-import Ship from '../Game/Ship';
+import Board from './Board';
+import Ship from './Ship';
 import socket from '../utils/socket';
 import { UserContext } from '../context/UserContext';
 import { RoomContext } from '../context/RoomContext';
@@ -24,7 +24,7 @@ enum ShipType {
     DESTROYER = 1
 }
 
-const Game = ({board, setBoard}: Props) => {
+const ShipPlacement = ({board, setBoard}: Props) => {
     const [isFlipped, setIsFlipped] = useState<boolean>(false);
     const [shipsCounter, setShipsCounter] = useState<number[]>([4, 3, 2, 1]);
     const {user} = useContext(UserContext);
@@ -57,4 +57,4 @@ const Game = ({board, setBoard}: Props) => {
     )
 }
 
-export default Game
+export default ShipPlacement

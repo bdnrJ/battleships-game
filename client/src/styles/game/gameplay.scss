@@ -1,0 +1,17 @@
+.gameplay{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+
+    .gameplay__player{
+        width: 50%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        
+        .gameplay__player--title{
+            font-size: 30px;
+        }
+    }
+}

@@ -1,0 +1,24 @@
+.mycell{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border:1px solid black;
+    
+    &.--destroyer{
+        background-color: blueviolet;
+    }
+
+    &.--cruiser{
+        background-color :aqua;
+    }
+
+    &.--battleship{
+        background-color :brown;
+    }
+
+    &.--carrier{
+        background-color :cadetblue;
+    }
+}

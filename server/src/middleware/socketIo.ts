@@ -9,6 +9,19 @@ enum GameStage {
   PLAYING = 2,
 }
 
+enum CellType{
+  NORMAL = 0,
+  HIT = 1,
+  DAMAGED = 2,
+  DEAD = 3,
+  AROUNDDEAD = 4,
+}
+
+type actualGame = {
+  nickname: string,
+
+}
+
 type matrix = number[][]
 
 interface GameRoom {
@@ -31,7 +44,8 @@ export default function setupSocketIO(app: Express) {
   const httpServer: HttpServer = createServer(app);
   const io: Server = new Server(httpServer, {
     cors: {
-      origin: allowedOrigins,
+      origin: "*",
+      // origin: allowedOrigins,
       methods: ['GET', 'POST'],
     },
   });
@@ -62,6 +76,13 @@ export default function setupSocketIO(app: Express) {
     const onRoomLeave = (roomId: string, nickname: string) => {
       const room = rooms.find((roomX) => roomX.id === roomId);
       if (room) {
+
+        if(room.gameState !== GameStage.WAITING){
+          room.clients = []
+          cleanupRooms();
+
+          //TODO message that room is being deleted
+        }
         //removing client ids and their frontend nicknames (kinda hacky)
         room.clients = room.clients.filter((client) => client !== socket.id);
         room.clientNicknames = room.clientNicknames.filter((client) => client !== nickname)
@@ -69,7 +90,7 @@ export default function setupSocketIO(app: Express) {
         //if 0 clients left this will remove room
         cleanupRooms();
 
-        //if room wasnt delted by cleanup - emit message
+        //if room wasnt deleted by cleanup() - emit message and reset readyCheck 
         if (room) {
 
           room.clientReady = [false, false];
@@ -88,10 +109,31 @@ export default function setupSocketIO(app: Express) {
         console.log("someone left room");
       }
     }
-    // Function to check if a client is already in a room
+
     const isClientInRoom = (roomId: string) => {
       return rooms.some((room) => room.clients.includes(socket.id) && room.id !== roomId);
     };
+
+    socket.on('disconnect', () => {
+      console.log(`Client disconnected: ${socket.id}`);
+      // Remove the client from any rooms when disconnected
+      rooms.forEach((room) => {
+        if (room.clients.includes(socket.id)) {
+          //hacky way of getting nickname of user that left
+          //this exists becasue if someone closes their web browser entirely
+          //frontend has no way of firing function responsible for proper cleanup
+          const clientIdx = room.clients.findIndex((client) => client === socket.id);
+          const userNicknameThatLeft = room.clientNicknames[clientIdx];
+          onRoomLeave(room.id, userNicknameThatLeft);
+        }
+        room.clients = room.clients.filter((client) => client !== socket.id);
+      });
+
+      //Remove empty rooms
+      cleanupRooms()
+    });
+
+    //room systems 
 
     socket.on('createRoom', ({ roomName, hostName, hasPassword, password, id }: GameRoom, nickname: string) => {
       if (isClientInRoom(id)) {
@@ -161,7 +203,6 @@ export default function setupSocketIO(app: Express) {
       }
 
       // Join the room
-
       console.log("joined into room")
       socket.join(roomId);
 
@@ -182,6 +223,13 @@ export default function setupSocketIO(app: Express) {
     socket.on('getRooms', () => {
       emitRoomsList();
     })
+    
+    socket.on('sendMessage', (message: string, roomId: string, nickname: string) => {
+      console.log("send message by " + nickname)
+      io.to(roomId).emit('recieveMessage', message, nickname);
+    })
+
+    //waiting stage
 
     socket.on('declareReady', (roomId: string, nickname: string) => {
       console.log(`${nickname} declared ready`)
@@ -201,11 +249,8 @@ export default function setupSocketIO(app: Express) {
       }
     })
 
-    socket.on('sendMessage', (message: string, roomId: string, nickname: string) => {
-      console.log("send message by " + nickname)
-      io.to(roomId).emit('recieveMessage', message, nickname);
-    })
-
+    //placement stage
+    
     socket.on('sendPlayerBoard', (board: matrix, nickname: string, roomId: string) => {
       const room = rooms.find((rm) => rm.id = roomId);
 
@@ -216,37 +261,22 @@ export default function setupSocketIO(app: Express) {
 
         room.clientBoards[playerIdx] = board;
 
-        console.log(room.clientBoards[0]);
-        console.log(room.clientBoards[1]);
-
+        //if both players provided finished boards
         if(room.clientBoards[0].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50 &&  
-          room.clientBoards[0].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50){
+          room.clientBoards[1].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50){
+            //start game
             room.gameState = GameStage.PLAYING;
-            console.log("game has started!")
-            console.log(room);
-            io.to(roomId).emit('startPlayingStage', room);
+
+            const roomWithoutBoardStates: GameRoom = room;
+            roomWithoutBoardStates.clientBoards = []
+
+            io.to(roomId).emit('startPlayingStage', roomWithoutBoardStates);
         }
       }
     })
 
-    socket.on('disconnect', () => {
-      console.log(`Client disconnected: ${socket.id}`);
-      // Remove the client from any rooms when disconnected
-      rooms.forEach((room) => {
-        if (room.clients.includes(socket.id)) {
-          //hacky way of getting nickname of user that left
-          //this exists becasue if someone closes their web browser entirely
-          //frontend has no way of firing function responsible for proper cleanup
-          const clientIdx = room.clients.findIndex((client) => client === socket.id);
-          const userNicknameThatLeft = room.clientNicknames[clientIdx];
-          onRoomLeave(room.id, userNicknameThatLeft);
-        }
-        room.clients = room.clients.filter((client) => client !== socket.id);
-      });
+    //game stage
 
-      //Remove empty rooms
-      cleanupRooms()
-    });
   });
 
   return httpServer;
