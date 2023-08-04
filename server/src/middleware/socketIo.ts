@@ -3,6 +3,9 @@ import { createServer, Server as HttpServer } from 'http';
 import { Express } from 'express';
 import { allowedOrigins } from '../config/cors.js';
 
+
+type matrix = number[][]
+
 enum GameStage {
   WAITING = 0,
   PLACEMENT = 1,
@@ -17,12 +20,13 @@ enum CellType{
   AROUNDDEAD = 4,
 }
 
-type actualGame = {
-  nickname: string,
-
+type gameplayState = {
+  roomId: string,
+  player1: string,
+  player1Board: matrix,
+  player2: string,
+  player2Board: matrix,
 }
-
-type matrix = number[][]
 
 interface GameRoom {
   id: string;
@@ -51,6 +55,7 @@ export default function setupSocketIO(app: Express) {
   });
 
   const rooms: GameRoom[] = [];
+  const gamePlayBoards: gameplayState[] = [];
   const emptyMatrix: matrix = Array.from({ length: 10 }, () => Array(10).fill(0));
 
   const emitRoomsList = () => {
@@ -270,12 +275,38 @@ export default function setupSocketIO(app: Express) {
             const roomWithoutBoardStates: GameRoom = room;
             roomWithoutBoardStates.clientBoards = []
 
+            const gameStateBoards: gameplayState  ={
+              roomId: room.id,
+              player1: room.clientNicknames[0],
+              player1Board: emptyMatrix,
+              player2: room.clientNicknames[1],
+              player2Board: emptyMatrix
+            } 
+
             io.to(roomId).emit('startPlayingStage', roomWithoutBoardStates);
+            io.to(roomId).emit('playingStageBoards', gameStateBoards);
         }
       }
     })
 
     //game stage
+    socket.on('missleShot', (rowIdx: number, colIdx: number, nickname: string, roomId: string) => {
+      const room = rooms.find((rm) => rm.id = roomId);
+
+      if(!room) return;
+
+      const enemyIdx = room.clientNicknames.findIndex((nick) => nick !== nickname);
+
+      if(!enemyIdx) return;
+
+      console.log(room.clientBoards)
+      console.log(room.clientBoards[enemyIdx])
+      console.log(room.clientBoards)
+
+      if(room.clientBoards[enemyIdx][rowIdx][colIdx] === 0){
+        
+      }
+    })
 
   });
 

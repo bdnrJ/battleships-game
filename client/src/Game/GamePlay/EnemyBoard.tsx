@@ -31,7 +31,7 @@ const EnemyBoard = ({enemyBoard}: Props) => {
                 <div className="gameboard__board">
                 {enemyBoard.map((row, rowIdx) => (
                     row.map((cell, columnIdx) => (
-                        <EnemyCell value={cell} />
+                        <EnemyCell value={cell} rowIdx={rowIdx} colIdx={columnIdx} />
                     ))
                 ))}
                 </div>

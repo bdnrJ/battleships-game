@@ -15,10 +15,29 @@ type someoneLeftObject = {
     idOfUserThatLeft: string,
 }
 
+export type gameplayState = {
+    roomId: string,
+    player1: string,
+    player1Board: number[][],
+    player2: string,
+    player2Board: number[][],
+  }
+
+const emptyMatrix = [[],[]]
+
+const emptyGameplayState : gameplayState= {
+    roomId: "",
+    player1: '',
+    player1Board: emptyMatrix,
+    player2: "",
+    player2Board: emptyMatrix,
+}
+
 const GameRoom = () => {
     const [userMessage, setUserMessage] = useState<string>('');
     const [messages, setMessages] = useState<string[]>([]);
     const [boardState, setBoardState] = useState<number[][]>(Array(10).fill(Array(10).fill(0)));
+    const [gameplayStageRoom, setGameplayStageRoom] = useState<gameplayState>(emptyGameplayState);
 
 
     const { user } = useContext(UserContext);
@@ -103,6 +122,10 @@ const GameRoom = () => {
             setRoom(room);
         }))
 
+        socket.on('playingStageBoards', ((newRoom: gameplayState) => {
+            setGameplayStageRoom(newRoom);
+        }))
+
         return () => {
             // this makes sure that unmounting component (leaving game room) notices server about it
             if (useEffectRef.current)
@@ -116,6 +139,7 @@ const GameRoom = () => {
             socket.off('recieveMessage');
             socket.off('readinessChange');
             socket.off('startPlayingStage');
+            socket.off('playingStageBoards');
         };
     }, []);
 
@@ -139,7 +163,7 @@ const GameRoom = () => {
                             <ShipPlacement board={boardState} setBoard={setBoardState} />
                         }
                         {room.gameState === GameStage.PLAYING &&
-                            <GamePlay myBoard={boardState} setMyBoard={setBoardState} nicknames={room.clientNicknames}/>
+                            <GamePlay myBoard={boardState} setMyBoard={setBoardState} nicknames={room.clientNicknames} gameplayStageRoom={gameplayStageRoom} setGameplayStageRoom={setGameplayStageRoom}/>
                         }
                     </div>
                 </div>

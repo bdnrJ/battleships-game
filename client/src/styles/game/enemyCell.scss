@@ -9,6 +9,10 @@
   
     &.--normal {
       background-color: white;
+      &:hover{
+        background-color: green;
+      }
+      cursor: pointer;
     }
   
     &.--hit,
