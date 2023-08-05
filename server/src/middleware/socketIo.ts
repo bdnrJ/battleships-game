@@ -272,7 +272,7 @@ export default function setupSocketIO(app: Express) {
             //start game
             room.gameState = GameStage.PLAYING;
 
-            const roomWithoutBoardStates: GameRoom = room;
+            const roomWithoutBoardStates: GameRoom = {...room};
             roomWithoutBoardStates.clientBoards = []
 
             const gameStateBoards: gameplayState  ={
@@ -283,6 +283,8 @@ export default function setupSocketIO(app: Express) {
               player2Board: emptyMatrix
             } 
 
+            gamePlayBoards.push(gameStateBoards);
+
             io.to(roomId).emit('startPlayingStage', roomWithoutBoardStates);
             io.to(roomId).emit('playingStageBoards', gameStateBoards);
         }
@@ -292,20 +294,39 @@ export default function setupSocketIO(app: Express) {
     //game stage
     socket.on('missleShot', (rowIdx: number, colIdx: number, nickname: string, roomId: string) => {
       const room = rooms.find((rm) => rm.id = roomId);
-
+      const gameplayState = gamePlayBoards.find((rm) => rm.roomId = roomId);
+      
       if(!room) return;
-
+      if(!gameplayState) return;
+      console.log('1')
+      
       const enemyIdx = room.clientNicknames.findIndex((nick) => nick !== nickname);
-
+      
       if(!enemyIdx) return;
+      console.log('2')
 
-      console.log(room.clientBoards)
-      console.log(room.clientBoards[enemyIdx])
-      console.log(room.clientBoards)
-
-      if(room.clientBoards[enemyIdx][rowIdx][colIdx] === 0){
-        
+      if(room.clientBoards[enemyIdx][rowIdx][colIdx] === CellType.NORMAL){
+        if(gameplayState.player1 === nickname){
+          console.log('3')
+          gameplayState.player1Board[rowIdx][colIdx] = CellType.HIT;
+        }else{
+          console.log('4')
+          gameplayState.player2Board[rowIdx][colIdx] = CellType.HIT;
+        }
       }
+
+      if([1, 2, 3, 4].includes(room.clientBoards[enemyIdx][rowIdx][colIdx])){
+        if(gameplayState.player1 === nickname){
+          console.log('5')
+          gameplayState.player1Board[rowIdx][colIdx] = CellType.DAMAGED;
+        }else{
+          console.log('6')
+          gameplayState.player2Board[rowIdx][colIdx] = CellType.DAMAGED;
+        }
+      }
+      
+      console.log('7')
+      io.to(roomId).emit('updateGameState', gameplayState);
     })
 
   });

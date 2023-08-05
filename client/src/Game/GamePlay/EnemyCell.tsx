@@ -17,6 +17,7 @@ const EnemyCell = ({value, rowIdx, colIdx}: Props) => {
 
     const handleClick = () => {
         if(value === CellType.NORMAL){
+            console.log("x");
             socket.emit('missleShot', rowIdx, colIdx, user.nickname, room.id);
         }
     }
