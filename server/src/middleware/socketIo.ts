@@ -293,18 +293,18 @@ export default function setupSocketIO(app: Express) {
 
     //game stage
     socket.on('missleShot', (rowIdx: number, colIdx: number, nickname: string, roomId: string) => {
-      const room = rooms.find((rm) => rm.id = roomId);
-      const gameplayState = gamePlayBoards.find((rm) => rm.roomId = roomId);
+      const room = rooms.find((rm) => rm.id === roomId);
+      const gameplayState = gamePlayBoards.find((rm) => rm.roomId === roomId);
       
       if(!room) return;
       if(!gameplayState) return;
       console.log('1')
       
       const enemyIdx = room.clientNicknames.findIndex((nick) => nick !== nickname);
+      console.log(enemyIdx);
+      console.log(nickname);
+      console.log(room.clientNicknames);
       
-      if(!enemyIdx) return;
-      console.log('2')
-
       if(room.clientBoards[enemyIdx][rowIdx][colIdx] === CellType.NORMAL){
         if(gameplayState.player1 === nickname){
           console.log('3')

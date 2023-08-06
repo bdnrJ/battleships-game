@@ -10,31 +10,31 @@ type Props = {
     colIdx: number,
 }
 
-const EnemyCell = ({value, rowIdx, colIdx}: Props) => {
+const EnemyCell = ({ value, rowIdx, colIdx }: Props) => {
 
-    const {room} = useContext(RoomContext);
-    const {user} = useContext(UserContext);
+    const { room } = useContext(RoomContext);
+    const { user } = useContext(UserContext);
 
     const handleClick = () => {
-        if(value === CellType.NORMAL){
+        if (value === CellType.NORMAL) {
             console.log("x");
             socket.emit('missleShot', rowIdx, colIdx, user.nickname, room.id);
         }
     }
 
-  return (
-    <div className={`enemycell 
+    return (
+        <div className={`enemycell 
         ${value === CellType.NORMAL && '--normal'}
         ${value === CellType.HIT && '--hit'}
         ${value === CellType.DAMAGED && '--damaged'}
         ${value === CellType.DEAD && '--dead'}
         ${value === CellType.AROUNDDEAD && '--arounddead'}
     `}
-        onClick={handleClick}
-    >
-        {/* {value} */}
-    </div>
-  )
+            onClick={handleClick}
+        >
+            {/* {value} */}
+        </div>
+    )
 }
 
 export default EnemyCell

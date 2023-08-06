@@ -23,37 +23,31 @@ export enum CellType {
 }
 
 const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom }: Props) => {
-    const enemyInit = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 3, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 4, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-    // const [enemyBoard, setEnemyBoard] = useState<number[][]>(Array(10).fill(Array(10).fill(0)));
-    const [enemyBoard, setEnemyBoard] = useState<number[][]>(enemyInit);
+    const [enemyBoard, setEnemyBoard] = useState<number[][]>(Array(10).fill(Array(10).fill(0)));
     const [enemyViewMyBoard, setEnemyViewMyBoard] = useState<number[][]>();
     const { user } = useContext(UserContext);
     const [enemyNickname, setEnemyNickame] = useState<string>(nicknames.find((nickname) => nickname !== user.nickname) || 'unknown');
 
     useEffect(() => {
         socket.on('updateGameState', ((gameplayState: gameplayState) => {
+
             if (gameplayState.player1 === user.nickname) {
+
                 const newEnemyBoard = [...gameplayState.player1Board.map(row => [...row])];
                 setEnemyBoard(newEnemyBoard);
+
+                console.log("1");
+                console.log(gameplayState.player1Board)
 
                 const newEnemyViewMyBoard = [...gameplayState.player2Board.map(row => [...row])];
                 setEnemyViewMyBoard(newEnemyViewMyBoard);
 
-
-                console.log("1");
+                console.log(gameplayState.player2Board)
+                
 
                 const updatedMyBoard = myBoard.map((row, rowIndex) =>
                     row.map((cell, colIndex) =>
-                        gameplayState.player2Board[rowIndex][colIndex] === CellType.DAMAGED
+                        newEnemyViewMyBoard[rowIndex][colIndex] === CellType.DAMAGED
                             ? 6 // Keep damaged cells unchanged
                             : cell
                     )
@@ -66,12 +60,17 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom }: Props) 
                 const newEnemyBoard = [...gameplayState.player2Board.map(row => [...row])];
                 setEnemyBoard(newEnemyBoard);
 
+                console.log(gameplayState.player2Board)
+
+
                 const newEnemyViewMyBoard = [...gameplayState.player1Board.map(row => [...row])];
                 setEnemyViewMyBoard(newEnemyViewMyBoard);
-                
+
+                console.log(gameplayState.player1Board)
+
                 const updatedMyBoard = myBoard.map((row, rowIndex) =>
                     row.map((cell, colIndex) =>
-                        gameplayState.player1Board[rowIndex][colIndex] === CellType.DAMAGED
+                        newEnemyViewMyBoard[rowIndex][colIndex] === CellType.DAMAGED
                             ? 6 // Keep damaged cells unchanged
                             : cell
                     )
