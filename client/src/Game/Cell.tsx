@@ -42,6 +42,7 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
         }
 
 
+        //check every offset for colision or out of border 
         for (const [offsetRow, offsetCol] of offsets) {
             const newRow = rowIdx + offsetRow;
             const newCol = colIdx + offsetCol;

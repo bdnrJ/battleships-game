@@ -12,6 +12,13 @@ enum GameStage {
   PLAYING = 2,
 }
 
+enum ShipTypes{
+  DESTROYER = 1,
+  CRUISER = 2,
+  BATTLESHIP = 3,
+  CARRIER = 4,
+}
+
 enum CellType{
   NORMAL = 0,
   HIT = 1,
@@ -26,6 +33,7 @@ type gameplayState = {
   player1Board: matrix,
   player2: string,
   player2Board: matrix,
+  turn: string,
 }
 
 interface GameRoom {
@@ -57,6 +65,13 @@ export default function setupSocketIO(app: Express) {
   const rooms: GameRoom[] = [];
   const gamePlayBoards: gameplayState[] = [];
   const emptyMatrix: matrix = Array.from({ length: 10 }, () => Array(10).fill(0));
+
+  //offsets are used to determine whether a ship that has been hit is merely damaged or if it has been completely sunk
+  const offsets = [
+    [-1, -1],  [-1, 0],  [-1, 1],
+    [0,  -1], /* cell */ [0,  1],
+    [1,  -1],  [1,  0],  [1,  1],
+  ];
 
   const emitRoomsList = () => {
     // io.emit('roomsList', rooms.map((room) => ({ ...room, clients: room.clients.length })));
@@ -275,12 +290,15 @@ export default function setupSocketIO(app: Express) {
             const roomWithoutBoardStates: GameRoom = {...room};
             roomWithoutBoardStates.clientBoards = []
 
-            const gameStateBoards: gameplayState  ={
+            //were creating empty matrix like that because of shallow copying which
+            //wasted at least 5h of debugging xd
+            const gameStateBoards: gameplayState = {
               roomId: room.id,
               player1: room.clientNicknames[0],
-              player1Board: emptyMatrix,
+              player1Board: [...emptyMatrix.map(row => [...row])],
               player2: room.clientNicknames[1],
-              player2Board: emptyMatrix
+              player2Board: [...emptyMatrix.map(row => [...row])],
+              turn: Math.random() < 0.5 ? room.clientNicknames[0] : room.clientNicknames[1],
             } 
 
             gamePlayBoards.push(gameStateBoards);
@@ -291,20 +309,61 @@ export default function setupSocketIO(app: Express) {
       }
     })
 
+    const isSunken = (rowIdx: number, colIdx: number, enemyBoard: matrix, myHitBoard: matrix): boolean => {
+      for (const [offsetRow, offsetCol] of offsets) {
+        const newRow = rowIdx + offsetRow;
+        const newCol = colIdx + offsetCol;
+
+        if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10) {
+          if ([1, 2, 3, 4].includes(enemyBoard[newRow][newCol]) && myHitBoard[newRow][newCol] === CellType.NORMAL) {
+              return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    const onSunkenShipProcedure = (rowIdx: number, colIdx: number, enemyBoard: matrix, myHitBoard: matrix): void => {
+      for (const [offsetRow, offsetCol] of offsets) {
+        const newRow = rowIdx + offsetRow;
+        const newCol = colIdx + offsetCol;
+
+        if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10) {
+          if ([1, 2, 3, 4].includes(enemyBoard[newRow][newCol]) && myHitBoard[newRow][newCol] !== CellType.DEAD) {
+            myHitBoard[newRow][newCol] = CellType.DEAD;
+            onSunkenShipProcedure(newRow, newCol, enemyBoard, myHitBoard);
+          }else{
+            if(myHitBoard[newRow][newCol] !== CellType.DEAD || myHitBoard[newRow][newCol] !== CellType.AROUNDDEAD )
+                myHitBoard[newRow][newCol] = CellType.AROUNDDEAD;
+          }
+        }
+      }
+    }
+
     //game stage
+    // POOR
+    //i think this stinks, each call from user needs to find user by nickname (searching an array) - i dont like this
     socket.on('missleShot', (rowIdx: number, colIdx: number, nickname: string, roomId: string) => {
+      //finding room and gameplayState from where request is being made
       const room = rooms.find((rm) => rm.id === roomId);
       const gameplayState = gamePlayBoards.find((rm) => rm.roomId === roomId);
-      
+
+      //if they do not exist... well we're fucked
       if(!room) return;
       if(!gameplayState) return;
+
+      if(gameplayState.turn !== nickname){
+        console.log('player request move but it is not his turn')
+        return;
+      }
+      
       console.log('1')
       
+      //the player that makes the shot will shot to other player board (duh)
+      //so we need to make sure that we're not shooting ourselfs up (:o)
       const enemyIdx = room.clientNicknames.findIndex((nick) => nick !== nickname);
-      console.log(enemyIdx);
-      console.log(nickname);
-      console.log(room.clientNicknames);
       
+      //if player shot empty field
       if(room.clientBoards[enemyIdx][rowIdx][colIdx] === CellType.NORMAL){
         if(gameplayState.player1 === nickname){
           console.log('3')
@@ -315,17 +374,34 @@ export default function setupSocketIO(app: Express) {
         }
       }
 
-      if([1, 2, 3, 4].includes(room.clientBoards[enemyIdx][rowIdx][colIdx])){
+      //if player shot not-empty field
+      if([ShipTypes.DESTROYER, ShipTypes.BATTLESHIP, ShipTypes.CRUISER, ShipTypes.CARRIER].includes(room.clientBoards[enemyIdx][rowIdx][colIdx])){
         if(gameplayState.player1 === nickname){
           console.log('5')
-          gameplayState.player1Board[rowIdx][colIdx] = CellType.DAMAGED;
+          if(isSunken(rowIdx, colIdx, room.clientBoards[enemyIdx], gameplayState.player1Board)){
+            onSunkenShipProcedure(rowIdx, colIdx, room.clientBoards[enemyIdx], gameplayState.player1Board);
+          }
+          else{
+            gameplayState.player1Board[rowIdx][colIdx] = CellType.DAMAGED;
+          }
         }else{
           console.log('6')
-          gameplayState.player2Board[rowIdx][colIdx] = CellType.DAMAGED;
+          if(isSunken(rowIdx, colIdx, room.clientBoards[enemyIdx], gameplayState.player2Board)){
+            onSunkenShipProcedure(rowIdx, colIdx,  room.clientBoards[enemyIdx] ,gameplayState.player2Board);
+          }
+          else{
+            gameplayState.player2Board[rowIdx][colIdx] = CellType.DAMAGED;
+          }
         }
       }
       
-      console.log('7')
+      //return new updated state
+
+      gameplayState.turn = room.clientNicknames[enemyIdx];
+      
+      console.log(gameplayState);
+      console.log('end');
+
       io.to(roomId).emit('updateGameState', gameplayState);
     })
 

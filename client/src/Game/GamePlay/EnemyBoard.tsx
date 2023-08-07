@@ -1,11 +1,13 @@
 import React from 'react'
 import EnemyCell from './EnemyCell';
+import { gameplayState } from '../../views/GameRoom';
 
 type Props = {
-    enemyBoard: number[][]
+    enemyBoard: number[][],
+    gameplayStageRoom: gameplayState,
 }
 
-const EnemyBoard = ({enemyBoard}: Props) => {
+const EnemyBoard = ({enemyBoard, gameplayStageRoom}: Props) => {
 
     const upperMarks = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const leftMarks = [1,2,3,4,5,6,7,8,9,10];
@@ -31,7 +33,7 @@ const EnemyBoard = ({enemyBoard}: Props) => {
                 <div className="gameboard__board">
                 {enemyBoard.map((row, rowIdx) => (
                     row.map((cell, columnIdx) => (
-                        <EnemyCell value={cell} rowIdx={rowIdx} colIdx={columnIdx} />
+                        <EnemyCell value={cell} rowIdx={rowIdx} colIdx={columnIdx} turn={gameplayStageRoom.turn}/>
                     ))
                 ))}
                 </div>

@@ -21,6 +21,7 @@ export type gameplayState = {
     player1Board: number[][],
     player2: string,
     player2Board: number[][],
+    turn: string,
   }
 
 const emptyMatrix = [[],[]]
@@ -31,6 +32,7 @@ const emptyGameplayState : gameplayState= {
     player1Board: emptyMatrix,
     player2: "",
     player2Board: emptyMatrix,
+    turn: '',
 }
 
 const GameRoom = () => {

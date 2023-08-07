@@ -5,6 +5,12 @@
     align-items: center;
     justify-content: center;
     border:1px solid black;
+
+    
+    @include tablet{
+        height: 20px;
+        width: 20px;
+    }
     
     &.--destroyer{
         background-color: blueviolet;

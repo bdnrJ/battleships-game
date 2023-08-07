@@ -10,13 +10,6 @@ type Props = {
     setBoard: Dispatch<SetStateAction<number[][]>>
 }
 
-enum CellType {
-    EMPTY = 0,
-    FILLED = 1,
-    HIT = 2,
-    SUNKEN = 3
-}
-
 enum ShipType {
     CARRIER = 4,
     BATTLESHIP = 3,
@@ -29,6 +22,32 @@ const ShipPlacement = ({board, setBoard}: Props) => {
     const [shipsCounter, setShipsCounter] = useState<number[]>([4, 3, 2, 1]);
     const {user} = useContext(UserContext);
     const {room} = useContext(RoomContext);
+
+    const temp1 = [
+        [0, 0, 0, 0, 0, 0, 4, 4, 4, 4],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 3, 3, 3],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 3, 3, 3],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 2, 2, 0, 0, 0, 2, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 0, 0, 2, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]
+
+    const temp2 = [
+        [4, 4, 4, 4, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [3, 3, 3, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 0, 0, 3, 3, 3],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [2, 2, 0, 0, 0, 2, 2, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 2, 2],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+    ]
 
     useEffect(() => {
 
@@ -52,6 +71,8 @@ const ShipPlacement = ({board, setBoard}: Props) => {
                 <button onClick={() => setIsFlipped(!isFlipped)}>Flip</button>
                 <button onClick={() => console.log(board)}>check</button>
                 <button onClick={() => console.log(board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0))}>sum</button>
+                <button onClick={() => setBoard(temp1)} >place1</button>
+                <button onClick={() => setBoard(temp2)} >place2</button>
             </div>
         </div>
     )

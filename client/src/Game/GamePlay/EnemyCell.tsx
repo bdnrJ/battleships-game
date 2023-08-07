@@ -8,17 +8,28 @@ type Props = {
     value: number,
     rowIdx: number,
     colIdx: number,
+    turn: string,
 }
 
-const EnemyCell = ({ value, rowIdx, colIdx }: Props) => {
+const EnemyCell = ({ value, rowIdx, colIdx, turn }: Props) => {
 
     const { room } = useContext(RoomContext);
     const { user } = useContext(UserContext);
 
     const handleClick = () => {
-        if (value === CellType.NORMAL) {
-            console.log("x");
+        if (value === CellType.NORMAL && user.nickname === turn) {
+            
             socket.emit('missleShot', rowIdx, colIdx, user.nickname, room.id);
+        }
+
+        if(user.nickname !== turn){
+            console.log("it is not out time mate");
+            console.log(user.nickname);
+            console.log(turn);
+            console.log(user.nickname === turn);
+            console.log('--------');
+            
+            
         }
     }
 

@@ -20,12 +20,22 @@
         align-items: center;
         justify-content: center;
         border: 1px solid black;
+        
+        @include tablet{
+            height: 20px;
+            width: 20px;
+        }
     }
 
     .gameboard__board{
         display: grid;
         grid-template-columns: repeat(10, 40px);
         grid-template-rows: repeat(10, 40px);
+
+        @include tablet{
+            grid-template-columns: repeat(10, 20px);
+            grid-template-rows: repeat(10, 20px);
+        }
     }
 
     .gameboard__rest{
