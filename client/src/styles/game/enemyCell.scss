@@ -22,7 +22,8 @@
   
     &.--hit,
     &.--damaged,
-    &.--dead {
+    &.--dead,
+    &.--arounddead {
       position: relative;
       background-color: white;
   

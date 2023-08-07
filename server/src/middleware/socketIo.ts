@@ -333,8 +333,11 @@ export default function setupSocketIO(app: Express) {
             myHitBoard[newRow][newCol] = CellType.DEAD;
             onSunkenShipProcedure(newRow, newCol, enemyBoard, myHitBoard);
           }else{
-            if(myHitBoard[newRow][newCol] !== CellType.DEAD || myHitBoard[newRow][newCol] !== CellType.AROUNDDEAD )
-                myHitBoard[newRow][newCol] = CellType.AROUNDDEAD;
+            if(myHitBoard[newRow][newCol] === CellType.DEAD){
+              myHitBoard[newRow][newCol] = CellType.DEAD;
+            }else{
+              myHitBoard[newRow][newCol] = CellType.AROUNDDEAD;
+            }
           }
         }
       }

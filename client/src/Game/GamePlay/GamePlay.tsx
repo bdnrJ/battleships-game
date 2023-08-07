@@ -60,8 +60,8 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
                 );
 
                 setMyBoard(updatedMyBoard);
-                setGameplayStageRoom(gameplayState)
             }
+            setGameplayStageRoom({...gameplayState})
         }));
 
         return () => {

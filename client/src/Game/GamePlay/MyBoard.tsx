@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import MyCell from './MyCell';
+import { v4 } from 'uuid';
 
 type Props = {
     myBoard: number[][],
@@ -31,7 +32,7 @@ const MyBoard = ({myBoard}: Props) => {
                 <div className="gameboard__board">
                 {myBoard.map((row, rowIdx) => (
                     row.map((cell, columnIdx) => (
-                        <MyCell value={cell} />
+                        <MyCell key={v4()} value={cell} />
                     ))
                 ))}
                 </div>

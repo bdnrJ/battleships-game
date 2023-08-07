@@ -1,6 +1,7 @@
 import React from 'react'
 import EnemyCell from './EnemyCell';
 import { gameplayState } from '../../views/GameRoom';
+import { v4 } from 'uuid';
 
 type Props = {
     enemyBoard: number[][],
@@ -33,7 +34,7 @@ const EnemyBoard = ({enemyBoard, gameplayStageRoom}: Props) => {
                 <div className="gameboard__board">
                 {enemyBoard.map((row, rowIdx) => (
                     row.map((cell, columnIdx) => (
-                        <EnemyCell value={cell} rowIdx={rowIdx} colIdx={columnIdx} turn={gameplayStageRoom.turn}/>
+                        <EnemyCell key={v4()}  value={cell} rowIdx={rowIdx} colIdx={columnIdx} turn={gameplayStageRoom.turn}/>
                     ))
                 ))}
                 </div>

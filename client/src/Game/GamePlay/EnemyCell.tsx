@@ -24,8 +24,8 @@ const EnemyCell = ({ value, rowIdx, colIdx, turn }: Props) => {
 
         if(user.nickname !== turn){
             console.log("it is not out time mate");
-            console.log(user.nickname);
-            console.log(turn);
+            console.log("user nick: " +user.nickname);
+            console.log("turn nick: "+ turn);
             console.log(user.nickname === turn);
             console.log('--------');
             
