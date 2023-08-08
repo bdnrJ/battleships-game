@@ -331,7 +331,10 @@ export default function setupSocketIO(app: Express) {
         if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10) {
           if ([1, 2, 3, 4].includes(enemyBoard[newRow][newCol]) && myHitBoard[newRow][newCol] !== CellType.DEAD) {
             myHitBoard[newRow][newCol] = CellType.DEAD;
-            onSunkenShipProcedure(newRow, newCol, enemyBoard, myHitBoard);
+
+            if(enemyBoard[newRow][newCol] !== 1){
+              onSunkenShipProcedure(newRow, newCol, enemyBoard, myHitBoard);
+            }
           }else{
             if(myHitBoard[newRow][newCol] === CellType.DEAD){
               myHitBoard[newRow][newCol] = CellType.DEAD;
