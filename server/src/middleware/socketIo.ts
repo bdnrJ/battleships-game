@@ -12,14 +12,14 @@ enum GameStage {
   PLAYING = 2,
 }
 
-enum ShipTypes{
+enum ShipTypes {
   DESTROYER = 1,
   CRUISER = 2,
   BATTLESHIP = 3,
   CARRIER = 4,
 }
 
-enum CellType{
+enum CellType {
   NORMAL = 0,
   HIT = 1,
   DAMAGED = 2,
@@ -43,7 +43,7 @@ interface GameRoom {
 
   clients: string[];
   clientNicknames: string[],
-  clientBoards:  matrix[]
+  clientBoards: matrix[]
   clientReady: boolean[]
 
   gameState: number,
@@ -68,9 +68,9 @@ export default function setupSocketIO(app: Express) {
 
   //offsets are used to determine whether a ship that has been hit is merely damaged or if it has been completely sunk
   const offsets = [
-    [-1, -1],  [-1, 0],  [-1, 1],
-    [0,  -1], /* cell */ [0,  1],
-    [1,  -1],  [1,  0],  [1,  1],
+    [-1, -1], [-1, 0], [-1, 1],
+    [0, -1], /* cell */[0, 1],
+    [1, -1], [1, 0], [1, 1],
   ];
 
   const emitRoomsList = () => {
@@ -97,7 +97,7 @@ export default function setupSocketIO(app: Express) {
       const room = rooms.find((roomX) => roomX.id === roomId);
       if (room) {
 
-        if(room.gameState !== GameStage.WAITING){
+        if (room.gameState !== GameStage.WAITING) {
           room.clients = []
           cleanupRooms();
 
@@ -168,7 +168,7 @@ export default function setupSocketIO(app: Express) {
         return;
       }
 
-      
+
       const newRoom: GameRoom = {
         id: id,
         roomName: roomName,
@@ -243,7 +243,7 @@ export default function setupSocketIO(app: Express) {
     socket.on('getRooms', () => {
       emitRoomsList();
     })
-    
+
     socket.on('sendMessage', (message: string, roomId: string, nickname: string) => {
       console.log("send message by " + nickname)
       io.to(roomId).emit('recieveMessage', message, nickname);
@@ -260,7 +260,7 @@ export default function setupSocketIO(app: Express) {
       const playerIdx = room.clientNicknames.findIndex((nick) => nick === nickname);
 
       room.clientReady[playerIdx] = true;
-      
+
       if (room.clientReady[0] && room.clientReady[1]) {
         room.gameState = GameStage.PLACEMENT
         io.to(roomId).emit('readinessChange', room)
@@ -270,41 +270,41 @@ export default function setupSocketIO(app: Express) {
     })
 
     //placement stage
-    
+
     socket.on('sendPlayerBoard', (board: matrix, nickname: string, roomId: string) => {
       const room = rooms.find((rm) => rm.id = roomId);
 
-      if(!room) return;
+      if (!room) return;
 
-      if(board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50){
+      if (board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50) {
         const playerIdx = room.clientNicknames.findIndex((nick) => nick === nickname);
 
         room.clientBoards[playerIdx] = board;
 
         //if both players provided finished boards
-        if(room.clientBoards[0].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50 &&  
-          room.clientBoards[1].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50){
-            //start game
-            room.gameState = GameStage.PLAYING;
+        if (room.clientBoards[0].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50 &&
+          room.clientBoards[1].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50) {
+          //start game
+          room.gameState = GameStage.PLAYING;
 
-            const roomWithoutBoardStates: GameRoom = {...room};
-            roomWithoutBoardStates.clientBoards = []
+          const roomWithoutBoardStates: GameRoom = { ...room };
+          roomWithoutBoardStates.clientBoards = []
 
-            //were creating empty matrix like that because of shallow copying which
-            //wasted at least 5h of debugging xd
-            const gameStateBoards: gameplayState = {
-              roomId: room.id,
-              player1: room.clientNicknames[0],
-              player1Board: [...emptyMatrix.map(row => [...row])],
-              player2: room.clientNicknames[1],
-              player2Board: [...emptyMatrix.map(row => [...row])],
-              turn: Math.random() < 0.5 ? room.clientNicknames[0] : room.clientNicknames[1],
-            } 
+          //were creating empty matrix like that because of shallow copying which
+          //wasted at least 5h of debugging xd
+          const gameStateBoards: gameplayState = {
+            roomId: room.id,
+            player1: room.clientNicknames[0],
+            player1Board: [...emptyMatrix.map(row => [...row])],
+            player2: room.clientNicknames[1],
+            player2Board: [...emptyMatrix.map(row => [...row])],
+            turn: Math.random() < 0.5 ? room.clientNicknames[0] : room.clientNicknames[1],
+          }
 
-            gamePlayBoards.push(gameStateBoards);
+          gamePlayBoards.push(gameStateBoards);
 
-            io.to(roomId).emit('startPlayingStage', roomWithoutBoardStates);
-            io.to(roomId).emit('playingStageBoards', gameStateBoards);
+          io.to(roomId).emit('startPlayingStage', roomWithoutBoardStates);
+          io.to(roomId).emit('playingStageBoards', gameStateBoards);
         }
       }
     })
@@ -316,7 +316,7 @@ export default function setupSocketIO(app: Express) {
 
         if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10) {
           if ([1, 2, 3, 4].includes(enemyBoard[newRow][newCol]) && myHitBoard[newRow][newCol] === CellType.NORMAL) {
-              return false;
+            return false;
           }
         }
       }
@@ -332,13 +332,13 @@ export default function setupSocketIO(app: Express) {
           if ([1, 2, 3, 4].includes(enemyBoard[newRow][newCol]) && myHitBoard[newRow][newCol] !== CellType.DEAD) {
             myHitBoard[newRow][newCol] = CellType.DEAD;
 
-            if(enemyBoard[newRow][newCol] !== 1){
+            if (enemyBoard[newRow][newCol] !== 1) {
               onSunkenShipProcedure(newRow, newCol, enemyBoard, myHitBoard);
             }
-          }else{
-            if(myHitBoard[newRow][newCol] === CellType.DEAD){
+          } else {
+            if (myHitBoard[newRow][newCol] === CellType.DEAD) {
               myHitBoard[newRow][newCol] = CellType.DEAD;
-            }else{
+            } else {
               myHitBoard[newRow][newCol] = CellType.AROUNDDEAD;
             }
           }
@@ -355,56 +355,63 @@ export default function setupSocketIO(app: Express) {
       const gameplayState = gamePlayBoards.find((rm) => rm.roomId === roomId);
 
       //if they do not exist... well we're fucked
-      if(!room) return;
-      if(!gameplayState) return;
+      if (!room) return;
+      if (!gameplayState) return;
 
-      if(gameplayState.turn !== nickname){
+      if (gameplayState.turn !== nickname) {
         console.log('player request move but it is not his turn')
         return;
       }
-      
+
       console.log('1')
-      
+
       //the player that makes the shot will shot to other player board (duh)
       //so we need to make sure that we're not shooting ourselfs up (:o)
       const enemyIdx = room.clientNicknames.findIndex((nick) => nick !== nickname);
-      
+
       //if player shot empty field
-      if(room.clientBoards[enemyIdx][rowIdx][colIdx] === CellType.NORMAL){
-        if(gameplayState.player1 === nickname){
+      if (room.clientBoards[enemyIdx][rowIdx][colIdx] === CellType.NORMAL) {
+        if (gameplayState.player1 === nickname) {
           console.log('3')
           gameplayState.player1Board[rowIdx][colIdx] = CellType.HIT;
-        }else{
+        } else {
           console.log('4')
           gameplayState.player2Board[rowIdx][colIdx] = CellType.HIT;
         }
       }
 
       //if player shot not-empty field
-      if([ShipTypes.DESTROYER, ShipTypes.BATTLESHIP, ShipTypes.CRUISER, ShipTypes.CARRIER].includes(room.clientBoards[enemyIdx][rowIdx][colIdx])){
-        if(gameplayState.player1 === nickname){
+      if ([ShipTypes.DESTROYER, ShipTypes.BATTLESHIP, ShipTypes.CRUISER, ShipTypes.CARRIER].includes(room.clientBoards[enemyIdx][rowIdx][colIdx])) {
+        if (gameplayState.player1 === nickname) {
           console.log('5')
-          if(isSunken(rowIdx, colIdx, room.clientBoards[enemyIdx], gameplayState.player1Board)){
+          if (isSunken(rowIdx, colIdx, room.clientBoards[enemyIdx], gameplayState.player1Board)) {
             onSunkenShipProcedure(rowIdx, colIdx, room.clientBoards[enemyIdx], gameplayState.player1Board);
+            if (room.clientBoards[enemyIdx][rowIdx][colIdx] === ShipTypes.DESTROYER) {
+              gameplayState.player1Board[rowIdx][colIdx] = CellType.DEAD;
+            } else {
+            }
           }
-          else{
+          else {
             gameplayState.player1Board[rowIdx][colIdx] = CellType.DAMAGED;
           }
-        }else{
+        } else {
           console.log('6')
-          if(isSunken(rowIdx, colIdx, room.clientBoards[enemyIdx], gameplayState.player2Board)){
-            onSunkenShipProcedure(rowIdx, colIdx,  room.clientBoards[enemyIdx] ,gameplayState.player2Board);
+          if (isSunken(rowIdx, colIdx, room.clientBoards[enemyIdx], gameplayState.player2Board)) {
+            onSunkenShipProcedure(rowIdx, colIdx, room.clientBoards[enemyIdx], gameplayState.player2Board);
+            if (room.clientBoards[enemyIdx][rowIdx][colIdx] === ShipTypes.DESTROYER) {
+              gameplayState.player2Board[rowIdx][colIdx] = CellType.DEAD;
+            }
           }
-          else{
+          else {
             gameplayState.player2Board[rowIdx][colIdx] = CellType.DAMAGED;
           }
         }
       }
-      
+
       //return new updated state
 
       gameplayState.turn = room.clientNicknames[enemyIdx];
-      
+
       console.log(gameplayState);
       console.log('end');
 
