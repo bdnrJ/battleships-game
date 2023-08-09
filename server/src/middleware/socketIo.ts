@@ -351,6 +351,7 @@ export default function setupSocketIO(app: Express) {
     //i think this stinks, each call from user needs to find user by nickname (searching an array) - i dont like this
     socket.on('missleShot', (rowIdx: number, colIdx: number, nickname: string, roomId: string) => {
       //finding room and gameplayState from where request is being made
+      let wasHit = false;
       const room = rooms.find((rm) => rm.id === roomId);
       const gameplayState = gamePlayBoards.find((rm) => rm.roomId === roomId);
 
@@ -382,6 +383,7 @@ export default function setupSocketIO(app: Express) {
 
       //if player shot not-empty field
       if ([ShipTypes.DESTROYER, ShipTypes.BATTLESHIP, ShipTypes.CRUISER, ShipTypes.CARRIER].includes(room.clientBoards[enemyIdx][rowIdx][colIdx])) {
+        wasHit = true;
         if (gameplayState.player1 === nickname) {
           console.log('5')
           if (isSunken(rowIdx, colIdx, room.clientBoards[enemyIdx], gameplayState.player1Board)) {
@@ -410,7 +412,10 @@ export default function setupSocketIO(app: Express) {
 
       //return new updated state
 
-      gameplayState.turn = room.clientNicknames[enemyIdx];
+      wasHit ?
+        gameplayState.turn = room.clientNicknames[room.clientNicknames.findIndex((nick) => nick != room.clientNicknames[enemyIdx])]
+        :
+        gameplayState.turn = room.clientNicknames[enemyIdx]
 
       console.log(gameplayState);
       console.log('end');
