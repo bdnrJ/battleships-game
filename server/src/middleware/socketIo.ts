@@ -393,9 +393,9 @@ export default function setupSocketIO(app: Express) {
 					enemyBoard[rowIdx][colIdx]
 				)
 			) {
-        //when shot was succesfull - check if ship is dead
         myShootingBoard[rowIdx][colIdx] = CellType.DAMAGED;
         
+        //when shot was succesfull - check if ship is dead
 				if (isSunken(rowIdx, colIdx, enemyBoard, myShootingBoard, [])) {
 					onSunkenShipProcedure(rowIdx, colIdx, enemyBoard, myShootingBoard);
 					if (enemyBoard[rowIdx][colIdx] === ShipTypes.DESTROYER) {
