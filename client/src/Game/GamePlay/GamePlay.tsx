@@ -64,8 +64,13 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
             setGameplayStageRoom({...gameplayState})
         }));
 
+        socket.on('victory', ((victoryMessage: string) => {
+            alert(victoryMessage);
+        }))
+
         return () => {
             socket.off('updateGameState');
+            socket.off('victory');
         }
     }, [])
 

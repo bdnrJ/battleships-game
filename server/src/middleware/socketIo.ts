@@ -311,22 +311,29 @@ export default function setupSocketIO(app: Express) {
 			}
 		});
 
-		const isSunken = (rowIdx: number, colIdx: number, enemyBoard: matrix, myHitBoard: matrix, alreadyChecked: string[]): boolean => {
-      alreadyChecked.push(rowIdx.toString() + colIdx.toString());
+		const isSunken = (
+			rowIdx: number,
+			colIdx: number,
+			enemyBoard: matrix,
+			myHitBoard: matrix,
+			alreadyChecked: string[]
+		): boolean => {
+			alreadyChecked.push(rowIdx.toString() + colIdx.toString());
 			for (const [offsetRow, offsetCol] of offsets) {
 				const newRow = rowIdx + offsetRow;
 				const newCol = colIdx + offsetCol;
 
-
 				if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10) {
 					if ([1, 2, 3, 4].includes(enemyBoard[newRow][newCol]) && myHitBoard[newRow][newCol] === CellType.NORMAL) {
 						return false;
+					} else if (
+						myHitBoard[newRow][newCol] === CellType.DAMAGED &&
+						!alreadyChecked.includes(newRow.toString() + newCol.toString())
+					) {
+						if (isSunken(newRow, newCol, enemyBoard, myHitBoard, alreadyChecked) === false) {
+							return false;
+						}
 					}
-          else if(myHitBoard[newRow][newCol] === CellType.DAMAGED && !(alreadyChecked.includes(newRow.toString() + newCol.toString()))){
-            if(isSunken(newRow, newCol, enemyBoard, myHitBoard, alreadyChecked) === false){
-              return false;
-            }
-          }
 				}
 			}
 			return true;
@@ -363,28 +370,27 @@ export default function setupSocketIO(app: Express) {
 			//finding room and gameplayState from where request is being made
 			const room = rooms.find((rm) => rm.id === roomId);
 			const gameplayState = gamePlayBoards.find((rm) => rm.roomId === roomId);
-      
+
 			//if they do not exist... it's bad
 			if (!room || !gameplayState) return;
-      
+
 			if (gameplayState.turn !== nickname) {
-        console.log("player requested move, but it is not his turn");
+				console.log("player requested move, but it is not his turn");
 				return;
 			}
-      
-      //gathering info which board belongs to player that makes request
+
+			//gathering info which board belongs to player that makes request
 			const enemyIdx = room.clientNicknames.findIndex((nick) => nick !== nickname);
 			const enemyBoard = room.clientBoards[enemyIdx];
 			const myShootingBoard =
-      gameplayState.player1 === nickname ? gameplayState.player1Board : gameplayState.player2Board;
-      
+				gameplayState.player1 === nickname ? gameplayState.player1Board : gameplayState.player2Board;
 
 			//if player shot empty field
 			if (enemyBoard[rowIdx][colIdx] === CellType.NORMAL) {
 				myShootingBoard[rowIdx][colIdx] = CellType.HIT;
 
-        //set turn to the enemy player
-        gameplayState.turn = room.clientNicknames[enemyIdx];
+				//set turn to the enemy player
+				gameplayState.turn = room.clientNicknames[enemyIdx];
 			}
 
 			//if player shot not-empty field
@@ -393,15 +399,27 @@ export default function setupSocketIO(app: Express) {
 					enemyBoard[rowIdx][colIdx]
 				)
 			) {
-        myShootingBoard[rowIdx][colIdx] = CellType.DAMAGED;
-        
-        //when shot was succesfull - check if ship is dead
+				myShootingBoard[rowIdx][colIdx] = CellType.DAMAGED;
+
+				//when shot was succesfull - check if ship is dead
 				if (isSunken(rowIdx, colIdx, enemyBoard, myShootingBoard, [])) {
 					onSunkenShipProcedure(rowIdx, colIdx, enemyBoard, myShootingBoard);
 					if (enemyBoard[rowIdx][colIdx] === ShipTypes.DESTROYER) {
 						myShootingBoard[rowIdx][colIdx] = CellType.DEAD;
 					}
-        }
+					const sumOfDeadShips = myShootingBoard
+						.flat() // Flatten the matrix
+						.reduce((sum, cellValue) => {
+							return sum + (cellValue === CellType.DEAD ? 1 : 0);
+						}, 0);
+
+					if (sumOfDeadShips === 20) {
+						gameplayState.turn = "";
+						io.to(roomId).emit("updateGameState", gameplayState);
+						io.to(roomId).emit("victory", `${nickname} has won!`);
+						return;
+					}
+				}
 			}
 
 			io.to(roomId).emit("updateGameState", gameplayState);
