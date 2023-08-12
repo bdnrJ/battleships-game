@@ -1,8 +1,49 @@
 .rooms{
+    padding: 10px 10px 10px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     gap: 15px;
+
+    .rooms__controlls{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 20%;
+
+        button{
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 20px;
+            color: $fadedOrange;
+            background-color: transparent;
+            border-radius: 5px;
+            border: 1px solid $middleOrange;
+            cursor: pointer;
+            transition: all 0.2s ease-in;
+
+            &:hover{
+                border: 1px solid darken($middleOrange, 20%);
+                color: ligthen($fadedOrange, 40%);
+            }
+
+            
+            span{
+                font-size: 18px;
+            }
+        }
+    }
+
+    .rooms__game-rooms{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 15px;
+    }
 
 }

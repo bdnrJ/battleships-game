@@ -1,11 +1,54 @@
-.room{
-    display: flex;
-    width: 500px;
-    align-items: center;
-    background-color: white;
-    flex-direction: column;
-    gap: 10px;
+.room {
+	display: flex;
+	width: 700px;
+	height: 100px;
+	align-items: center;
+	padding: 10px 20px 10px 20px;
+	justify-content: space-between;
+	background-color: white;
+	gap: 10px;
+	border-radius: 15px;
+    border: 1px solid $middleOrange;
+
+    @include mobile{
+        flex-direction: column;
+        height: auto;
+        width: min(400px, 100vw);
+    }
+
+	.room__elem {
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+        gap: 10px;
+
+		.room__elem--title {
+			font-weight: bold;
+			font-size: 20px;
+		}
+	}
+
+	.room__button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: transparent;
+		gap: 5px;
+		font-size: 20px;
+        transition: all 0.2s ease-in;
+
+		span {
+			font-size: 18px;
+		}
+
+		cursor: pointer;
+		border: 1px solid transparent;
+		color: $middleOrange;
+
+		&:hover {
+			color: darken($middleOrange, 20%);
+		}
 
 
-    max-width: 1000px;
+	}
 }
