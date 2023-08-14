@@ -11,6 +11,7 @@ import { UserContext } from '../../context/UserContext';
 type Props = {
     createRoom: (room: GameRoomType) => void,
     closePopup: () => void,
+    inModal: boolean,
 }
 
 type roomInput = {
@@ -19,7 +20,7 @@ type roomInput = {
     password: string,
 }
 
-const CreateRoom = ({ createRoom, closePopup }: Props) => {
+const CreateRoom = ({ createRoom, inModal }: Props) => {
     const navigate = useNavigate();
     const { setRoom } = useContext(RoomContext);
     const {user} = useContext(UserContext);
@@ -79,7 +80,7 @@ const CreateRoom = ({ createRoom, closePopup }: Props) => {
 
     return (
         <div className="createroom">
-            <form onSubmit={handleSubmit(onSubmit)} className="g__form">
+            <form onSubmit={handleSubmit(onSubmit)} className={`g__form ${inModal ? '--inmodal' : '' }`}>
                 <div className="g__form--title">Room creation</div>
                 <div className="g__form__inputs">
                     <div className="g__form__inputs--inputwrapper">

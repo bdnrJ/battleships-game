@@ -22,12 +22,13 @@
             color: $fadedOrange;
             background-color: transparent;
             border-radius: 5px;
-            border: 1px solid $middleOrange;
+            border: 2px solid $middleOrange;
             cursor: pointer;
             transition: all 0.2s ease-in;
+            background-color: white;
 
             &:hover{
-                border: 1px solid darken($middleOrange, 20%);
+                border: 2px solid darken($middleOrange, 20%);
                 color: ligthen($fadedOrange, 40%);
             }
 

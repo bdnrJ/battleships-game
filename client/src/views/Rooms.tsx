@@ -52,6 +52,7 @@ const Rooms = () => {
 	return (
 		<div className='rooms'>
 			<div className='rooms__controlls'>
+			<button onClick={() => console.log(rooms)} >show rooms</button>
 				<button onClick={() => setIsCreateRoomVisible(true)}>
 					<span>Create Room</span>
 					<AiOutlinePlus />
@@ -64,7 +65,7 @@ const Rooms = () => {
 			</div>
 			{isCreateRoomVisible && (
 				<Modal onClose={() => setIsCreateRoomVisible(false)}>
-					<CreateRoom closePopup={() => setIsCreateRoomVisible(false)} createRoom={createRoom} />
+					<CreateRoom closePopup={() => setIsCreateRoomVisible(false)} createRoom={createRoom} inModal={true} />
 				</Modal>
 			)}
 		</div>

@@ -91,6 +91,7 @@ export default function setupSocketIO(app: Express) {
 				rooms.splice(index, 1);
 			}
 		});
+		emitRoomsList();
 	};
 
 	io.on("connection", (socket) => {
