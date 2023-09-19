@@ -28,7 +28,9 @@ const Rooms = () => {
 			setRooms([...availableRooms]);
 		});
 
+		//when user joins room
 		socket.on("roomJoined", (room) => {
+			//set user room
 			setRoom(room);
 			navigate(`/room/${room.id}`);
 		});

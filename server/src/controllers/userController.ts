@@ -1,25 +1,22 @@
 import { Request, Response } from 'express';
 import UserModel, { User } from '../models/user.js';
-import { log } from 'console';
 
 interface createUserRequest {
     nickname: string;
     password: string;
     confirmPassword: string;
-    email: string;
 }
 
 const nicknameRegex = /^[a-zA-Z0-9]{3,18}$/;
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^.{8,30}$/;
 
 
 export async function createUser(req: Request, res: Response): Promise<void> {
 
-    const {nickname, password, email, confirmPassword} : createUserRequest = req.body;
+    const {nickname, password, confirmPassword} : createUserRequest = req.body;
 
-    if(!nickname || !password || !email || !confirmPassword){
-        res.status(400).json({message: 'username, password and email are required to create an user'})
+    if(!nickname || !password || !confirmPassword){
+        res.status(400).json({message: 'username and password is required to create an user'})
         return
     }
 
@@ -28,8 +25,8 @@ export async function createUser(req: Request, res: Response): Promise<void> {
         return
     }
 
-    if (!nicknameRegex.test(nickname) || !emailRegex.test(email) || !passwordRegex.test(password)) {
-        res.status(400).json({ message: 'invalid format of nickname or email or password' });
+    if (!nicknameRegex.test(nickname) || !passwordRegex.test(password)) {
+        res.status(400).json({ message: 'invalid format of nickname or password' });
         return;
     }
 
@@ -37,7 +34,6 @@ export async function createUser(req: Request, res: Response): Promise<void> {
         const newUser: User = {
             nickname: nickname,
             password: password,
-            email: email.toLowerCase(),
             created_at: new Date(),
             deleted_at: null,
         };
@@ -48,7 +44,7 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 
         }catch(err: any){
             if (err.errno === 1062) {
-                res.status(400).json({message: "username or email already used!"})
+                res.status(400).json({message: "username already used!"})
             }
         }
 

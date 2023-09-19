@@ -6,7 +6,6 @@ export interface User {
     id?: number;
     nickname: string;
     password: string;
-    email: string;
     created_at: Date;
     deleted_at: Date | null;
 }
@@ -15,14 +14,13 @@ class UserModel {
     static async createUser(user: User): Promise<number> {
         const connection: PoolConnection = await createDatabaseConnection();
 
-        const insertQuery = 'INSERT INTO users (nickname, password, email) VALUES (?, ?, ?)';
+        const insertQuery = 'INSERT INTO users (nickname, password) VALUES (?, ?)';
 
         const hashedPassword = bcrypt.hashSync(user.password, 10); 
 
         const [result] = (await connection.execute(insertQuery, [
             user.nickname,
             hashedPassword,
-            user.email,
         ])) as ResultSetHeader[]; // Use type assertion to specify the expected return type
 
         connection.release();
@@ -53,12 +51,12 @@ class UserModel {
         return result.affectedRows > 0;
     }
 
-    static async getUserByEmail(userEmail: string): Promise<User | null>{
+    static async getUserByNickname(nickname: string): Promise<User | null>{
         const connection: PoolConnection = await createDatabaseConnection();
 
-        const searchQuery = "SELECT * FROM users WHERE email = ?";
+        const searchQuery = "SELECT * FROM users WHERE nickname = ?";
 
-        const [rows] = (await connection.execute(searchQuery, [userEmail])) as RowDataPacket[]; // Use type assertion
+        const [rows] = (await connection.execute(searchQuery, [nickname])) as RowDataPacket[]; // Use type assertion
 
         connection.release();
 

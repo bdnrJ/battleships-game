@@ -8,17 +8,17 @@ import { setCookie } from "../utils/cookies";
 import { UserContext } from "../context/UserContext";
 
 type userInput = {
-  email: string;
+  nickname: string;
   password: string;
 };
 
 const Signin = () => {
   const [loginError, setLoginError] = useState<string>("");
   const schema = z.object({
-    email: z.string().min(1, "required"),
+    nickname: z.string().min(1, "required"),
     password: z.string().min(1, "required"),
   });
-  const {user, setUser} = useContext(UserContext);
+  const { setUser} = useContext(UserContext);
   const navigate = useNavigate();
 
   const {
@@ -33,7 +33,7 @@ const Signin = () => {
       const response = await axiosClient.post(
         "/signin",
         {
-          email: userInput.email,
+          nickname: userInput.nickname,
           password: userInput.password,
         },
         { withCredentials: true }
@@ -41,7 +41,6 @@ const Signin = () => {
 
       let userFromResponse = {
         nickname: response.data.userInfo.nickname,
-        email: response.data.userInfo.email,
       }
 
       setUser(userFromResponse);
@@ -66,18 +65,18 @@ const Signin = () => {
         <div className="g__form--title">Sign in</div>
         <div className="g__form__inputs">
           <div className="g__form__inputs--inputwrapper">
-            <label htmlFor="email">
+            <label htmlFor="nickname">
               <input
-                className={`g__form--input ${errors.email && "--error"}`}
+                className={`g__form--input ${errors.nickname && "--error"}`}
                 type="text"
-                {...register("email", { required: true })}
-                placeholder="Email"
+                {...register("nickname", { required: true })}
+                placeholder="nickname"
               />
             </label>
             <div className="g__form__inputs--inputwrapper--error">
-              {errors.email && (
+              {errors.nickname && (
                 <span className={`g__form--inputError`}>
-                  {errors.email.message}
+                  {errors.nickname.message}
                 </span>
               )}
             </div>

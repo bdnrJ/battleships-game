@@ -17,7 +17,6 @@ dotenv.config();
 // Interface for the decoded token data
 interface DecodedToken extends JwtPayload {
   user_id: number; // Adjust this based on your token payload structure
-  email: string; // Adjust this based on your token payload structure
 }
 
 function authMiddleware(req: Request, res: Response, next: NextFunction): void {

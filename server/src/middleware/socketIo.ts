@@ -1,7 +1,6 @@
 import { Server } from "socket.io";
 import { createServer, Server as HttpServer } from "http";
 import { Express } from "express";
-import { allowedOrigins } from "../config/cors.js";
 
 type matrix = number[][];
 
@@ -78,19 +77,19 @@ export default function setupSocketIO(app: Express) {
 	];
 
 	const emitRoomsList = (): void => {
-		// io.emit('roomsList', rooms.map((room) => ({ ...room, clients: room.clients.length })));
 		io.emit("roomsList", rooms);
 		console.log("emitted rooms");
-		// console.log(rooms);
 	};
 
 	const cleanupRooms = (): void => {
 		rooms.forEach((room, index) => {
+			//if room has no clients then it gets removed
 			if (room.clients.length === 0) {
 				console.log("cleaned rooms");
 				rooms.splice(index, 1);
 			}
 		});
+		//emit rooms after cleanup
 		emitRoomsList();
 	};
 
@@ -100,6 +99,9 @@ export default function setupSocketIO(app: Express) {
 		const onRoomLeave = (roomId: string, nickname: string): void => {
 			const room = rooms.find((roomX) => roomX.id === roomId);
 			if (room) {
+				//if room state is not waiting meaning that game already started
+				//we delete room completly by removing clients and calling cleanup function
+				//TODO optimize maybe? this can be done without cleanup 
 				if (room.gameState !== GameStage.WAITING) {
 					room.clients = [];
 					cleanupRooms();
@@ -107,6 +109,7 @@ export default function setupSocketIO(app: Express) {
 					//TODO message that room is being deleted
 				}
 				//removing client ids and their frontend nicknames (kinda hacky)
+				//CTODO
 				room.clients = room.clients.filter((client) => client !== socket.id);
 				room.clientNicknames = room.clientNicknames.filter((client) => client !== nickname);
 
@@ -117,10 +120,12 @@ export default function setupSocketIO(app: Express) {
 				if (room) {
 					room.clientReady = [false, false];
 
+					//if host left, change host
 					if (!room.clientNicknames.includes(room.hostName)) {
 						room.hostName = room.clientNicknames[0];
 					}
 
+					
 					const someoneLeft = {
 						updatedRoom: room,
 						idOfUserThatLeft: socket.id,

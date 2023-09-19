@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useContext, useState, useEffect, useRef } from 'react';
+import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GameRoomType, GameStage, RoomContext } from '../../context/RoomContext';
 import socket from '../../utils/socket';

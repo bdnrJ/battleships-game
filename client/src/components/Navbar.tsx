@@ -11,18 +11,18 @@ type links = {
 const Navbar = () => {
 
     const links: links[] = [
-        {
-            name: "Game",
-            direction: "/game"
-        },
+        // {
+        //     name: "Game",
+        //     direction: "/game"
+        // },
         {
             name: "Rooms",
             direction: "/rooms"
         },
-        {
-            name: "Ranking",
-            direction: "/ranking"
-        },
+        // {
+        //     name: "Ranking",
+        //     direction: "/ranking"
+        // },
         {
             name: "SignIn",
             direction: "/signin"

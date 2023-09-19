@@ -1,6 +1,5 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import axiosClient from "../axios-client";
-import { getCookie, setCookie } from "../utils/cookies";
+import { getCookie} from "../utils/cookies";
 import { v4 } from "uuid";
 
 type Props = {
@@ -9,7 +8,6 @@ type Props = {
 
 export type UserType = {
 	nickname: string;
-	email: string | undefined;
 };
 
 interface UserContextProps {
@@ -19,7 +17,6 @@ interface UserContextProps {
 
 const defaultUser: UserType = {
 	nickname: "",
-	email: "",
 };
 
 export const UserContext = createContext<UserContextProps>({
@@ -38,7 +35,6 @@ export const UserProvider = ({ children }: Props) => {
 			const nickname = `Anon-${v4().substr(0, 8)}`;
 			setUser({
 				nickname: nickname,
-				email: "",
 			});
 		}
 	}, []);

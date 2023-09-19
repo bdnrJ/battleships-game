@@ -7,22 +7,22 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 interface loginRequest {
-    email: string,
+    nickname: string,
     password: string,
 }
 
 export async function login(req: Request, res: Response): Promise<void> {
     try{
-        const {email, password} : loginRequest = req.body;
+        const {nickname, password} : loginRequest = req.body;
 
-        if(!email || !password){
-            res.status(400).json({message: "Email or password not provided"});
+        if(!nickname || !password){
+            res.status(400).json({message: "Nickname or password not provided"});
         }
 
-        const user: User | null = await UserModel.getUserByEmail(email);
+        const user: User | null = await UserModel.getUserByNickname(nickname);
 
         if(!user){
-            res.status(404).json({message: "Wrong email or password"})
+            res.status(404).json({message: "Wrong nickname or password"})
             return;
         }
 
@@ -30,7 +30,7 @@ export async function login(req: Request, res: Response): Promise<void> {
         
         if(match) {
             const token = jwt.sign(
-                { user_id: user.id, email },
+                { user_id: user.id, nickname },
                     `${process.env.TOKEN_KEY}`,
                 {
                     expiresIn: "2h",
@@ -39,7 +39,6 @@ export async function login(req: Request, res: Response): Promise<void> {
 
             const userInfo = {
                 nickname: user.nickname,
-                email: user.email,
             }
 
             res.status(200).cookie('token', token, {
@@ -52,7 +51,7 @@ export async function login(req: Request, res: Response): Promise<void> {
             return
         }
 
-        res.status(400).json({message: "Wrong email or password"})
+        res.status(400).json({message: "Wrong login or password"})
     }catch(err){
         console.error('Error while signing in:', err);
         res.status(500).json({ message: 'An error occurred while singing in' });
