@@ -1,4 +1,4 @@
-import React, { useState, SetStateAction } from 'react'
+import React, { SetStateAction } from 'react'
 
 type Props = {
     id: number
@@ -64,7 +64,7 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
     };
 
 
-    const dropShip = (e: any) => {
+    const dropShip = () => {
         //the length of the ship [1 - 4] is stored as ship id
         const shipLength = document.querySelector('.beingDragged')?.id;
 
@@ -119,7 +119,7 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
         const shipLength = document.querySelector('.beingDragged')?.id;
 
         if (!shipLength) {
-            console.log("ship id - length is not defined (should not be possible)");
+            alert("ship id - length is not defined (should not be possible)");
             return;
         }
 
@@ -128,11 +128,11 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
         addAdditionalClasses(isPossible, shipLength);
     }
 
-    const dragExit = (e: any) => {
+    const dragExit = () => {
         const shipLength = document.querySelector('.beingDragged')?.id;
 
         if (!shipLength) {
-            console.log("ship id is not defined (should not be possible)");
+            alert("ship id is not defined (should not be possible)");
             return;
         }
 
@@ -176,8 +176,8 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
     return (
         <div className={`cell ${board[rowId][columnId] !== 0 ? "--used" : ""}`} id={id.toString()}
             onDragOver={(e) => dragOver(e)}
-            onDrop={(e) => dropShip(e)}
-            onDragLeave={(e) => dragExit(e)}
+            onDrop={() => dropShip()}
+            onDragLeave={() => dragExit()}
         >
             {id}
         </div>

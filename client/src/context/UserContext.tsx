@@ -8,6 +8,7 @@ type Props = {
 
 export type UserType = {
 	nickname: string;
+	sessionId: string,
 };
 
 interface UserContextProps {
@@ -17,6 +18,7 @@ interface UserContextProps {
 
 const defaultUser: UserType = {
 	nickname: "",
+	sessionId: "",
 };
 
 export const UserContext = createContext<UserContextProps>({
@@ -35,6 +37,7 @@ export const UserProvider = ({ children }: Props) => {
 			const nickname = `Anon-${v4().substr(0, 8)}`;
 			setUser({
 				nickname: nickname,
+				sessionId: "",
 			});
 		}
 	}, []);

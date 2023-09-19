@@ -5,7 +5,6 @@ import socket from "../utils/socket";
 import { v4 } from "uuid";
 import { UserContext } from "../context/UserContext";
 import { AiOutlineSend } from "react-icons/ai";
-import Game from "../Game/ShipPlacement";
 import Waiting from "../Game/Waiting";
 import GamePlay from "../Game/GamePlay/GamePlay";
 import ShipPlacement from "../Game/ShipPlacement";
@@ -79,10 +78,7 @@ const GameRoom = () => {
 			roomName: "",
 			hostName: "",
 			clients: [],
-			clientNicknames: [],
-			clientBoards: [],
 			gameState: GameStage.WAITING,
-			clientReady: [],
 
 			hasPassword: false,
 			password: "",
@@ -127,6 +123,8 @@ const GameRoom = () => {
 			setGameplayStageRoom(newRoom);
 		});
 
+		
+
 		return () => {
 			// this makes sure that unmounting component (leaving game room) notices server about it
 			if (useEffectRef.current) leaveRoom();
@@ -150,6 +148,7 @@ const GameRoom = () => {
 					<div className="gameroom__left--top">
 						<div className="gameroom__left--top--leave">
 							<button>{"<- Leave"}</button>
+							{`My session id: ${user.sessionId}`}
 						</div>
 						<div className="gameroom__left--top--title">{room.roomName}</div>
 					</div>
@@ -165,7 +164,7 @@ const GameRoom = () => {
 							<GamePlay
 								myBoard={boardState}
 								setMyBoard={setBoardState}
-								nicknames={room.clientNicknames}
+								nicknames={[room.clients[0].nickname, room.clients[1].nickname]}
 								gameplayStageRoom={gameplayStageRoom}
 								setGameplayStageRoom={setGameplayStageRoom}
 							/>
@@ -176,8 +175,8 @@ const GameRoom = () => {
 					<div className="gameroom__right--users">
 						<div className="gameroom__right--users--title">Players:</div>
 						<div className="gameroom__right--users--list">
-							{room.clientNicknames.map((client) => (
-								<span key={client}>{client}</span>
+							{room.clients.map((client) => (
+								<span key={client.id+client.nickname}>{client.nickname}</span>
 							))}
 						</div>
 					</div>

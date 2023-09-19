@@ -34,15 +34,19 @@ type gameplayState = {
 	turn: string;
 };
 
+interface Client {
+	id: string;
+	nickname: string;
+	board: matrix;
+	readiness: boolean;
+}
+
 interface GameRoom {
 	id: string;
 	roomName: string;
 	hostName: string;
 
-	clients: string[];
-	clientNicknames: string[];
-	clientBoards: matrix[];
-	clientReady: boolean[];
+	clients: Client[];
 
 	gameState: number;
 
@@ -78,6 +82,7 @@ export default function setupSocketIO(app: Express) {
 
 	const emitRoomsList = (): void => {
 		io.emit("roomsList", rooms);
+		console.log(rooms);
 		console.log("emitted rooms");
 	};
 
@@ -101,31 +106,30 @@ export default function setupSocketIO(app: Express) {
 			if (room) {
 				//if room state is not waiting meaning that game already started
 				//we delete room completly by removing clients and calling cleanup function
-				//TODO optimize maybe? this can be done without cleanup 
+				//TODO optimize maybe? this can be done without cleanup
 				if (room.gameState !== GameStage.WAITING) {
 					room.clients = [];
 					cleanupRooms();
 
 					//TODO message that room is being deleted
+					return;
 				}
-				//removing client ids and their frontend nicknames (kinda hacky)
-				//CTODO
-				room.clients = room.clients.filter((client) => client !== socket.id);
-				room.clientNicknames = room.clientNicknames.filter((client) => client !== nickname);
+
+
+				room.clients = room.clients.filter((client) => client.id !== socket.id);
 
 				//if 0 clients left this will remove room
 				cleanupRooms();
 
 				//if room wasnt deleted by cleanup() - emit message and reset readyCheck
-				if (room) {
-					room.clientReady = [false, false];
+				if (room && room.clients.length !== 0) {
+					room.clients[0].readiness = false;
 
 					//if host left, change host
-					if (!room.clientNicknames.includes(room.hostName)) {
-						room.hostName = room.clientNicknames[0];
+					if (room.clients[0].nickname !== room.hostName) {
+						room.hostName = room.clients[0].nickname;
 					}
 
-					
 					const someoneLeft = {
 						updatedRoom: room,
 						idOfUserThatLeft: socket.id,
@@ -137,23 +141,20 @@ export default function setupSocketIO(app: Express) {
 			}
 		};
 
-		const isClientInRoom = (roomId: string): boolean => {
-			return rooms.some((room) => room.clients.includes(socket.id) && room.id !== roomId);
-		};
-
 		socket.on("disconnect", () => {
 			console.log(`Client disconnected: ${socket.id}`);
 			// Remove the client from any rooms when disconnected
 			rooms.forEach((room) => {
-				if (room.clients.includes(socket.id)) {
+				if (room.clients[0]?.id === socket.id || room.clients[1]?.id === socket.id) {
 					//hacky way of getting nickname of user that left
 					//this exists becasue if someone closes their web browser entirely
 					//frontend has no way of firing function responsible for proper cleanup (on component unmount)
-					const clientIdx = room.clients.findIndex((client) => client === socket.id);
-					const userNicknameThatLeft = room.clientNicknames[clientIdx];
-					onRoomLeave(room.id, userNicknameThatLeft);
+
+					//TODO fixed with client obj
+					const clientIdx = room.clients.findIndex((client) => client.id === socket.id);
+					onRoomLeave(room.id, room.clients[clientIdx].nickname);
+					room.clients.splice(clientIdx, 1);
 				}
-				room.clients = room.clients.filter((client) => client !== socket.id);
 			});
 
 			//Remove empty rooms
@@ -163,11 +164,6 @@ export default function setupSocketIO(app: Express) {
 		//room systems
 
 		socket.on("createRoom", ({ roomName, hostName, hasPassword, password, id }: GameRoom, nickname: string) => {
-			if (isClientInRoom(id)) {
-				socket.emit("roomError", "You are already in a room.");
-				return;
-			}
-
 			// Check if the room already exists
 			const existingRoom = rooms.find((room) => room.id === id);
 			if (existingRoom) {
@@ -179,11 +175,15 @@ export default function setupSocketIO(app: Express) {
 				id: id,
 				roomName: roomName,
 				hostName: hostName,
-				clients: [],
-				clientNicknames: [],
-				clientBoards: [emptyMatrix, emptyMatrix],
+				clients: [
+					{
+						id: socket.id,
+						nickname: nickname,
+						board: emptyMatrix,
+						readiness: false,
+					},
+				],
 				gameState: GameStage.WAITING,
-				clientReady: [false, false],
 
 				hasPassword: hasPassword,
 				password: password,
@@ -191,27 +191,14 @@ export default function setupSocketIO(app: Express) {
 
 			rooms.push(newRoom);
 
-			const thisNewRoom = rooms.find((r) => r.id === id);
-			if (!thisNewRoom) {
-				console.log("total error");
-				return;
-			}
-			//first create and then join as client to prevent bugs with wrong messages displaying on the fronted
-			thisNewRoom.clients.push(socket.id);
-			thisNewRoom.clientNicknames.push(nickname);
 			socket.join(id);
 
 			console.log("room has been created");
-			socket.emit("createdAndJoined", newRoom);
+			socket.emit("createdAndJoined", newRoom, socket.id);
 			emitRoomsList();
 		});
 
 		socket.on("joinRoom", (roomId: string, nickname: string) => {
-			if (isClientInRoom(roomId)) {
-				socket.emit("roomError", "You are already in a room.");
-				return;
-			}
-
 			const room = rooms.find((r) => r.id === roomId);
 			if (!room) {
 				socket.emit("roomError", "Room does not exist.");
@@ -223,19 +210,20 @@ export default function setupSocketIO(app: Express) {
 				return;
 			}
 
-			if (room.clients.find((client) => client === socket.id)) {
-				console.log("you cant play with yourself bitch");
-				return;
-			}
-
 			// Join the room
 			console.log("joined into room");
 			socket.join(roomId);
 
-			room.clients.push(socket.id);
-			room.clientNicknames.push(nickname);
+			const newClient: Client = {
+				id: socket.id,
+				nickname: nickname,
+				board: emptyMatrix,
+				readiness: false,
+			};
 
-			socket.emit("roomJoined", room);
+			room.clients.push(newClient);
+
+			socket.emit("roomJoined", room, socket.id);
 
 			io.to(roomId).emit("someoneJoined", room, nickname);
 
@@ -263,16 +251,14 @@ export default function setupSocketIO(app: Express) {
 
 			if (!room) return;
 
-			const playerIdx = room.clientNicknames.findIndex((nick) => nick === nickname);
+			const playerIdx = room.clients.findIndex((client) => client.id === socket.id);
 
-			room.clientReady[playerIdx] = true;
+			room.clients[playerIdx].readiness = true;
 
-			if (room.clientReady[0] && room.clientReady[1]) {
+			if (room.clients[0]?.readiness && room.clients[1]?.readiness) {
 				room.gameState = GameStage.PLACEMENT;
-				io.to(roomId).emit("readinessChange", room);
-			} else {
-				io.to(roomId).emit("readinessChange", room);
 			}
+			io.to(roomId).emit("readinessChange", room);
 		});
 
 		//placement stage
@@ -283,30 +269,34 @@ export default function setupSocketIO(app: Express) {
 			if (!room) return;
 
 			if (board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50) {
-				const playerIdx = room.clientNicknames.findIndex((nick) => nick === nickname);
+				const playerIdx = room.clients.findIndex((client) => client.id === socket.id);
 
-				room.clientBoards[playerIdx] = board;
+				room.clients[playerIdx].board = board;
 
 				//if both players provided finished boards
 				if (
-					room.clientBoards[0].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50 &&
-					room.clientBoards[1].reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50
+					room.clients[0].board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50 &&
+					room.clients[1].board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50
 				) {
 					//start game
 					room.gameState = GameStage.PLAYING;
 
+					console.log("it is here");
 					const roomWithoutBoardStates: GameRoom = { ...room };
-					roomWithoutBoardStates.clientBoards = [];
+
+					console.log("room with");
+					roomWithoutBoardStates.clients.forEach((client) => ({...client, board: []}));
+					console.log(roomWithoutBoardStates.clients[0].board);
 
 					//were creating empty matrix like that because of shallow copying which
 					//wasted at least 5h of debugging xd
 					const gameStateBoards: gameplayState = {
 						roomId: room.id,
-						player1: room.clientNicknames[0],
+						player1: room.clients[0].id,
 						player1Board: [...emptyMatrix.map((row) => [...row])],
-						player2: room.clientNicknames[1],
+						player2: room.clients[1].id,
 						player2Board: [...emptyMatrix.map((row) => [...row])],
-						turn: Math.random() < 0.5 ? room.clientNicknames[0] : room.clientNicknames[1],
+						turn: Math.random() < 0.5 ? room.clients[0].nickname : room.clients[1].nickname,
 					};
 
 					gamePlayBoards.push(gameStateBoards);
@@ -381,22 +371,28 @@ export default function setupSocketIO(app: Express) {
 			if (!room || !gameplayState) return;
 
 			if (gameplayState.turn !== nickname) {
-				console.log("player requested move, but it is not his turn");
+				console.log("player somehow requested move, but it is not his turn");
 				return;
 			}
 
 			//gathering info which board belongs to player that makes request
-			const enemyIdx = room.clientNicknames.findIndex((nick) => nick !== nickname);
-			const enemyBoard = room.clientBoards[enemyIdx];
+			const enemyIdx = room.clients.findIndex((client) => client.id !== socket.id);
+			const enemyBoard = room.clients[enemyIdx].board;
 			const myShootingBoard =
-				gameplayState.player1 === nickname ? gameplayState.player1Board : gameplayState.player2Board;
+				gameplayState.player1 === socket.id ? gameplayState.player1Board : gameplayState.player2Board;
+
+			console.log("enemy idx: " + enemyIdx);
+			console.log("enemy board");
+			console.log(enemyBoard);
+			console.log("my shooting board");
+			console.log(myShootingBoard);
 
 			//if player shot empty field
 			if (enemyBoard[rowIdx][colIdx] === CellType.NORMAL) {
 				myShootingBoard[rowIdx][colIdx] = CellType.HIT;
 
 				//set turn to the enemy player
-				gameplayState.turn = room.clientNicknames[enemyIdx];
+				gameplayState.turn = room.clients[enemyIdx].nickname;
 			}
 
 			//if player shot not-empty field
@@ -413,6 +409,8 @@ export default function setupSocketIO(app: Express) {
 					if (enemyBoard[rowIdx][colIdx] === ShipTypes.DESTROYER) {
 						myShootingBoard[rowIdx][colIdx] = CellType.DEAD;
 					}
+
+					//check if someone won
 					const sumOfDeadShips = myShootingBoard
 						.flat() // Flatten the matrix
 						.reduce((sum, cellValue) => {

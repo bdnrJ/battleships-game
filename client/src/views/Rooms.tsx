@@ -12,7 +12,7 @@ const Rooms = () => {
 	const [isCreateRoomVisible, setIsCreateRoomVisible] = useState<boolean>(false);
 	const [rooms, setRooms] = useState<GameRoomType[]>([]);
 	const { setRoom } = useContext(RoomContext);
-	const { user } = useContext(UserContext);
+	const { user, setUser } = useContext(UserContext);
 	const navigate = useNavigate();
 
 	//to make useeffect work once for tests :)
@@ -24,14 +24,15 @@ const Rooms = () => {
 		socket.emit("getRooms");
 
 		// Listen for the event that sends the list of available rooms
-		socket.on("roomsList", (availableRooms) => {
+		socket.on("roomsList", (availableRooms: GameRoomType[]) => {
 			setRooms([...availableRooms]);
 		});
 
 		//when user joins room
-		socket.on("roomJoined", (room) => {
+		socket.on("roomJoined", (room: GameRoomType, sessionId: string) => {
 			//set user room
 			setRoom(room);
+			setUser({ ...user, sessionId: sessionId });
 			navigate(`/room/${room.id}`);
 		});
 
@@ -40,21 +41,20 @@ const Rooms = () => {
 		// Clean up the event listener when the component unmounts
 		effectCalled.current = true;
 		return () => {
-			socket.off("roomsList"); // Remove the 'roomsList' event listener
-			socket.off("roomJoined"); // Remove the 'roomJoined' event listener
-			socket.off("roomError"); // Remove the 'roomError' event listener
+			socket.off("roomsList");
+			socket.off("roomJoined");
+			socket.off("roomError");
 		};
-	}, []); // Empty dependency array to run the effect only once when the component mounts
+	}, []);
 
 	// Function to create a new room
 	const createRoom = (gameRoom: GameRoomType) => {
-		socket.emit("createRoom", gameRoom, user.nickname); // You can change the room name as needed
+		socket.emit("createRoom", gameRoom, user.nickname);
 	};
 
 	return (
 		<div className='rooms'>
 			<div className='rooms__controlls'>
-			<button onClick={() => console.log(rooms)} >show rooms</button>
 				<button onClick={() => setIsCreateRoomVisible(true)}>
 					<span>Create Room</span>
 					<AiOutlinePlus />

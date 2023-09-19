@@ -23,12 +23,13 @@ type roomInput = {
 const CreateRoom = ({ createRoom, inModal }: Props) => {
     const navigate = useNavigate();
     const { setRoom } = useContext(RoomContext);
-    const {user} = useContext(UserContext);
+    const {user, setUser} = useContext(UserContext);
 
     useEffect(() => {
-        socket.on('createdAndJoined', ((data) => {
-            setRoom(data);
-            navigate(`/room/${data.id}`)
+        socket.on('createdAndJoined', ((newRoom, sessionId) => {
+            setRoom(newRoom);
+            setUser({...user, sessionId: sessionId})
+            navigate(`/room/${newRoom.id}`)
         }))
 
 
@@ -68,9 +69,6 @@ const CreateRoom = ({ createRoom, inModal }: Props) => {
             hasPassword: data.hasPassword,
             password: data.password,
             clients: [],
-            clientNicknames: [],
-            clientBoards: [],
-            clientReady: [],
             gameState: GameStage.WAITING
         }
 

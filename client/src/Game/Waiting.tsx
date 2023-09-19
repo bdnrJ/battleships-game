@@ -1,8 +1,7 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { RoomContext } from '../context/RoomContext'
 import socket from '../utils/socket';
 import { UserContext } from '../context/UserContext';
-import { v4 } from 'uuid';
 
 const Waiting = () => {
 
@@ -20,12 +19,11 @@ const Waiting = () => {
             </div>
             <div className="waiting__players">
                 <div className="waiting__players--player">
-                    {room.clientNicknames.map((client, idx) => (
-                        <span key={v4()} >
-                            {`${client}: ${room.clientReady[idx] ? 'ready' : 'notready'}`}
+                    {room.clients.map((client, idx) => (
+                        <span key={client.id+client.nickname} >
+                            {`${client.nickname}: ${room.clients[idx].readiness ? 'ready' : 'notready'}`}
                         </span>
                     ))}
-
                 </div>
             </div>
             <div className="waiting__declare">

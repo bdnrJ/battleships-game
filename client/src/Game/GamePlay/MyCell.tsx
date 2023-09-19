@@ -6,7 +6,7 @@ type Props = {
 
 const MyCell = ({ value }: Props) => {
   return (
-    <div className={`mycell ${value === 1 ? '--destroyer' : value === 2 ? '--cruiser' : value === 3 ? '--battleship' : value === 4 ? "--carrier" : ""} ${value === 10 && '--hitted'}`}>
+    <div className={`mycell ${value === 1 ? '--destroyer' : value === 2 ? '--cruiser' : value === 3 ? '--battleship' : value === 4 ? "--carrier" : ""} ${value === 6 && '--hitted'}`}>
       {value}
     </div>
   )

@@ -1,5 +1,4 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import axiosClient from "../axios-client";
+import { createContext, Dispatch, ReactNode, SetStateAction, useState } from "react";
 
 type Props = {
     children: ReactNode,
@@ -11,22 +10,27 @@ export enum GameStage {
     PLAYING = 2,
 }
 
+interface Client {
+	id: string;
+	nickname: string;
+	board: number[][][]
+	readiness: boolean;
+}
 
 export interface GameRoomType {
-    id: string;
-    roomName: string;
-    hostName: string;
+	id: string;
+	roomName: string;
+	hostName: string;
 
-    clients: string[];
-    clientNicknames: string[],
-    clientBoards: number[][][]
-    clientReady: boolean[]
+	clients: Client[];
 
-    gameState: number,
+	gameState: number;
 
-    hasPassword: boolean;
-    password: string;
+	hasPassword: boolean;
+	password: string;
 }
+
+
 interface RoomContextProps {
     room: GameRoomType,
     setRoom: Dispatch<SetStateAction<GameRoomType>>
@@ -37,10 +41,7 @@ const defaultRoom: GameRoomType = {
     roomName: '',
     hostName: '',
     clients: [],
-    clientNicknames: [],
-    clientBoards: [],
     gameState: GameStage.WAITING,
-    clientReady: [],
 
     hasPassword: false,
     password: '',
@@ -52,10 +53,7 @@ export const RoomContext = createContext<RoomContextProps>({
         roomName: '',
         hostName: '',
         clients: [],
-        clientNicknames: [],
-        clientBoards: [],
         gameState: GameStage.WAITING,
-        clientReady: [],
     
         hasPassword: false,
         password: '',

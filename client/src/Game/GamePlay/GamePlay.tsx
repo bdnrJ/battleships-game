@@ -1,9 +1,10 @@
-import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react"
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import { UserContext } from "../../context/UserContext"
 import EnemyBoard from "./EnemyBoard"
 import MyBoard from "./MyBoard"
 import { gameplayState } from "../../views/GameRoom"
 import socket from "../../utils/socket"
+import Cell from "../Cell"
 
 type Props = {
     myBoard: number[][],
@@ -24,11 +25,11 @@ export enum CellType {
 const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGameplayStageRoom }: Props) => {
     const [enemyBoard, setEnemyBoard] = useState<number[][]>(Array(10).fill(Array(10).fill(0)));
     const { user } = useContext(UserContext);
-    const [enemyNickname, setEnemyNickame] = useState<string>(nicknames.find((nickname) => nickname !== user.nickname) || 'unknown');
+    const enemyNickname = nicknames.find((nickname) => nickname !== user.nickname) || 'unknown';
 
     useEffect(() => {
         socket.on('updateGameState', ((gameplayState: gameplayState) => {
-            if (gameplayState.player1 === user.nickname) {
+            if (gameplayState.player1 === user.sessionId) {
 
                 const newEnemyBoard = [...gameplayState.player1Board.map(row => [...row])];
                 setEnemyBoard(newEnemyBoard);
@@ -37,7 +38,7 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 
                 const updatedMyBoard = myBoard.map((row, rowIndex) =>
                     row.map((cell, colIndex) =>
-                        newEnemyViewMyBoard[rowIndex][colIndex] === CellType.DAMAGED
+                        (newEnemyViewMyBoard[rowIndex][colIndex] === CellType.DAMAGED || newEnemyViewMyBoard[rowIndex][colIndex] === CellType.DEAD)
                             ? 6
                             : cell
                     )
