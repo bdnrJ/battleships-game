@@ -281,12 +281,8 @@ export default function setupSocketIO(app: Express) {
 					//start game
 					room.gameState = GameStage.PLAYING;
 
-					console.log("it is here");
 					const roomWithoutBoardStates: GameRoom = { ...room };
-
-					console.log("room with");
 					roomWithoutBoardStates.clients.forEach((client) => ({...client, board: []}));
-					console.log(roomWithoutBoardStates.clients[0].board);
 
 					//were creating empty matrix like that because of shallow copying which
 					//wasted at least 5h of debugging xd
@@ -296,7 +292,7 @@ export default function setupSocketIO(app: Express) {
 						player1Board: [...emptyMatrix.map((row) => [...row])],
 						player2: room.clients[1].id,
 						player2Board: [...emptyMatrix.map((row) => [...row])],
-						turn: Math.random() < 0.5 ? room.clients[0].nickname : room.clients[1].nickname,
+						turn: Math.random() < 0.5 ? room.clients[0].id : room.clients[1].id,
 					};
 
 					gamePlayBoards.push(gameStateBoards);
@@ -362,7 +358,7 @@ export default function setupSocketIO(app: Express) {
 
 		// POOR
 		//i think this stinks, each call from user needs to find user by nickname (searching an array) - i dont like this
-		socket.on("missleShot", (rowIdx: number, colIdx: number, nickname: string, roomId: string) => {
+		socket.on("missleShot", (rowIdx: number, colIdx: number, roomId: string) => {
 			//finding room and gameplayState from where request is being made
 			const room = rooms.find((rm) => rm.id === roomId);
 			const gameplayState = gamePlayBoards.find((rm) => rm.roomId === roomId);
@@ -370,7 +366,7 @@ export default function setupSocketIO(app: Express) {
 			//if they do not exist... it's bad
 			if (!room || !gameplayState) return;
 
-			if (gameplayState.turn !== nickname) {
+			if (gameplayState.turn !== socket.id) {
 				console.log("player somehow requested move, but it is not his turn");
 				return;
 			}
@@ -392,7 +388,7 @@ export default function setupSocketIO(app: Express) {
 				myShootingBoard[rowIdx][colIdx] = CellType.HIT;
 
 				//set turn to the enemy player
-				gameplayState.turn = room.clients[enemyIdx].nickname;
+				gameplayState.turn = room.clients[enemyIdx].id;
 			}
 
 			//if player shot not-empty field
@@ -419,14 +415,14 @@ export default function setupSocketIO(app: Express) {
 
 					if (sumOfDeadShips === 20) {
 						gameplayState.turn = "";
-						io.to(roomId).emit("updateGameState", gameplayState);
-						io.to(roomId).emit("victory", `${nickname} has won!`);
+						io.to(roomId).emit("updateGameState", gameplayState, rowIdx, colIdx, socket.id);
+						io.to(roomId).emit("victory", `${room.clients.filter((client) => client.id === socket.id)[0].nickname} has won!`);
 						return;
 					}
 				}
 			}
 
-			io.to(roomId).emit("updateGameState", gameplayState);
+			io.to(roomId).emit("updateGameState", gameplayState, rowIdx, colIdx, socket.id);
 		});
 	});
 

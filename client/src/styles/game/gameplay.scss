@@ -3,6 +3,13 @@
     width: 100%;
     height: 100%;
     align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .gameplay__boards{
+        gap: 50px;
+        display: flex;
+    }
 
     .gameplay__player{
         width: 50%;

@@ -1,15 +1,27 @@
-import React from 'react'
 
 type Props = {
-  value: number,
-}
+	value: number;
+  wasHit: boolean,
+};
 
-const MyCell = ({ value }: Props) => {
-  return (
-    <div className={`mycell ${value === 1 ? '--destroyer' : value === 2 ? '--cruiser' : value === 3 ? '--battleship' : value === 4 ? "--carrier" : ""} ${value === 6 && '--hitted'}`}>
-      {value}
-    </div>
-  )
-}
+const MyCell = ({ value, wasHit }: Props) => {
+	return (
+		<div
+			className={`mycell ${
+				value === 1
+					? "--destroyer"
+					: value === 2
+					? "--cruiser"
+					: value === 3
+					? "--battleship"
+					: value === 4
+					? "--carrier"
+					: ""
+			} ${value === 6 && "--dead"} ${wasHit && "--hitted"}`}
+		>
+			
+		</div>
+	);
+};
 
-export default MyCell
+export default MyCell;

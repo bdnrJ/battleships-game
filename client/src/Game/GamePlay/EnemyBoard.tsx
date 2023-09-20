@@ -1,4 +1,3 @@
-import React from 'react'
 import EnemyCell from './EnemyCell';
 import { gameplayState } from '../../views/GameRoom';
 import { v4 } from 'uuid';

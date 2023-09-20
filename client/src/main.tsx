@@ -14,3 +14,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </RoomProvider>
   </React.StrictMode>,
 )
+
+
+//TODO
+// - my baord visible where enemy hits, 
+// timer for each round
