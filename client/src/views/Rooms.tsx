@@ -32,6 +32,10 @@ const Rooms = () => {
 		socket.on("roomJoined", (room: GameRoomType, sessionId: string) => {
 			//set user room
 			setRoom(room);
+			console.log("joined room called");
+			console.log(user);
+			console.log({ ...user, sessionId: sessionId });
+
 			setUser({ ...user, sessionId: sessionId });
 			navigate(`/room/${room.id}`);
 		});

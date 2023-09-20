@@ -8,19 +8,19 @@
 	background-color: white;
 	gap: 10px;
 	border-radius: 15px;
-    border: 1px solid $middleOrange;
+	border: 1px solid $middleOrange;
 
-    @include mobile{
-        flex-direction: column;
-        height: auto;
-        width: min(400px, 100vw);
-    }
+	@include mobile {
+		flex-direction: column;
+		height: auto;
+		width: min(400px, 100vw);
+	}
 
 	.room__elem {
 		display: flex;
 		flex-direction: column;
 		text-align: center;
-        gap: 10px;
+		gap: 10px;
 
 		.room__elem--title {
 			font-weight: bold;
@@ -35,7 +35,7 @@
 		background-color: transparent;
 		gap: 5px;
 		font-size: 20px;
-        transition: all 0.2s ease-in;
+		transition: all 0.2s ease-in;
 
 		span {
 			font-size: 18px;
@@ -48,7 +48,5 @@
 		&:hover {
 			color: darken($middleOrange, 20%);
 		}
-
-
 	}
 }

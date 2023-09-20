@@ -1,5 +1,5 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { getCookie} from "../utils/cookies";
+import { getCookie } from "../utils/cookies";
 import { v4 } from "uuid";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 
 export type UserType = {
 	nickname: string;
-	sessionId: string,
+	sessionId: string;
 };
 
 interface UserContextProps {
@@ -39,6 +39,7 @@ export const UserProvider = ({ children }: Props) => {
 				nickname: nickname,
 				sessionId: "",
 			});
+			console.log({ nickname: nickname, sessionId: "" });
 		}
 	}, []);
 

@@ -2,14 +2,13 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { GameRoomType, GameStage, RoomContext } from "../context/RoomContext";
 import { useNavigate } from "react-router-dom";
 import socket from "../utils/socket";
-import { v4 } from "uuid";
 import { UserContext } from "../context/UserContext";
-import { AiOutlineSend } from "react-icons/ai";
 import Waiting from "../Game/Waiting";
 import GamePlay from "../Game/GamePlay/GamePlay";
 import ShipPlacement from "../Game/ShipPlacement";
+import GameRoomChat from "../Game/GameRoomChat";
 
-type someoneLeftObject = {
+export type someoneLeftObject = {
 	updatedRoom: GameRoomType;
 	idOfUserThatLeft: string;
 };
@@ -35,8 +34,6 @@ const emptyGameplayState: gameplayState = {
 };
 
 const GameRoom = () => {
-	const [userMessage, setUserMessage] = useState<string>("");
-	const [messages, setMessages] = useState<string[]>([]);
 	const [boardState, setBoardState] = useState<number[][]>(Array(10).fill(Array(10).fill(0)));
 	const [gameplayStageRoom, setGameplayStageRoom] = useState<gameplayState>(emptyGameplayState);
 
@@ -44,32 +41,13 @@ const GameRoom = () => {
 	const { room, setRoom } = useContext(RoomContext);
 
 	const useEffectRef = useRef<boolean>(false);
-	const chatDivRef = useRef<HTMLDivElement>(null); // Ref for the chat div
 
 	const navigate = useNavigate();
 
-	if (room.id === "") navigate("/");
-
-	const handleSendMessage = (message: string, roomId: string, nickname: string) => {
-		if (userMessage.trim() === "") return;
-		socket.emit("sendMessage", message, roomId, nickname);
-		setUserMessage("");
-	};
-
-	const onEnterSendMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === "Enter") {
-			handleSendMessage(userMessage, room.id, user.nickname);
-		}
-	};
-
-	const scrollToBottom = () => {
-		if (chatDivRef.current) {
-			chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
-		}
-	};
+	// if (room.id === "") navigate("/");
 
 	const leaveRoom = () => {
-		if (room.id === "") window.location.reload();
+		// if (room.id === "") window.location.reload();
 
 		socket.emit("leaveRoom", room.id, user.nickname);
 
@@ -84,31 +62,16 @@ const GameRoom = () => {
 			password: "",
 		});
 
-		navigate("/");
+		// navigate("/");
 	};
 
 	useEffect(() => {
-		socket.on("someoneJoined", (updatedRoom: GameRoomType, nickname: string) => {
-			const nMessages = messages;
-			nMessages.push(`${nickname} has joined the room`);
-			setMessages(nMessages);
+		socket.on("someoneJoined", (updatedRoom: GameRoomType) => {
 			setRoom(updatedRoom);
-			scrollToBottom();
 		});
 
-		socket.on("someoneLeft", (someoneLeft: someoneLeftObject, nickname: string) => {
-			const nMessages = messages;
-			nMessages.push(`${nickname} has left the room`);
-			setMessages(nMessages);
+		socket.on("someoneLeft", (someoneLeft: someoneLeftObject) => {
 			setRoom(someoneLeft.updatedRoom);
-			scrollToBottom();
-		});
-
-		socket.on("recieveMessage", (message: string, nickname: string) => {
-			const nMessages = messages;
-			nMessages.push(`${nickname}: ${message}`);
-			setMessages([...nMessages]);
-			scrollToBottom();
 		});
 
 		socket.on("readinessChange", (room: GameRoomType) => {
@@ -122,8 +85,6 @@ const GameRoom = () => {
 		socket.on("playingStageBoards", (newRoom: gameplayState) => {
 			setGameplayStageRoom(newRoom);
 		});
-
-		
 
 		return () => {
 			// this makes sure that unmounting component (leaving game room) notices server about it
@@ -142,24 +103,20 @@ const GameRoom = () => {
 	}, []);
 
 	return (
-		<div className="gameroom-wrapper">
-			<div className="gameroom">
-				<div className="gameroom__left">
-					<div className="gameroom__left--top">
-						<div className="gameroom__left--top--leave">
-							<button>{"<- Leave"}</button>
-							{`My session id: ${user.sessionId}`}
+		<div className='gameroom-wrapper'>
+			<div className='gameroom'>
+				<div className='gameroom__left'>
+					<div className='gameroom__left--top'>
+						<div className='gameroom__left--top--leave'>
+							<button className='gameroom__leave-button' aria-label='leave button'>
+								{"<- Leave"}
+							</button>
 						</div>
-						<div className="gameroom__left--top--title">{room.roomName}</div>
+						<div className='gameroom__left--top--title'>{room.roomName}</div>
 					</div>
-					<div className="gameroom__left--game">
+					<div className='gameroom__left--game'>
 						{room.gameState === GameStage.WAITING && <Waiting />}
-						{room.gameState === GameStage.PLACEMENT && (
-							<ShipPlacement
-								board={boardState}
-								setBoard={setBoardState}
-							/>
-						)}
+						{room.gameState === GameStage.PLACEMENT && <ShipPlacement board={boardState} setBoard={setBoardState} />}
 						{room.gameState === GameStage.PLAYING && (
 							<GamePlay
 								myBoard={boardState}
@@ -171,35 +128,7 @@ const GameRoom = () => {
 						)}
 					</div>
 				</div>
-				<div className="gameroom__right">
-					<div className="gameroom__right--users">
-						<div className="gameroom__right--users--title">Players:</div>
-						<div className="gameroom__right--users--list">
-							{room.clients.map((client) => (
-								<span key={client.id+client.nickname}>{client.nickname}</span>
-							))}
-						</div>
-					</div>
-					<div
-						className="gameroom__right--chat"
-						ref={chatDivRef}
-					>
-						{messages.map((message) => (
-							<span key={v4()}>{message}</span>
-						))}
-					</div>
-					<div className="gameroom__right--input">
-						<input
-							type="text"
-							value={userMessage}
-							onChange={(e) => setUserMessage(e.target.value)}
-							onKeyDown={onEnterSendMessage}
-						/>
-						<button onClick={() => handleSendMessage(userMessage, room.id, user.nickname)}>
-							<AiOutlineSend />
-						</button>
-					</div>
-				</div>
+				<GameRoomChat />
 			</div>
 		</div>
 	);
