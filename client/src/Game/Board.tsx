@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { SetStateAction } from 'react'
 import Cell from './Cell'
 
 type Props = {
@@ -17,7 +17,7 @@ const Board = ({ boardState, setBoardState, isFlipped, setShipsCounter, shipsCou
             {boardState.map((row, rowIdx) => (
                 row.map((cell, columnIdx) => (
                     <Cell
-                        key={parseInt((rowIdx.toString() + columnIdx))}
+                        key={parseInt((rowIdx.toString() + columnIdx)) + cell}
                         shipsCounter={shipsCounter}
                         setShipsCounter={setShipsCounter}
                         isFlipped={isFlipped}

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setCookie } from "../utils/cookies";
-import { UserContext } from "../context/UserContext";
+import { UserContext, UserType } from "../context/UserContext";
 
 type userInput = {
   nickname: string;
@@ -39,8 +39,9 @@ const Signin = () => {
         { withCredentials: true }
       );
 
-      let userFromResponse = {
+      let userFromResponse: UserType = {
         nickname: response.data.userInfo.nickname,
+        sessionId: '',
       }
 
       setUser(userFromResponse);

@@ -17,5 +17,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 
 //TODO
-// - my baord visible where enemy hits, 
 // timer for each round

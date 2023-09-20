@@ -2,12 +2,10 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { RouterProvider, Outlet, createBrowserRouter } from "react-router-dom";
 import Home from './components/Home';
-import Game from './Game/ShipPlacement';
 import Signin from './views/Signin';
 import Signup from './views/Signup';
 import Rooms from './views/Rooms';
 import GameRoom from './views/GameRoom';
-import { useState } from 'react';
 
 
 export const Layout = () => {

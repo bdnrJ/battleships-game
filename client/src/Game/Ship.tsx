@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import {useState} from 'react'
 
 type Props ={
     shipType: number,
@@ -12,11 +12,11 @@ const Ship = ({shipType, isFlipped}: Props) => {
 
     const [isDragged, setIsBeingDragged] = useState(false);
 
-    const dragStart = (e: any) => {
+    const dragStart = () => {
         setIsBeingDragged(true);
     }
 
-    const dragEnd = (e:any) => {
+    const dragEnd = () => {
         setIsBeingDragged(false);
     }
 
@@ -26,8 +26,8 @@ const Ship = ({shipType, isFlipped}: Props) => {
             draggable
             style={ isFlipped ? {height: shipLength} : {width: shipLength}}
             id={shipType.toString()}
-            onDragStart={(e) => dragStart(e)}
-            onDragEnd={(e) => dragEnd(e)}
+            onDragStart={() => dragStart()}
+            onDragEnd={() => dragEnd()}
         >
             {shipType}
         </div>

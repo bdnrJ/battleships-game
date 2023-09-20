@@ -93,8 +93,11 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 		});
 
 		setInterval(() => {
-			setPlayerTimer((prevTimer) => prevTimer - 0.5);
+			//in prod will work correctly ;d
+			setPlayerTimer((prevTimer) => prevTimer - 1);
 		}, 1000);
+
+		console.log("fugg");
 
 		return () => {
 			socket.off("updateGameState");
@@ -103,10 +106,20 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 	}, []);
 
 	useEffect(() => {
-		if (playerTimer === 0) {
-            if (gameplayStageRoom.turn === user.sessionId) {
-                console.log(gameplayStageRoom.turn + " is making a bot move!");
-				socket.emit("missleShot", 5, 5, gameplayStageRoom.roomId);
+		if (playerTimer <= 0) {
+			if (gameplayStageRoom.turn === user.sessionId) {
+				let cords = [-1, -1];
+				for (let row = 0; row < 10; row++) {
+					if (cords[0] !== -1) break;
+					for (let col = 0; col < 10; col++) {
+						if (enemyBoard[row][col] === 0) {
+							cords = [row, col];
+							break;
+						}
+					}
+				}
+
+				socket.emit("missleShot", cords[0], cords[1], gameplayStageRoom.roomId);
 			}
 		}
 	}, [playerTimer]);
