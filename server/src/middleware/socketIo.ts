@@ -83,7 +83,6 @@ export default function setupSocketIO(app: Express) {
 	const emitRoomsList = (): void => {
 		io.emit("roomsList", rooms);
 		console.log(rooms);
-		console.log(rooms[0]?.clients)
 		console.log("emitted rooms");
 	};
 

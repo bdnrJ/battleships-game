@@ -20,7 +20,7 @@ type roomInput = {
     password: string,
 }
 
-const CreateRoom = ({ createRoom, inModal }: Props) => {
+const CreateRoom = ({ createRoom, inModal, closePopup }: Props) => {
     const navigate = useNavigate();
     const { setRoom } = useContext(RoomContext);
     const {user, setUser} = useContext(UserContext);
@@ -30,6 +30,7 @@ const CreateRoom = ({ createRoom, inModal }: Props) => {
             setRoom(newRoom);
             setUser({...user, sessionId: sessionId})
             navigate(`/room/${newRoom.id}`)
+            closePopup();
         }))
 
 
@@ -82,6 +83,7 @@ const CreateRoom = ({ createRoom, inModal }: Props) => {
                 <div className="g__form--title">Room creation</div>
                 <div className="g__form__inputs">
                     <div className="g__form__inputs--inputwrapper">
+                        <span>Room name</span>
                         <label htmlFor="roomName">
                             <input
                                 className={`g__form--input ${errors.roomName && "--error"}`}
@@ -111,6 +113,7 @@ const CreateRoom = ({ createRoom, inModal }: Props) => {
                     </div>
                     {hasPassword && (
                         <div className="g__form__inputs--inputwrapper">
+                            <span>Password</span>
                             <label htmlFor="password"></label>
                             <input
                                 className={`g__form--input ${errors.password && "--error"}`}

@@ -1,19 +1,19 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import socket from "../utils/socket";
-import Modal from "../components/modals/Modal";
 import CreateRoom from "../components/modals/CreateRoom";
 import Room from "../components/Room";
 import { useNavigate } from "react-router-dom";
 import { GameRoomType, RoomContext } from "../context/RoomContext";
 import { UserContext } from "../context/UserContext";
 import { AiOutlinePlus } from "react-icons/ai";
+import { useCenterModal } from "../hooks/useCenterModal";
 
 const Rooms = () => {
-	const [isCreateRoomVisible, setIsCreateRoomVisible] = useState<boolean>(false);
 	const [rooms, setRooms] = useState<GameRoomType[]>([]);
 	const { setRoom } = useContext(RoomContext);
 	const { user, setUser } = useContext(UserContext);
 	const navigate = useNavigate();
+	const { showCenterModal, closePopup } = useCenterModal();
 
 	//to make useeffect work once for tests :)
 	const effectCalled = useRef<boolean>(false);
@@ -59,7 +59,9 @@ const Rooms = () => {
 	return (
 		<div className='rooms'>
 			<div className='rooms__controlls'>
-				<button onClick={() => setIsCreateRoomVisible(true)}>
+				<button
+					onClick={() => showCenterModal(<CreateRoom closePopup={closePopup} createRoom={createRoom} inModal={true} />)}
+				>
 					<span>Create Room</span>
 					<AiOutlinePlus />
 				</button>
@@ -69,11 +71,6 @@ const Rooms = () => {
 					<Room key={room.id} gameRoom={room} />
 				))}
 			</div>
-			{isCreateRoomVisible && (
-				<Modal onClose={() => setIsCreateRoomVisible(false)}>
-					<CreateRoom closePopup={() => setIsCreateRoomVisible(false)} createRoom={createRoom} inModal={true} />
-				</Modal>
-			)}
 		</div>
 	);
 };
