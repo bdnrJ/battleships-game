@@ -4,13 +4,14 @@ import socket from "../utils/socket";
 import { UserContext } from "../context/UserContext";
 import { AiOutlineArrowRight, AiOutlineLock } from "react-icons/ai";
 import { useCenterModal } from "../hooks/useCenterModal";
+import JoinRoomWithPassword from "./modals/JoinRoomWithPassword";
 
 type Props = {
 	gameRoom: GameRoomType;
 };
 
 const Room = ({ gameRoom }: Props) => {
-	const { showCenterModal } = useCenterModal();
+	const { showCenterModal, closePopup } = useCenterModal();
 
 	const { user } = useContext(UserContext);
 	if (gameRoom.clients.length === 0 || gameRoom.clients.length === 2) return null;
@@ -18,13 +19,7 @@ const Room = ({ gameRoom }: Props) => {
 	const onRoomJoin = () => {
 		if (!gameRoom.hasPassword) socket.emit("joinRoom", gameRoom.id, user.nickname);
 		else {
-			//TODO
-			showCenterModal(
-				<>
-					<h2>Modal 1 Content</h2>
-					<p>This is the content for Modal 1.</p>
-				</>
-			);
+			showCenterModal(<JoinRoomWithPassword gameRoom={gameRoom} closePopup={closePopup}/>);
 		}
 	};
 
@@ -51,10 +46,6 @@ const Room = ({ gameRoom }: Props) => {
 				<span>Join Room</span>
 				<AiOutlineArrowRight />
 			</button>
-			{/* <Modal isOpen={modals.givePasswordModal} onClose={() => closeModal('givePasswordModal')}>
-        <h2>Modal 1 Content</h2>
-        <p>This is the content for Modal 1.</p>
-      </Modal> */}
 		</div>
 	);
 };

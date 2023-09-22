@@ -4,14 +4,17 @@ import App from "./App.tsx";
 import "./styles/index.scss";
 import { RoomProvider } from "./context/RoomContext.tsx";
 import { UserProvider } from "./context/UserContext.tsx";
+import { AlertProvider } from "./hooks/useAlert.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
-			<RoomProvider>
-				<UserProvider>
+		<RoomProvider>
+			<UserProvider>
+				<AlertProvider>
 					<App />
-				</UserProvider>
-			</RoomProvider>
+				</AlertProvider>
+			</UserProvider>
+		</RoomProvider>
 	</React.StrictMode>
 );
 

@@ -198,7 +198,7 @@ export default function setupSocketIO(app: Express) {
 			emitRoomsList();
 		});
 
-		socket.on("joinRoom", (roomId: string, nickname: string) => {
+		socket.on("joinRoom", (roomId: string, nickname: string, password: string) => {
 			const room = rooms.find((r) => r.id === roomId);
 			if (!room) {
 				socket.emit("roomError", "Room does not exist.");
@@ -208,6 +208,13 @@ export default function setupSocketIO(app: Express) {
 			if (room.clients.length >= 2) {
 				socket.emit("roomError", "Room is full.");
 				return;
+			}
+
+			if(room.hasPassword){
+				if(room.password !== password){
+					console.log("wrong password");
+					return;
+				}
 			}
 
 			// Join the room
