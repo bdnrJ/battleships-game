@@ -44,11 +44,8 @@ const GameRoom = () => {
 
 	const navigate = useNavigate();
 
-	// if (room.id === "") navigate("/");
 
 	const leaveRoom = () => {
-		// if (room.id === "") window.location.reload();
-
 		socket.emit("leaveRoom", room.id, user.nickname);
 
 		setRoom({
@@ -62,7 +59,7 @@ const GameRoom = () => {
 			password: "",
 		});
 
-		// navigate("/");
+		navigate("/rooms");
 	};
 
 	useEffect(() => {
@@ -108,7 +105,7 @@ const GameRoom = () => {
 				<div className='gameroom__left'>
 					<div className='gameroom__left--top'>
 						<div className='gameroom__left--top--leave'>
-							<button className='gameroom__leave-button' aria-label='leave button'>
+							<button className='gameroom__leave-button' onClick={leaveRoom} aria-label='leave button'>
 								{"<- Leave"}
 							</button>
 						</div>
@@ -128,7 +125,7 @@ const GameRoom = () => {
 						)}
 					</div>
 				</div>
-				<GameRoomChat />
+				{/* <GameRoomChat /> */}
 			</div>
 		</div>
 	);

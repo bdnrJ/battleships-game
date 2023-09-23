@@ -20,6 +20,15 @@ const Ship = ({shipType, isFlipped}: Props) => {
         setIsBeingDragged(false);
     }
 
+    const onTouchStart = (e: any) => {
+        dragStart();
+    }
+    
+    const onTouchEnd = (e: any) => {
+        console.log(e);
+        dragEnd();
+    }
+
     return (
         <div 
             className={`ship ${isDragged ? "beingDragged" : ""}`}
@@ -28,6 +37,8 @@ const Ship = ({shipType, isFlipped}: Props) => {
             id={shipType.toString()}
             onDragStart={() => dragStart()}
             onDragEnd={() => dragEnd()}
+            onTouchStart={(e) => onTouchStart(e)}
+            onTouchEnd={(e) => onTouchEnd(e)}
         >
             {shipType}
         </div>

@@ -7,6 +7,10 @@
     align-items: center;
     justify-content: space-between;
 
+    @include mobile{
+        flex-direction: column;
+    }
+
     .navbar--logo{
         img{
             height: 75px;
