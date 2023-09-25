@@ -74,10 +74,10 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 				/>
 			</div>
 			<div className='game--ships'>
-				{shipsCounter[3] > 0 && <Ship shipType={ShipType.CARRIER} isFlipped={isFlipped} />}
-				{shipsCounter[2] > 0 && <Ship shipType={ShipType.BATTLESHIP} isFlipped={isFlipped} />}
-				{shipsCounter[1] > 0 && <Ship shipType={ShipType.CRUISER} isFlipped={isFlipped} />}
-				{shipsCounter[0] > 0 && <Ship shipType={ShipType.DESTROYER} isFlipped={isFlipped} />}
+				{shipsCounter[3] > 0 && <Ship shipType={ShipType.CARRIER} isFlipped={isFlipped} shipDndType={'Carrier'} />}
+				{shipsCounter[2] > 0 && <Ship shipType={ShipType.BATTLESHIP} isFlipped={isFlipped} shipDndType={'Battleship'}/>}
+				{shipsCounter[1] > 0 && <Ship shipType={ShipType.CRUISER} isFlipped={isFlipped} shipDndType={'Cruiser'}/>}
+				{shipsCounter[0] > 0 && <Ship shipType={ShipType.DESTROYER} isFlipped={isFlipped} shipDndType={'Destroyer'} />}
 
 				<button onClick={() => setIsFlipped(!isFlipped)}>Flip</button>
 				<button onClick={() => console.log(board)}>check</button>

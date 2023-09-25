@@ -6,12 +6,13 @@ import { ShipType, ShipTypeConst } from "./ShipPlacement";
 type Props = {
 	shipType: ShipType;
 	isFlipped: boolean;
+    shipDndType: "Carrier" | "Battleship" | "Cruiser" | "Destroyer";
 };
 
-const Ship = ({ shipType, isFlipped }: Props) => {
+const Ship = ({ shipType, isFlipped, shipDndType }: Props) => {
 	const [, drag] = useDrag(() => ({
-		type: ShipTypeConst.DESTROYER || ShipTypeConst.BATTLESHIP || ShipTypeConst.CRUISER || ShipTypeConst.CARRIER,
-		item: { shipType },
+		type: ShipTypeConst.BATTLESHIP || ShipTypeConst.CARRIER || ShipTypeConst.CRUISER || ShipTypeConst.DESTROYER,
+		item: { shipDndType, shipType },
 		collect: (monitor) => ({
 			isDragging: !!monitor.isDragging(),
 		}),
@@ -59,7 +60,7 @@ const Ship = ({ shipType, isFlipped }: Props) => {
 			<div
 				ref={drag}
 				className={`ship ${isDragged ? "beingDragged" : ""} --${shipType} ${isFlipped ? "--flipped" : ""}`}
-				id={shipType.toString()}
+				id={shipType.toString() + "ship"}
 				onDragStart={() => dragStart()}
 				onDragEnd={() => dragEnd()}
 				onTouchStart={() => onTouchStart()}

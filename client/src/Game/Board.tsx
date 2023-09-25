@@ -13,11 +13,11 @@ type Props = {
 const Board = ({ boardState, setBoardState, isFlipped, setShipsCounter, shipsCounter }: Props) => {
 
     return (
-        <div className="board">
+        <div className="board" id={'boardid'}>
             {boardState.map((row, rowIdx) => (
                 row.map((cell, columnIdx) => (
                     <Cell
-                        key={parseInt((rowIdx.toString() + columnIdx)) + cell}
+                        key={parseInt((rowIdx.toString() + columnIdx)) + cell +'cell'}
                         shipsCounter={shipsCounter}
                         setShipsCounter={setShipsCounter}
                         isFlipped={isFlipped}
