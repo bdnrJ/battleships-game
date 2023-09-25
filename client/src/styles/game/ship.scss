@@ -4,7 +4,27 @@
 
     background-color: aquamarine;
 
+    &.--2{
+        width: 80px;
+    }
+    &.--3{
+        width: 120px;
+    }
+    &.--4{
+        width: 160px;
+    }
+
     &.--flipped{
-        
+        width: 40px;
+        &.--2{
+            height: 80px;
+        }
+        &.--3{
+            height: 120px;
+        }
+        &.--4{
+            height: 160px;
+        }
+    
     }
 }
