@@ -1,20 +1,26 @@
 .cell{
     width: 40px;
     height: 40px;
-    border: 2px solid white;
+    border: 1px solid black;
     display: flex;
     align-items: center;
     justify-content: center;
 
+
+    @include tablet{
+        width: 25px;
+        height: 25px;
+    }
+
     &.--used{
-        background-color: burlywood;
+        background-color: rgb(157, 24, 197);
     }
 
     &.--error{
-        background-color: red;
+        background-color: rgb(248, 102, 102);
     }
 
     &.--can{
-        background-color: green;
+        background-color: rgb(84, 201, 84);
     }
 }

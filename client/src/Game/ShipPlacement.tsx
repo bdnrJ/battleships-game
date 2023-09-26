@@ -60,34 +60,58 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 		}
 	}, [board]);
 
+	const handleBoardReset = () => {
+		setBoard([
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		]);
+
+		setShipsCounter([4, 3, 2, 1]);
+	};
+
 	return (
 		<div className='game'>
-			<div className='game--board'>
-				<Board
-					setShipsCounter={setShipsCounter}
-					shipsCounter={shipsCounter}
-					isFlipped={isFlipped}
-					boardState={board}
-					setBoardState={setBoard}
-				/>
+			<div className='game__left'>
+				<div className='game--board'>
+					<Board
+						setShipsCounter={setShipsCounter}
+						shipsCounter={shipsCounter}
+						isFlipped={isFlipped}
+						boardState={board}
+						setBoardState={setBoard}
+					/>
+				</div>
+				<div className='game--ships'>
+					<div className="game--ships--wrapper">
+						{shipsCounter[3] > 0 && <Ship shipType={ShipType.CARRIER} isFlipped={isFlipped} shipDndType={"Carrier"} />}
+						{shipsCounter[2] > 0 && (
+							<Ship shipType={ShipType.BATTLESHIP} isFlipped={isFlipped} shipDndType={"Battleship"} />
+						)}
+						{shipsCounter[1] > 0 && <Ship shipType={ShipType.CRUISER} isFlipped={isFlipped} shipDndType={"Cruiser"} />}
+						{shipsCounter[0] > 0 && (
+							<Ship shipType={ShipType.DESTROYER} isFlipped={isFlipped} shipDndType={"Destroyer"} />
+						)}
+					</div>
+				</div>
 			</div>
-			<div className='game--ships'>
-				{shipsCounter[3] > 0 && <Ship shipType={ShipType.CARRIER} isFlipped={isFlipped} shipDndType={'Carrier'} />}
-				{shipsCounter[2] > 0 && <Ship shipType={ShipType.BATTLESHIP} isFlipped={isFlipped} shipDndType={'Battleship'}/>}
-				{shipsCounter[1] > 0 && <Ship shipType={ShipType.CRUISER} isFlipped={isFlipped} shipDndType={'Cruiser'}/>}
-				{shipsCounter[0] > 0 && <Ship shipType={ShipType.DESTROYER} isFlipped={isFlipped} shipDndType={'Destroyer'} />}
-
-				<button onClick={() => setIsFlipped(!isFlipped)}>Flip</button>
-				<button onClick={() => console.log(board)}>check</button>
+			<div className='game--buttons'>
+				<button onClick={() => setIsFlipped(!isFlipped)}>Flip ships</button>
 				<button
 					onClick={() => console.log(board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0))}
 				>
 					sum
 				</button>
-				<button onClick={() => console.log(board)} >show board</button>
-				<button onClick={() => console.log(shipsCounter)}></button>
 				<button onClick={() => setBoard(temp1)}>place1</button>
 				<button onClick={() => setBoard(temp2)}>place2</button>
+				<button onClick={handleBoardReset}>Reset board</button>
 			</div>
 		</div>
 	);

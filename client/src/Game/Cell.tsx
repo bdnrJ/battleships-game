@@ -229,7 +229,6 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 
 	return (
 		<div className={`cell ${board[rowId][columnId] !== 0 ? "--used" : ""}`} id={id.toString()} ref={drop}>
-			{id}
 		</div>
 	);
 };

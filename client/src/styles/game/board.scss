@@ -1,5 +1,41 @@
-.board{
-    display: grid;
-    grid-template-columns: repeat(10, 40px);
-    grid-template-rows: repeat(10, 40px);
+.board--wrapper{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .board--wrapper__uppermarks{
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+
+    }
+
+    .gameboard__marks--elem{
+        height: 40px;
+        width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid black;
+        
+        @include tablet{
+            height: 25px;
+            width: 25px;
+        }
+    }
+
+    .board{
+        display: flex;
+    }
+
+    .board--placementboard{
+        display: grid;
+        grid-template-columns: repeat(10, 40px);
+        grid-template-rows: repeat(10, 40px);
+        
+        @include tablet{
+            grid-template-columns: repeat(10, 25px);
+            grid-template-rows: repeat(10, 25px);
+        }
+    }
 }
