@@ -141,3 +141,19 @@
     }
 
 }
+
+.g__link{
+    text-decoration: none;
+    cursor: pointer;
+    color: black;
+
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid transparent;
+    font-size: 17px;
+    transition: all 0.2s ease-in;
+    
+    &:hover{
+        color: lighten(black, 75%);
+    }
+}

@@ -34,7 +34,18 @@ const emptyGameplayState: gameplayState = {
 };
 
 const GameRoom = () => {
-	const [boardState, setBoardState] = useState<number[][]>(Array(10).fill(Array(10).fill(0)));
+	const [boardState, setBoardState] = useState<number[][]>([
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	]);
 	const [gameplayStageRoom, setGameplayStageRoom] = useState<gameplayState>(emptyGameplayState);
 
 	const { user } = useContext(UserContext);
@@ -43,7 +54,6 @@ const GameRoom = () => {
 	const useEffectRef = useRef<boolean>(false);
 
 	const navigate = useNavigate();
-
 
 	const leaveRoom = () => {
 		socket.emit("leaveRoom", room.id, user.nickname);

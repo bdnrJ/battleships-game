@@ -60,7 +60,7 @@ const Ship = ({ shipType, isFlipped, shipDndType }: Props) => {
 			<div
 				ref={drag}
 				className={`ship ${isDragged ? "beingDragged" : ""} --${shipType} ${isFlipped ? "--flipped" : ""}`}
-				id={shipType.toString() + "ship"}
+				id={shipType.toString()}
 				onDragStart={() => dragStart()}
 				onDragEnd={() => dragEnd()}
 				onTouchStart={() => onTouchStart()}

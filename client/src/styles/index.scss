@@ -20,7 +20,8 @@
 @import './game/enemyCell.scss';
 @import './game/gameboard.scss';
 
-@import './components/navbar.scss';
+@import './components/Navbar/navbar.scss';
+@import './components/Navbar/burgerMenu.scss';
 @import './components/footer.scss';
 @import './components/room.scss';
 

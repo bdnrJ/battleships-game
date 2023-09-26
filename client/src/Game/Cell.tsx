@@ -22,7 +22,7 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 		isFlipped: boolean
 	) => {
 		// Check if the cell itself is available
-		if (boardState[rowIdx][colIdx] === 1) {
+		if (boardState[rowIdx][colIdx] !== 0) {
 			return false;
 		}
 
@@ -75,7 +75,6 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 
 		if (!shipLength) {
 			throw Error("ship id is not defined - seems like something else is being dragged which should not be possible");
-			return;
 		}
 
 		const shipLengthNumber = parseInt(shipLength);
@@ -118,30 +117,30 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 		removeAdditionalClasses();
 	};
 
-	const dragOver = (e: any) => {
-		e.preventDefault();
-		const shipLength = document.querySelector(".beingDragged")?.id;
+	// const dragOver = (e: any) => {
+	// 	e.preventDefault();
+	// 	const shipLength = document.querySelector(".beingDragged")?.id;
 
-		if (!shipLength) {
-			alert("ship id - length is not defined (should not be possible)");
-			return;
-		}
+	// 	if (!shipLength) {
+	// 		alert("ship id - length is not defined (should not be possible)");
+	// 		return;
+	// 	}
 
-		const isPossible = isCellAvailable(rowId, columnId, parseInt(shipLength), board, isFlipped);
+	// 	const isPossible = isCellAvailable(rowId, columnId, parseInt(shipLength), board, isFlipped);
 
-		addAdditionalClasses(isPossible, shipLength);
-	};
+	// 	addAdditionalClasses(isPossible, shipLength);
+	// };
 
-	const dragExit = () => {
-		const shipLength = document.querySelector(".beingDragged")?.id;
+	// const dragExit = () => {
+	// 	const shipLength = document.querySelector(".beingDragged")?.id;
 
-		if (!shipLength) {
-			alert("ship id is not defined (should not be possible)");
-			return;
-		}
+	// 	if (!shipLength) {
+	// 		alert("ship id is not defined (should not be possible)");
+	// 		return;
+	// 	}
 
-		removeAdditionalClasses();
-	};
+	// 	removeAdditionalClasses();
+	// };
 
 	const removeAdditionalClasses = () => {
 		const allDocumentsWithErrorOrCanClass = document.querySelectorAll(".--error, .--can");
@@ -183,14 +182,15 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 	const [{ isOver }, drop] = useDrop(
 		() => ({
 			accept: ShipTypeConst.BATTLESHIP || ShipTypeConst.CARRIER || ShipTypeConst.CRUISER || ShipTypeConst.DESTROYER,
-			drop: dropShip,
+			drop: () => dropShip(),
 			collect: (monitor) => ({
 				isOver: !!monitor.isOver(),
 			}),
 		}),
-		[]
+		[board]
 	);
 
+	//creates green or red squares when user hovers over board with a ship
 	useEffect(() => {
 		if (isOver) {
 			const shipLength = document.querySelector(".beingDragged")?.id;
@@ -200,31 +200,32 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 		}
 	}, [isOver]);
 
-	useEffect(() => {
-		const handleMouseOut = (e: MouseEvent) => {
-			console.log("Mouse out event triggered.");
-			const boardElement = document.getElementById("boardid"); // Replace with the actual ID of your board element
-			if (boardElement && !boardElement.contains(e.relatedTarget as Node)) {
-				removeAdditionalClasses();
-			}
-		};
+	//removes green or red squares if user lets go of ship outside board
+	// useEffect(() => {
+	// 	const handleMouseOut = (e: MouseEvent) => {
+	// 		console.log("Mouse out event triggered.");
+	// 		const boardElement = document.getElementById("boardid"); // Replace with the actual ID of your board element
+	// 		if (boardElement && !boardElement.contains(e.relatedTarget as Node)) {
+	// 			removeAdditionalClasses();
+	// 		}
+	// 	};
 
-		const handleTouchEnd = (e: TouchEvent) => {
-			console.log("Touch end event triggered.");
-			const boardElement = document.getElementById("boardid"); // Replace with the actual ID of your board element
-			if (boardElement && !boardElement.contains(e.target as Node)) {
-				removeAdditionalClasses();
-			}
-		};
+	// 	const handleTouchEnd = (e: TouchEvent) => {
+	// 		console.log("Touch end event triggered.");
+	// 		const boardElement = document.getElementById("boardid"); // Replace with the actual ID of your board element
+	// 		if (boardElement && !boardElement.contains(e.target as Node)) {
+	// 			removeAdditionalClasses();
+	// 		}
+	// 	};
 
-		window.addEventListener("touchend", handleTouchEnd);
-		window.addEventListener("mouseout", handleMouseOut);
+	// 	window.addEventListener("touchend", handleTouchEnd);
+	// 	window.addEventListener("mouseout", handleMouseOut);
 
-		return () => {
-			window.removeEventListener("mouseout", handleMouseOut);
-			window.removeEventListener("touchend", handleTouchEnd);
-		};
-	}, []);
+	// 	return () => {
+	// 		window.removeEventListener("mouseout", handleMouseOut);
+	// 		window.removeEventListener("touchend", handleTouchEnd);
+	// 	};
+	// }, []);
 
 	return (
 		<div className={`cell ${board[rowId][columnId] !== 0 ? "--used" : ""}`} id={id.toString()} ref={drop}>

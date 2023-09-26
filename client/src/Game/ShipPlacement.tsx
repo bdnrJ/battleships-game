@@ -86,6 +86,8 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 				>
 					sum
 				</button>
+				<button onClick={() => console.log(board)} >show board</button>
+				<button onClick={() => console.log(shipsCounter)}></button>
 				<button onClick={() => setBoard(temp1)}>place1</button>
 				<button onClick={() => setBoard(temp2)}>place2</button>
 			</div>
