@@ -270,7 +270,7 @@ export default function setupSocketIO(app: Express) {
 
 		//placement stage
 
-		socket.on("sendPlayerBoard", (board: matrix, nickname: string, roomId: string) => {
+		socket.on("sendPlayerBoard", (board: matrix, roomId: string) => {
 			const room = rooms.find((rm) => (rm.id = roomId));
 
 			if (!room) return;
@@ -383,12 +383,6 @@ export default function setupSocketIO(app: Express) {
 			const enemyBoard = room.clients[enemyIdx].board;
 			const myShootingBoard =
 				gameplayState.player1 === socket.id ? gameplayState.player1Board : gameplayState.player2Board;
-
-			console.log("enemy idx: " + enemyIdx);
-			console.log("enemy board");
-			console.log(enemyBoard);
-			console.log("my shooting board");
-			console.log(myShootingBoard);
 
 			//if player shot empty field
 			if (enemyBoard[rowIdx][colIdx] === CellType.NORMAL) {

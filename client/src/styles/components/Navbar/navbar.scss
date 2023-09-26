@@ -9,22 +9,23 @@
 	position: relative;
 
 	.navbar--logo {
+		cursor: pointer;
 		img {
 			height: 75px;
 			width: auto;
 
-            @include mobile{
-                height: 50px;
-            }
+			@include mobile {
+				height: 50px;
+			}
 		}
 	}
 
-    .navbar__utils{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 30px;
-    }
+	.navbar__utils {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 30px;
+	}
 
 	.navbar--links {
 		display: flex;
@@ -87,20 +88,20 @@
 	}
 
 	.navbar--account {
+		all: unset;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.navbar--account {
 		font-size: 30px;
+		position: relative;
 
 		button {
+            z-index: 2;
 			cursor: pointer;
 			all: unset;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 	}
 }

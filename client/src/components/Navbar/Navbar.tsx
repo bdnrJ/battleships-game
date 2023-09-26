@@ -1,8 +1,9 @@
 import logo from "../../assets/logo.gif";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiUser } from "react-icons/bi";
 import BurgerMenu from "./BurgerMenu";
 import { useState } from "react";
+import UserPopup from "./UserPopup";
 
 export type link = {
 	name: string;
@@ -11,6 +12,8 @@ export type link = {
 
 const Navbar = () => {
 	const [isBurgerOn, setIsBurgerOn] = useState<boolean>(false);
+	const [isUserPopupOn, setIsUserPopupOn] = useState<boolean>(false);
+	const navigate = useNavigate();
 	const links: link[] = [
 		{
 			name: "Game",
@@ -28,23 +31,28 @@ const Navbar = () => {
 
 	return (
 		<div className='navbar'>
-			<div className='navbar--logo'>
+			{/* TODO <div className='navbar--logo' onClick={() => navigate('/')}> */}
+			<div className='navbar--logo' onClick={() => navigate("/rooms")}>
 				<img src={logo} alt='logo' />
 			</div>
-			<div className='navbar--links'>
+			<section className='navbar--links'>
 				{links.map((link) => (
 					<Link to={link.direction} key={link.direction} className='g__link'>
 						{link.name}
 					</Link>
 				))}
-			</div>
-			<div className="navbar__utils">
-				<div className='navbar--account'>
-					<button>
+			</section>
+			<div className='navbar__utils'>
+				<div className='navbar--account dontTriggerEvent'>
+					<button onClick={() => {if(!isUserPopupOn) setIsUserPopupOn(true); setIsBurgerOn(false)}}>
 						<BiUser />
 					</button>
+					{isUserPopupOn && <UserPopup hideUserPopup={() => {setIsUserPopupOn(false); setIsBurgerOn(false)}} />}
 				</div>
-				<button className={`navbar--burger ${isBurgerOn ? "--active" : ""}`} onClick={() => setIsBurgerOn(prev => !prev)}>
+				<button
+					className={`navbar--burger ${isBurgerOn ? "--active" : ""}`}
+					onClick={() => setIsBurgerOn((prev) => !prev)}
+				>
 					<span className='dontTriggerEvent'></span>
 					<span className='dontTriggerEvent'></span>
 					<span className='dontTriggerEvent'></span>

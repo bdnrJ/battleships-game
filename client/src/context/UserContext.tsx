@@ -1,5 +1,5 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { getCookie } from "../utils/cookies";
+import { getCookie, setCookie } from "../utils/cookies";
 import { v4 } from "uuid";
 
 type Props = {
@@ -34,12 +34,20 @@ export const UserProvider = ({ children }: Props) => {
 			const userFromCookie = JSON.parse(getCookie("userInfo"));
 			setUser(userFromCookie);
 		} else {
-			const nickname = `Anon-${v4().substr(0, 8)}`;
-			setUser({
-				nickname: nickname,
-				sessionId: "",
-			});
-			console.log({ nickname: nickname, sessionId: "" });
+			if (getCookie("anonNickname")) {
+				const nickname = getCookie("anonNickname");
+				setUser({
+					nickname: nickname,
+					sessionId: "",
+				});
+			} else {
+				const nickname = `Anon-${v4().substr(0, 8)}`;
+				setCookie("anonNickname", nickname, 999);
+				setUser({
+					nickname: nickname,
+					sessionId: "",
+				});
+			}
 		}
 	}, []);
 

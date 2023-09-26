@@ -1,0 +1,17 @@
+.userpopup{
+  position: absolute;
+  top: 34px;
+  border: 1px solid grey;
+  background-color: WHITE;
+  z-index: 10;
+  padding: 5px;
+  font-size: 20px;
+
+  .userpopup__buttons{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+}

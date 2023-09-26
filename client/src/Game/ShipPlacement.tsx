@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react
 import Board from "./Board";
 import Ship from "./Ship";
 import socket from "../utils/socket";
-import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 
 type Props = {
@@ -27,7 +26,6 @@ export const ShipTypeConst = {
 const ShipPlacement = ({ board, setBoard }: Props) => {
 	const [isFlipped, setIsFlipped] = useState<boolean>(false);
 	const [shipsCounter, setShipsCounter] = useState<number[]>([4, 3, 2, 1]);
-	const { user } = useContext(UserContext);
 	const { room } = useContext(RoomContext);
 
 	const temp1 = [
@@ -58,7 +56,7 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 
 	useEffect(() => {
 		if (board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50) {
-			socket.emit("sendPlayerBoard", board, user.nickname, room.id);
+			socket.emit("sendPlayerBoard", board, room.id);
 		}
 	}, [board]);
 
