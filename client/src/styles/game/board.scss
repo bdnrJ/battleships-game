@@ -32,6 +32,7 @@
         display: grid;
         grid-template-columns: repeat(10, 40px);
         grid-template-rows: repeat(10, 40px);
+        border-collapse: collapse; /* Collapse borders within the grid */
         
         @include tablet{
             grid-template-columns: repeat(10, 25px);

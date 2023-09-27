@@ -12,19 +12,23 @@
 	}
 
 	&.--destroyer {
-		background-color: blueviolet;
+		background-color: lighten($destroyer, 10%);
+		border: 2px solid darken($destroyer, 20%);
 	}
 
 	&.--cruiser {
-		background-color: aqua;
+		background-color: lighten($cruiser, 10%);
+		border: 2px solid darken($cruiser, 20%);
 	}
 
 	&.--battleship {
-		background-color: brown;
+		background-color: lighten($battleship, 10%);
+		border: 2px solid darken($battleship, 20%);
 	}
 
 	&.--carrier {
-		background-color: cadetblue;
+		background-color: lighten($carrier, 10%);
+		border: 2px solid darken($carrier, 20%);
 	}
 
 	&.--hitted {
@@ -34,9 +38,9 @@
 		&:after {
 			content: "";
 			position: absolute;
+			background-color: black;
 			width: 100%;
 			height: 2px;
-			background-color: black;
 			left: 0;
 			top: 50%;
 			font-size: 18px;

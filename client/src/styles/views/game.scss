@@ -21,9 +21,14 @@
     }
 
     .game--ships{
+        width: 160px;
         display: flex;
         align-items: center;
         justify-content: center;
+
+        @include mobile{
+            width: 100px;
+        }
 
         .game--ships--wrapper{
             display: flex;
@@ -46,6 +51,12 @@
             border: 1px solid black;
             height: 35px;
             min-width: 100px;
+            transition: all 0.3s ease;
+
+            &:hover{
+                background-color: black;
+                color: white;
+            }
 
             @include tablet{
                 height: 25px;

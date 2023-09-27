@@ -1,5 +1,5 @@
-import { ShipTypeConst } from "./ShipPlacement";
-import React, { SetStateAction, useEffect, useState } from "react";
+import { ShipType, ShipTypeConst } from "./ShipPlacement";
+import React, { SetStateAction, useEffect } from "react";
 import { useDrop } from "react-dnd";
 
 type Props = {
@@ -228,8 +228,21 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 	// }, []);
 
 	return (
-		<div className={`cell ${board[rowId][columnId] !== 0 ? "--used" : ""}`} id={id.toString()} ref={drop}>
-		</div>
+		<div
+			className={`cell ${
+				board[rowId][columnId] === ShipType.DESTROYER
+					? "--destroyer"
+					: board[rowId][columnId] === ShipType.CRUISER
+					? "--cruiser"
+					: board[rowId][columnId] === ShipType.BATTLESHIP
+					? "--battleship"
+					: board[rowId][columnId] === ShipType.CARRIER
+					? "--carrier"
+					: ""
+			}`}
+			id={id.toString()}
+			ref={drop}
+		></div>
 	);
 };
 

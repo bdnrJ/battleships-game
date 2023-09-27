@@ -1,26 +1,43 @@
-.cell{
-    width: 40px;
-    height: 40px;
-    border: 1px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.cell {
+	width: 40px;
+	height: 40px;
+	border: 1px solid black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	@include tablet {
+		width: 25px;
+		height: 25px;
+	}
+
+	&.--error {
+		background-color: rgb(248, 102, 102);
+	}
+
+	&.--can {
+		background-color: rgb(84, 201, 84);
+	}
+
+	&.--destroyer {
+		background-color: lighten($destroyer, 10%);
+		border: 2px solid darken($destroyer, 20%);
+	}
+	
+	&.--cruiser {
+		background-color: lighten($cruiser, 10%);
+		border: 2px solid darken($cruiser, 20%);
+	}
+	
+	&.--carrier {
+		background-color: lighten($carrier, 10%);
+		border: 2px solid darken($carrier, 20%);
+		border-collapse: collapse; /* Collapse borders within the grid */
+	}
 
 
-    @include tablet{
-        width: 25px;
-        height: 25px;
-    }
-
-    &.--used{
-        background-color: rgb(157, 24, 197);
-    }
-
-    &.--error{
-        background-color: rgb(248, 102, 102);
-    }
-
-    &.--can{
-        background-color: rgb(84, 201, 84);
-    }
+	&.--battleship {
+		background-color: lighten($battleship, 10%);
+		border: 2px solid darken($battleship, 20%);
+	}
 }

@@ -27,8 +27,8 @@ const Ship = ({ shipType, isFlipped, shipDndType }: Props) => {
 			return null;
 		}
 
-		const { shipType } = item;
-		const elem = <div className={`ship --${shipType}`} style={{ opacity: 0.5 }}></div>;
+		const { shipDndType } = item;
+		const elem = <div className={`ship --${shipDndType} ${isFlipped ? "--flipped" : ""}`} style={{ opacity: 0.5 }}></div>;
 		return (
 			<div className='item-list__item' style={style}>
 				{elem}
@@ -59,14 +59,13 @@ const Ship = ({ shipType, isFlipped, shipDndType }: Props) => {
 			<MyPreview />
 			<div
 				ref={drag}
-				className={`ship ${isDragged ? "beingDragged" : ""} --${shipType} ${isFlipped ? "--flipped" : ""}`}
+				className={`ship ${isDragged ? "beingDragged" : ""} --${shipDndType} ${isFlipped ? "--flipped" : ""}`}
 				id={shipType.toString()}
 				onDragStart={() => dragStart()}
 				onDragEnd={() => dragEnd()}
 				onTouchStart={() => onTouchStart()}
 				onTouchEnd={() => onTouchEnd()}
 			>
-				{shipType}
 			</div>
 		</>
 	);
