@@ -34,11 +34,11 @@ const router = createBrowserRouter([
 				path: "/rooms",
 				element: <Rooms />,
 			},
-			{
-				path: "/room/:roomId",
-				element: <GameRoom />,
-			},
 		],
+	},
+	{
+		path: "/room/:roomId",
+		element: <GameRoom />,
 	},
 	{
 		path: "/signin",
