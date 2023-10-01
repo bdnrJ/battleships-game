@@ -7,7 +7,29 @@
     padding: 50px;
 
     @include mobile{
-        padding: 50px 5px;
+        padding: 25px 5px;
+
+    }
+
+    @include tablet{
+        padding: 10px;
+    }
+
+    .gameplay__your-turn, .gameplay__enemy-turn{
+        display: flex;
+        gap: 5px;
+    }
+
+    .gameplay__your-turn{
+        p{
+            color: green;
+        }
+    }
+
+    .gameplay__enemy-turn{
+        p{
+            color: red;
+        }
     }
 
     .gameplay__boards{

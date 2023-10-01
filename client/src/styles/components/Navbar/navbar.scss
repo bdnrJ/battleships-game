@@ -9,6 +9,9 @@
 	position: relative;
 
 	.navbar--logo {
+
+		display: flex;
+		flex-direction: column;
 		cursor: pointer;
 		img {
 			height: 75px;

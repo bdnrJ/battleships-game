@@ -38,7 +38,11 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "/room/:roomId",
-		element: <GameRoom />,
+		element: (
+			<CenterModalProvider>
+				<GameRoom />,
+			</CenterModalProvider>
+		),
 	},
 	{
 		path: "/signin",

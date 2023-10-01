@@ -110,8 +110,8 @@ const GameRoom = () => {
 	}, []);
 
 	return (
-		<div className='gameroom-wrapper'>
-			<div className='gameroom'>
+		<div className={`gameroom-wrapper ${room.gameState === GameStage.PLAYING ? " --playing" : ""}`}>
+			<div className={`gameroom ${room.gameState === GameStage.PLAYING ? " --playing" : ""}`}>
 				<div className='gameroom__left'>
 					<div className='gameroom__left--top'>
 						<div className='gameroom__left--top--leave'>

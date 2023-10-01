@@ -157,3 +157,29 @@
         color: lighten(black, 75%);
     }
 }
+
+.g__button{
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    height: 35px;
+    min-width: 100px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    &:hover{
+        background-color: black;
+        color: white;
+    }
+
+    @include tablet{
+        height: 35px;
+        min-width: 75px;
+        font-size: 12px;
+    }
+}

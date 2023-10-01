@@ -60,6 +60,7 @@ const Rooms = () => {
 		<div className='rooms'>
 			<div className='rooms__controlls'>
 				<button
+					className='g__button'
 					onClick={() => showCenterModal(<CreateRoom closePopup={closePopup} createRoom={createRoom} inModal={true} />)}
 				>
 					<span>Create Room</span>
@@ -67,9 +68,15 @@ const Rooms = () => {
 				</button>
 			</div>
 			<div className='rooms__game-rooms'>
-				{rooms.map((room) => (
-					<Room key={room.id} gameRoom={room} />
-				))}
+				{rooms.length === 0 ? (
+					<h2>No free rooms exist at the moment</h2>
+				) : (
+					<>
+						{rooms.map((room) => (
+							<Room key={room.id} gameRoom={room} />
+						))}
+					</>
+				)}
 			</div>
 		</div>
 	);

@@ -1,0 +1,14 @@
+.victory{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+  padding-bottom: 15px;
+
+  .victory__buttons{
+    display: flex;
+    gap: 30px;
+  }
+}

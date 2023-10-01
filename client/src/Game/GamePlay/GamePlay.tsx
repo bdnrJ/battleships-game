@@ -4,6 +4,8 @@ import EnemyBoard from "./EnemyBoard";
 import MyBoard from "./MyBoard";
 import { gameplayState } from "../../views/GameRoom";
 import socket from "../../utils/socket";
+import { useCenterModal } from "../../hooks/useCenterModal";
+import VictoryModal from "../../components/modals/VictoryModal";
 
 type Props = {
 	myBoard: number[][];
@@ -26,6 +28,9 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 	const { user } = useContext(UserContext);
 	const enemyNickname = nicknames.find((nickname) => nickname !== user.nickname) || "unknown";
 	const [playerTimer, setPlayerTimer] = useState<number>(30);
+	const [hasGameEnded, setHasGameEnded] = useState<boolean>(false);
+
+	const { showCenterModal, closePopup } = useCenterModal();
 
 	const [myBoardHitLog, setMyBoardHitLog] = useState<number[][]>([
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -88,16 +93,15 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 			setGameplayStageRoom({ ...gameplayState });
 		});
 
-		socket.on("victory", (victoryMessage: string) => {
-			alert(victoryMessage);
+		socket.on("victory", (victoryMessage: string, userId: string) => {
+			setHasGameEnded(true);
+			showCenterModal(<VictoryModal userId={userId} victoryMessage={victoryMessage} closePopup={closePopup} />);
 		});
 
 		setInterval(() => {
 			//in prod will work correctly ;d
 			setPlayerTimer((prevTimer) => prevTimer - 1);
 		}, 1000);
-
-		console.log("fugg");
 
 		return () => {
 			socket.off("updateGameState");
@@ -106,7 +110,9 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 	}, []);
 
 	useEffect(() => {
+		//if player run out of time, bot makes a move //TODO to change
 		if (playerTimer <= 0) {
+			//find empty cell
 			if (gameplayStageRoom.turn === user.sessionId) {
 				let cords = [-1, -1];
 				for (let row = 0; row < 10; row++) {
@@ -126,8 +132,20 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 
 	return (
 		<div className='gameplay'>
-			<span>{gameplayStageRoom.turn === user.sessionId ? "Your turn" : "Enemy turn"}</span>
-			<h3>Time left: {playerTimer}</h3>
+			{!hasGameEnded && (
+				<>
+					{gameplayStageRoom.turn === user.sessionId ? (
+						<span className='gameplay__your-turn'>
+							<p>Your </p>turn
+						</span>
+					) : (
+						<span className='gameplay__enemy-turn'>
+							<p>Enemy </p>turn
+						</span>
+					)}
+					<h3>Time left: {playerTimer}</h3>
+				</>
+			)}
 			<div className='gameplay__boards'>
 				<div className='gameplay__player'>
 					<div className='gameplay__player--title'>You</div>

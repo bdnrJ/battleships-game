@@ -12,31 +12,31 @@
         justify-content: flex-end;
         padding-right: 20%;
 
-        button{
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 20px;
-            color: $fadedOrange;
-            background-color: transparent;
-            border-radius: 5px;
-            border: 2px solid $middleOrange;
-            cursor: pointer;
-            transition: all 0.2s ease-in;
-            background-color: white;
+        // button{
+        //     height: 40px;
+        //     display: flex;
+        //     align-items: center;
+        //     justify-content: center;
+        //     gap: 10px;
+        //     font-size: 20px;
+        //     color: $fadedOrange;
+        //     background-color: transparent;
+        //     border-radius: 5px;
+        //     border: 2px solid $middleOrange;
+        //     cursor: pointer;
+        //     transition: all 0.2s ease-in;
+        //     background-color: white;
 
-            &:hover{
-                border: 2px solid darken($middleOrange, 20%);
-                color: ligthen($fadedOrange, 40%);
-            }
+        //     &:hover{
+        //         border: 2px solid darken($middleOrange, 20%);
+        //         color: ligthen($fadedOrange, 40%);
+        //     }
 
             
-            span{
-                font-size: 18px;
-            }
-        }
+        //     span{
+        //         font-size: 18px;
+        //     }
+        // }
     }
 
     .rooms__game-rooms{

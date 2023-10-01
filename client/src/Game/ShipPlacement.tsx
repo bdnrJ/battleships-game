@@ -81,7 +81,7 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 		return Math.floor(Math.random() * Math.floor(max));
 	}
 
-	function isCellAvailable(row, col, board) {
+	function isCellAvailable(row: number, col: number, board: number[][]) {
 		const rows = board.length;
 		const cols = board[0].length;
 
@@ -112,7 +112,7 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 		return false;
 	}
 
-	function randomizeShipPlacement(shipLength, board) {
+	function randomizeShipPlacement(shipLength: number, board: number[][]) {
 		const isHorizontal = Math.random() < 0.5;
 		let row, col;
 

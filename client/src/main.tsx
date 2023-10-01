@@ -29,5 +29,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 );
 
 //TODO
-// timer for each round
 //recreate timer to work from backend
+// players online counter
