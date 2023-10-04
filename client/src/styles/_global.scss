@@ -1,185 +1,190 @@
 .g__form {
-    background-color: white;
-    width: min(400px, 100vw);
-    padding: 20px 40px 20px 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+	background-color: white;
+	width: min(400px, 100vw);
+	padding: 20px 40px 20px 40px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 
-    &.--inmodal{
-        box-shadow: none;
-    }
+	&.--inmodal {
+		box-shadow: none;
+	}
 
-    .g__form--title {
-        font-size: 30px;
-    }
+	.g__form--title {
+		font-size: 30px;
+	}
 
-    .g__form__inputs {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+	.g__form__inputs {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
 
-        .g__form__inputs--inputwrapper {
+		.g__form__inputs--inputwrapper {
+			.g__form__inputs--inputwrapper--checkbox {
+				height: 45px;
+				display: flex;
+				align-items: center;
+				gap: 25px;
 
-            .g__form__inputs--inputwrapper--checkbox {
-                height: 45px;
-                display: flex;
-                align-items: center;
-                gap: 25px;
+				input[type="checkbox"] {
+					/* Hide the default checkbox */
+					appearance: none;
+					-webkit-appearance: none;
+					-moz-appearance: none;
+					-o-appearance: none;
+					-ms-appearance: none;
 
-                input[type="checkbox"] {
-                    /* Hide the default checkbox */
-                    appearance: none;
-                    -webkit-appearance: none;
-                    -moz-appearance: none;
-                    -o-appearance: none;
-                    -ms-appearance: none;
-            
-                    /* Set the size of the checkbox */
-                    width: 18px;
-                    height: 18px;
-                    border: 2px solid #6ACADE;
-                    border-radius: 4px;
-            
-                    /* Custom checkmark styling when the checkbox is checked */
-                    &:checked {
-                        background-color: #6ACADE;
-                        border-color: #6ACADE;
-            
-                        /* Add a checkmark using pseudo-element */
-                        &::after {
-                            content: '';
-                            display: block;
-                            width: 8px;
-                            height: 14px;
-                            border: 2px solid white;
-                            border-width: 0 2px 2px 0;
-                            transform: rotate(45deg);
-                            margin-left: 3px;
-                            margin-top: -1px;
-                        }
-                    }
-            
-                    /* Style the checkbox when it's focused */
-                    &:focus {
-                        outline: none;
-                        box-shadow: 0 0 4px rgba(106, 202, 222, 0.5);
-                    }
-                }
-            }
+					/* Set the size of the checkbox */
+					width: 18px;
+					height: 18px;
+					border: 2px solid #6acade;
+					border-radius: 4px;
 
-            .g__form--input {
-                width: 100%;
-                border: 2px solid gray;
-                height: 40px;
-                border-radius: 5px;
-                padding-left: 10px;
-                outline: none;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-                transition: all 0.1s ease-in;
+					/* Custom checkmark styling when the checkbox is checked */
+					&:checked {
+						background-color: #6acade;
+						border-color: #6acade;
 
-                &.--error {
-                    color: $error;
-                    border: 2px solid $error;
-                    box-shadow: 0 2px 10px rgba($error, 0.15);
-                }
-            }
+						/* Add a checkmark using pseudo-element */
+						&::after {
+							content: "";
+							display: block;
+							width: 8px;
+							height: 14px;
+							border: 2px solid white;
+							border-width: 0 2px 2px 0;
+							transform: rotate(45deg);
+							margin-left: 3px;
+							margin-top: -1px;
+						}
+					}
 
-            .g__form__inputs--inputwrapper--error {
-                height: 15px;
-                padding: 1px 0px 0px 5px;
-                color: $error;
-                font-size: 13px;
-            }
-        }
-    }
+					/* Style the checkbox when it's focused */
+					&:focus {
+						outline: none;
+						box-shadow: 0 0 4px rgba(106, 202, 222, 0.5);
+					}
+				}
+			}
 
-    .g__form--submit {
-        cursor: pointer;
-        background-color: $submitButton;
-        width: 200px;
-        height: 35px;
-        border: 1px solid transparent;
-        border-radius: 15px;
-        color: white;
-        transition: all 0.2s ease-in;
-        font-size: 15px;
+			.g__form--input {
+				width: 100%;
+				border: 2px solid gray;
+				height: 40px;
+				border-radius: 5px;
+				padding-left: 10px;
+				outline: none;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+				transition: all 0.1s ease-in;
 
-        &:hover {
-            background-color: darken($submitButton, 30%);
-        }
-    }
+				&.--error {
+					color: $error;
+					border: 2px solid $error;
+					box-shadow: 0 2px 10px rgba($error, 0.15);
+				}
+			}
 
-    .g__form--error {
-        height: 20px;
-        color: $error;
-        text-align: center;
-    }
+			.g__form__inputs--inputwrapper--error {
+				height: 15px;
+				padding: 1px 0px 0px 5px;
+				color: $error;
+				font-size: 13px;
+			}
+		}
+	}
 
-    .g__form--link {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        gap: 10px;
+	.g__form--submit {
+		cursor: pointer;
+		background-color: $submitButton;
+		width: 200px;
+		height: 35px;
+		border: 1px solid transparent;
+		border-radius: 15px;
+		color: white;
+		transition: all 0.2s ease-in;
+		font-size: 15px;
 
-        button {
-            cursor: pointer;
-            border: 1px solid transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100px;
-            background-color: white;
-            font-family: "Oswald";
-            font-size: 15px;
-        }
-    }
+		&:hover {
+			background-color: darken($submitButton, 30%);
+		}
+	}
 
+	.g__form--error {
+		height: 20px;
+		color: $error;
+		text-align: center;
+	}
+
+	.g__form--link {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		gap: 10px;
+
+		button {
+			cursor: pointer;
+			border: 1px solid transparent;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100px;
+			background-color: white;
+			font-family: "Oswald";
+			font-size: 15px;
+		}
+	}
 }
 
-.g__link{
-    text-decoration: none;
-    cursor: pointer;
-    color: black;
+.g__link {
+	text-decoration: none;
+	cursor: pointer;
+	color: black;
 
-    cursor: pointer;
-    background-color: transparent;
-    border: 1px solid transparent;
-    font-size: 17px;
-    transition: all 0.2s ease-in;
-    
-    &:hover{
-        color: lighten(black, 75%);
-    }
+	cursor: pointer;
+	background-color: transparent;
+	border: 1px solid transparent;
+	font-size: 17px;
+	transition: all 0.2s ease-in;
+
+	&:hover {
+		color: lighten(black, 75%);
+	}
 }
 
-.g__button{
-    cursor: pointer;
-    background-color: white;
-    color: black;
-    border: 1px solid black;
-    height: 35px;
-    min-width: 100px;
-    transition: all 0.3s ease;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+.g__button {
+	cursor: pointer;
+	background-color: white;
+	color: black;
+	border: 1px solid black;
+	height: 35px;
+	min-width: 100px;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
 
-    &:hover{
-        background-color: black;
-        color: white;
-    }
+	&:hover {
+		background-color: black;
+		color: white;
+	}
 
-    @include tablet{
-        height: 35px;
-        min-width: 75px;
-        font-size: 12px;
-    }
+	@include tablet {
+		height: 35px;
+		min-width: 75px;
+		font-size: 12px;
+	}
+
+	&.--disabled {
+		background-color: grey;
+		&:hover {
+			background-color: grey;
+			color: black;
+		}
+	}
 }

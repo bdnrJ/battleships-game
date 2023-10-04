@@ -3,6 +3,7 @@ import Board from "./Board";
 import Ship from "./Ship";
 import socket from "../utils/socket";
 import { RoomContext } from "../context/RoomContext";
+import { useAlert } from "../hooks/useAlert";
 
 type Props = {
 	board: number[][];
@@ -27,38 +28,17 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 	const [isFlipped, setIsFlipped] = useState<boolean>(false);
 	const [shipsCounter, setShipsCounter] = useState<number[]>([4, 3, 2, 1]);
 	const { room } = useContext(RoomContext);
+	const { showAlert } = useAlert();
+	const [isPlayerReady, setIsPlayerReady] = useState<boolean>(false);
 
-	const temp1 = [
-		[0, 0, 0, 0, 0, 0, 4, 4, 4, 4],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 1, 0, 0, 0, 3, 3, 3],
-		[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 1, 0, 0, 0, 3, 3, 3],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 2, 2, 0, 0, 0, 2, 2],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 1, 0, 0, 2, 2],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	];
-
-	const temp2 = [
-		[4, 4, 4, 4, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[3, 3, 3, 0, 1, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 1, 0, 1, 0, 0, 0, 3, 3, 3],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[2, 2, 0, 0, 0, 2, 2, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 2, 2],
-		[0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-	];
-
-	useEffect(() => {
+	const handleReadyToPlay = () => {
 		if (board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0) === 50) {
 			socket.emit("sendPlayerBoard", board, room.id);
+			setIsPlayerReady(true);
+		} else {
+			showAlert("You must use all of available ships", "failure");
 		}
-	}, [board]);
+	};
 
 	const handleBoardReset = () => {
 		setBoard([
@@ -166,13 +146,14 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 		newBoard = randomizeShipPlacement(ShipType.DESTROYER, newBoard);
 		newBoard = randomizeShipPlacement(ShipType.DESTROYER, newBoard);
 
-		for (let i = 0; i < 10; i++) {
-			console.log(newBoard[i]);
-		}
-
 		setBoard(newBoard);
 		setShipsCounter([0, 0, 0, 0]); // No more ships available after random placement
 	};
+
+	const handleFlipShips = () => {
+    // Use the functional form of setState to get the most recent state
+    setIsFlipped(prevIsFlipped => !prevIsFlipped);
+  };
 
 	return (
 		<div className='game'>
@@ -200,17 +181,38 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 				</div>
 			</div>
 			<div className='game--buttons'>
-				<button onClick={() => setIsFlipped(!isFlipped)}>Flip ships</button>
 				<button
-					onClick={() => console.log(board.reduce((sum, row) => sum.concat(row)).reduce((acc, num) => acc + num, 0))}
+					disabled={isPlayerReady}
+					className={`g__button ${isPlayerReady ? "--disabled" : ""}`}
+					onClick={handleFlipShips}
 				>
-					sum
+					Flip ships
 				</button>
-				<button onClick={() => setBoard(temp1)}>place1</button>
-				<button onClick={() => setBoard(temp2)}>place2</button>
-				<button onClick={handleBoardReset}>Reset board</button>
-				<button onClick={handleRandomPlacement}>Randomly Place Ships</button>
+				<button
+					disabled={isPlayerReady}
+					className={`g__button ${isPlayerReady ? "--disabled" : ""}`}
+					onClick={handleBoardReset}
+				>
+					Reset board
+				</button>
+				<button
+					disabled={isPlayerReady}
+					className={`g__button ${isPlayerReady ? "--disabled" : ""}`}
+					onClick={handleRandomPlacement}
+				>
+					Randomly Place Ships
+				</button>
 			</div>
+			<div className='game--finalbutton'>
+				<button onClick={handleReadyToPlay} className='g__button'>
+					Set as ready
+				</button>
+			</div>
+			{isPlayerReady && (
+				<div className='game--waiting'>
+					<h3>Waiting for another player...</h3>
+				</div>
+			)}
 		</div>
 	);
 };

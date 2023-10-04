@@ -14,6 +14,7 @@ type Props = {
 };
 
 const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCounter, shipsCounter }: Props) => {
+
 	const isCellAvailable = (
 		rowIdx: number,
 		colIdx: number,
@@ -68,6 +69,10 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 
 		return true;
 	};
+
+	useEffect(() => {
+		console.log(isFlipped);
+	}, [isFlipped])
 
 	const dropShip = () => {
 		//the length of the ship [1 - 4] is stored as ship id
@@ -187,7 +192,7 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 				isOver: !!monitor.isOver(),
 			}),
 		}),
-		[board]
+		[board, isFlipped]
 	);
 
 	//creates green or red squares when user hovers over board with a ship
@@ -239,7 +244,7 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 					: board[rowId][columnId] === ShipType.CARRIER
 					? "--carrier"
 					: ""
-			}`}
+			} `}
 			id={id.toString()}
 			ref={drop}
 		></div>

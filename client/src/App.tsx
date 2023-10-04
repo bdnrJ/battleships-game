@@ -40,7 +40,7 @@ const router = createBrowserRouter([
 		path: "/room/:roomId",
 		element: (
 			<CenterModalProvider>
-				<GameRoom />,
+				<GameRoom />
 			</CenterModalProvider>
 		),
 	},
