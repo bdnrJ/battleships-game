@@ -1,11 +1,34 @@
-.gameroom {
-	margin-top: 15px;
-	display: flex;
-	max-width: 1400px;
+.gameroom-wrapper {
 	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	position: relative;
+
+
 
 	&.--playing {
 		@include mobile {
+			height: 100vh;
+		}
+	}
+}
+
+
+.gameroom {
+	display: flex;
+	max-width: 1400px;
+	margin-top: -20px;
+
+	@include tablet{
+		margin-top: 30px;
+	}
+
+	&.--playing {
+
+		@include mobile {
+			margin-top: 0px;
 			transform: rotate(90deg);
 		}
 	}
@@ -41,7 +64,7 @@
 			}
 
 			.gameroom__left--top--title {
-				width: 80%;
+				width: 140%;
 				display: flex;
 				align-items: center;
 				justify-content: center;
@@ -120,17 +143,3 @@
 	}
 }
 
-.gameroom-wrapper {
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border: 1px solid red;
-	height: 100vh;
-
-	&.--playing {
-		@include mobile {
-			height: 100vh;
-		}
-	}
-}

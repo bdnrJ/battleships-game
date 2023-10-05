@@ -1,7 +1,7 @@
 .g__form {
 	background-color: white;
 	width: min(400px, 100vw);
-	padding: 20px 40px 20px 40px;
+	padding: 0px 40px 20px 40px;
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
@@ -42,13 +42,13 @@
 					/* Set the size of the checkbox */
 					width: 18px;
 					height: 18px;
-					border: 2px solid #6acade;
+					border: 2px solid black;
 					border-radius: 4px;
 
 					/* Custom checkmark styling when the checkbox is checked */
 					&:checked {
-						background-color: #6acade;
-						border-color: #6acade;
+						background-color:black;
+						border-color: black;
 
 						/* Add a checkmark using pseudo-element */
 						&::after {
@@ -74,7 +74,7 @@
 
 			.g__form--input {
 				width: 100%;
-				border: 2px solid gray;
+				border: 2px solid black;
 				height: 40px;
 				border-radius: 5px;
 				padding-left: 10px;
@@ -168,6 +168,10 @@
 	align-items: center;
 	justify-content: center;
 	gap: 10px;
+
+	&.--200w{
+		width: 200px;
+	}
 
 	&:hover {
 		background-color: black;

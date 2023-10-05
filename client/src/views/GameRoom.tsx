@@ -7,6 +7,7 @@ import Waiting from "../Game/Waiting";
 import GamePlay from "../Game/GamePlay/GamePlay";
 import ShipPlacement from "../Game/ShipPlacement";
 import GameRoomChat from "../Game/GameRoomChat";
+import { BsFillChatFill } from "react-icons/bs";
 
 export type someoneLeftObject = {
 	updatedRoom: GameRoomType;
@@ -72,13 +73,40 @@ const GameRoom = () => {
 		navigate("/rooms");
 	};
 
+	//chat
+	const [messages, setMessages] = useState<string[]>([]);
+	const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+	const [unreadMessagesCounter, setUnreadMessagesCounter] = useState<number>(0);
+
+	const handleOpenChat = () => {
+		setUnreadMessagesCounter(0);
+		setIsChatOpen(true);
+	};
+
+	const handleCloseChat = () => {
+		setIsChatOpen(false);
+		setUnreadMessagesCounter(0);
+	};
+
 	useEffect(() => {
-		socket.on("someoneJoined", (updatedRoom: GameRoomType) => {
+		socket.on("someoneJoined", (updatedRoom: GameRoomType, nickname: string) => {
 			setRoom(updatedRoom);
+			const nMessages = messages;
+			nMessages.push(`${nickname} has joined the room`);
+			setMessages(nMessages);
+			if (!isChatOpen) {
+				setUnreadMessagesCounter((unreadMessagesNumber) => unreadMessagesNumber + 1);
+			}
 		});
 
-		socket.on("someoneLeft", (someoneLeft: someoneLeftObject) => {
+		socket.on("someoneLeft", (someoneLeft: someoneLeftObject, nickname: string) => {
 			setRoom(someoneLeft.updatedRoom);
+			const nMessages = messages;
+			nMessages.push(`${nickname} has left the room`);
+			setMessages(nMessages);
+			if (!isChatOpen) {
+				setUnreadMessagesCounter((unreadMessagesNumber) => unreadMessagesNumber + 1);
+			}
 		});
 
 		socket.on("readinessChange", (room: GameRoomType) => {
@@ -91,6 +119,15 @@ const GameRoom = () => {
 
 		socket.on("playingStageBoards", (newRoom: gameplayState) => {
 			setGameplayStageRoom(newRoom);
+		});
+
+		socket.on("recieveMessage", (message: string, nickname: string) => {
+			const nMessages = messages;
+			nMessages.push(`${nickname}: ${message}`);
+			setMessages([...nMessages]);
+			if (!isChatOpen) {
+				setUnreadMessagesCounter((unreadMessagesNumber) => unreadMessagesNumber + 1);
+			}
 		});
 
 		return () => {
@@ -106,6 +143,9 @@ const GameRoom = () => {
 			socket.off("readinessChange");
 			socket.off("startPlayingStage");
 			socket.off("playingStageBoards");
+			socket.off("someoneJoined");
+			socket.off("someoneLeft");
+			socket.off("recieveMessage");
 		};
 	}, []);
 
@@ -135,8 +175,23 @@ const GameRoom = () => {
 						)}
 					</div>
 				</div>
-				{/* <GameRoomChat /> */}
+				{!isChatOpen && (
+					<div className={`open-chat ${room.gameState === GameStage.PLAYING ? "--playing" : ""}`}>
+						{unreadMessagesCounter > 0 && <div className='open-chat--new-message'>{unreadMessagesCounter}</div>}
+						<button className='open-chat--button' aria-label='open chat button' onClick={handleOpenChat}>
+							<BsFillChatFill />
+						</button>
+					</div>
+				)}
 			</div>
+			{isChatOpen && (
+				<GameRoomChat
+					messages={messages}
+					setMessages={setMessages}
+					closeChat={handleCloseChat}
+					arePlaying={room.gameState === GameStage.PLAYING}
+				/>
+			)}
 		</div>
 	);
 };

@@ -36,7 +36,7 @@ const MessageAlert = ({ message, type, onClose }: MessagePopupProps) => {
   const popupClassName = `message-popup ${type} ${isVisible ? 'visible' : ''}`;
 
   return (
-    <div className={popupClassName}>
+    <div className={popupClassName} onClick={() => onClose()} >
       <div className="popup-content">
         <div className="icon">{getIcon()}</div>
         <div className="popup-message">{message}</div>

@@ -131,7 +131,7 @@ const CreateRoom = ({ createRoom, inModal, closePopup }: Props) => {
                         </div>
                     )}
                 </div>
-                <button type="submit" className="g__form--submit">
+                <button type="submit" className="g__button --200w">
                     Create Room
                 </button>
             </form>

@@ -151,9 +151,9 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 	};
 
 	const handleFlipShips = () => {
-    // Use the functional form of setState to get the most recent state
-    setIsFlipped(prevIsFlipped => !prevIsFlipped);
-  };
+		// Use the functional form of setState to get the most recent state
+		setIsFlipped((prevIsFlipped) => !prevIsFlipped);
+	};
 
 	return (
 		<div className='game'>
@@ -203,11 +203,13 @@ const ShipPlacement = ({ board, setBoard }: Props) => {
 					Randomly Place Ships
 				</button>
 			</div>
-			<div className='game--finalbutton'>
-				<button onClick={handleReadyToPlay} className='g__button'>
-					Set as ready
-				</button>
-			</div>
+			{!isPlayerReady && (
+				<div className='game--finalbutton'>
+					<button onClick={handleReadyToPlay} className='g__button'>
+						Set as ready
+					</button>
+				</div>
+			)}
 			{isPlayerReady && (
 				<div className='game--waiting'>
 					<h3>Waiting for another player...</h3>

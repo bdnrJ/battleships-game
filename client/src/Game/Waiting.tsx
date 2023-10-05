@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { RoomContext } from "../context/RoomContext";
 import socket from "../utils/socket";
 import { UserContext } from "../context/UserContext";
@@ -15,7 +15,7 @@ const Waiting = () => {
 
 	return (
 		<div className='waiting'>
-			<h1 className='waiting__title'>{room.clients.length === 1 ? "Waiting for second player" : "Waiting for both players to be ready..."}</h1>
+			<h1 className='waiting__title'>{room.clients.length === 1 ? "Waiting for another player..." : "Waiting for both players to be ready..."}</h1>
 			<div className='waiting__players'>
 				{room.clients.map((client, idx) => (
 					<span key={client.id + client.nickname}>

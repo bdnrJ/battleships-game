@@ -60,7 +60,7 @@ const Rooms = () => {
 		<div className='rooms'>
 			<div className='rooms__controlls'>
 				<button
-					className='g__button'
+					className='g__button --200w'
 					onClick={() => showCenterModal(<CreateRoom closePopup={closePopup} createRoom={createRoom} inModal={true} />)}
 				>
 					<span>Create Room</span>
