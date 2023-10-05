@@ -30,6 +30,7 @@
 				display: flex;
 				align-items: center;
 				gap: 25px;
+				cursor: pointer;
 
 				input[type="checkbox"] {
 					/* Hide the default checkbox */
@@ -38,6 +39,7 @@
 					-moz-appearance: none;
 					-o-appearance: none;
 					-ms-appearance: none;
+					cursor: pointer;
 
 					/* Set the size of the checkbox */
 					width: 18px;
@@ -47,7 +49,7 @@
 
 					/* Custom checkmark styling when the checkbox is checked */
 					&:checked {
-						background-color:black;
+						background-color: black;
 						border-color: black;
 
 						/* Add a checkmark using pseudo-element */
@@ -169,13 +171,17 @@
 	justify-content: center;
 	gap: 10px;
 
-	&.--200w{
+	&.--200w {
 		width: 200px;
 	}
 
 	&:hover {
 		background-color: black;
 		color: white;
+	}
+
+	&.--bold {
+		font-weight: bold;
 	}
 
 	@include tablet {

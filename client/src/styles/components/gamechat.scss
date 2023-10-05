@@ -9,7 +9,8 @@
   width: 250px;
 
   @include tablet{
-    height: calc(100vh - 56px);
+    // height: calc(100vh - 56px);
+    height: 100dvh;
     width: 100%;
 
   }
