@@ -29,6 +29,9 @@ async function main() {
         
         router.post('/signup', createUser);
         router.post('/signin', login);
+        router.get('/test', (req, res) => {
+            res.status(201).json({message: 'it works!' });
+        });
 
         // Use the router for all routes starting with '/api'
         app.use('/api', router);
