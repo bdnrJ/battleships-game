@@ -18,7 +18,7 @@ app.use(loggerMiddleware);
 async function main() {
     try {
         // Connect to MySQL Database
-        const connection = await createDatabaseConnection();
+        // const connection = await createDatabaseConnection();
 
         // Routes
         const router = express.Router();
