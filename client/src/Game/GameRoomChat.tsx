@@ -1,15 +1,16 @@
 import { useState, useContext, useRef, useEffect, SetStateAction } from "react";
 import { UserContext } from "../context/UserContext";
-import {  RoomContext } from "../context/RoomContext";
+import { RoomContext } from "../context/RoomContext";
 import socket from "../utils/socket";
 import { v4 } from "uuid";
 import { AiOutlineSend } from "react-icons/ai";
+import ChatMessage from "./ChatMessage";
 
 type Props = {
 	closeChat: () => void;
-	messages: string[],
+	messages: string[];
 	setMessages: React.Dispatch<SetStateAction<string[]>>;
-	arePlaying: boolean,
+	arePlaying: boolean;
 };
 
 const GameRoomChat = ({ closeChat, messages, arePlaying }: Props) => {
@@ -40,8 +41,6 @@ const GameRoomChat = ({ closeChat, messages, arePlaying }: Props) => {
 	// };
 
 	useEffect(() => {
-		
-
 		const handleClickOutside = (event: MouseEvent) => {
 			if (gameChatRef.current && !gameChatRef.current.contains(event.target as Node)) {
 				closeChat();
@@ -51,7 +50,6 @@ const GameRoomChat = ({ closeChat, messages, arePlaying }: Props) => {
 		document.addEventListener("mousedown", handleClickOutside);
 
 		return () => {
-
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
@@ -61,13 +59,17 @@ const GameRoomChat = ({ closeChat, messages, arePlaying }: Props) => {
 			<div className='gamechat--chat' ref={chatDivRef}>
 				<button onClick={closeChat}>close</button>
 				{messages.map((message) => (
-					<span key={v4()}>{message}</span>
+					<>
+						<ChatMessage msg={{ message: message, type: "info" }} key={v4()} />
+						<ChatMessage msg={{ message: message, type: "me" }} key={v4()} />
+						<ChatMessage msg={{ message: message, type: "anon", nickname: 'anon-2137' }} key={v4()} />
+					</>
 				))}
 			</div>
 			<div className='gamechat--input'>
-				<label htmlFor="chat_input">
+				<label htmlFor='chat_input'>
 					<input
-						name="chat_input"
+						name='chat_input'
 						type='text'
 						value={userMessage}
 						onChange={(e) => setUserMessage(e.target.value)}

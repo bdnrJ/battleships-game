@@ -38,13 +38,12 @@ async function main() {
 
         const httpServer = setupSocketIO(app);
 
-        // Start the server
-        // httpServer.listen(PORT, '192.168.0.101', () => {
-        //     console.log(`Server is running on http://192.168.0.101:${PORT}`);
-        // });
-        httpServer.listen(PORT, () => {
-            console.log(`Server is running on someip:${PORT}`);
+        httpServer.listen(PORT, '192.168.0.101', () => {
+            console.log(`Server is running on http://192.168.0.101:${PORT}`);
         });
+        // httpServer.listen(PORT, () => {
+        //     console.log(`Server is running on someip:${PORT}`);
+        // });
     } catch (err) {
         console.error('Error starting the server:', err);
         process.exit(1);
