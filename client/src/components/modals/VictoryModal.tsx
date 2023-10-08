@@ -8,7 +8,7 @@ type Props = {
   closePopup: () => void;
 }
 
-const VictoryModal = ({userId, victoryMessage, closePopup}: Props) => {
+const VictoryModal = ({userId, closePopup}: Props) => {
   const navigate = useNavigate();
 
   const {user} = useContext(UserContext);

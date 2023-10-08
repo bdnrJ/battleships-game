@@ -34,7 +34,7 @@ const Board = ({ boardState, setBoardState, isFlipped, setShipsCounter, shipsCou
 					{boardState.map((row, rowIdx) =>
 						row.map((cell, columnIdx) => (
 							<Cell
-								key={parseInt(rowIdx.toString() + columnIdx)}
+								key={parseInt(rowIdx.toString() + columnIdx) + cell}
 								shipsCounter={shipsCounter}
 								setShipsCounter={setShipsCounter}
 								isFlipped={isFlipped}

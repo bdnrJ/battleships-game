@@ -33,11 +33,11 @@ const GameRoomChat = ({ closeChat, messages, arePlaying }: Props) => {
 		}
 	};
 
-	const scrollToBottom = () => {
-		if (chatDivRef.current) {
-			chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
-		}
-	};
+	// const scrollToBottom = () => {
+	// 	if (chatDivRef.current) {
+	// 		chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
+	// 	}
+	// };
 
 	useEffect(() => {
 		
