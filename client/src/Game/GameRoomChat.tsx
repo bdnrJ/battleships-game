@@ -2,18 +2,19 @@ import { useState, useContext, useRef, useEffect, SetStateAction } from "react";
 import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 import socket from "../utils/socket";
-import { v4 } from "uuid";
-import { AiOutlineSend } from "react-icons/ai";
-import ChatMessage from "./ChatMessage";
+import { AiOutlineSend, AiOutlineArrowDown } from "react-icons/ai";
+import ChatMessage, { ChatMessageType } from "./ChatMessage";
 
 type Props = {
 	closeChat: () => void;
-	messages: string[];
-	setMessages: React.Dispatch<SetStateAction<string[]>>;
+	messages: ChatMessageType[];
+	setMessages: React.Dispatch<SetStateAction<ChatMessageType[]>>;
 	arePlaying: boolean;
+	chatScrollDownLock: boolean;
+	setChatScrollDownLock: React.Dispatch<SetStateAction<boolean>>;
 };
 
-const GameRoomChat = ({ closeChat, messages, arePlaying }: Props) => {
+const GameRoomChat = ({ closeChat, messages, arePlaying, chatScrollDownLock, setChatScrollDownLock }: Props) => {
 	const [userMessage, setUserMessage] = useState<string>("");
 
 	const { user } = useContext(UserContext);
@@ -23,7 +24,6 @@ const GameRoomChat = ({ closeChat, messages, arePlaying }: Props) => {
 
 	const handleSendMessage = (message: string, roomId: string, nickname: string) => {
 		if (userMessage.trim() === "") return;
-		console.log(user);
 		socket.emit("sendMessage", message, roomId, nickname);
 		setUserMessage("");
 	};
@@ -34,11 +34,36 @@ const GameRoomChat = ({ closeChat, messages, arePlaying }: Props) => {
 		}
 	};
 
-	// const scrollToBottom = () => {
-	// 	if (chatDivRef.current) {
-	// 		chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
-	// 	}
-	// };
+	const scrollToBottom = () => {
+		if (chatDivRef.current) {
+			chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
+		}
+	};
+
+	const handleScroll = () => {
+		if (chatDivRef.current) {
+			const { scrollTop, scrollHeight, clientHeight } = chatDivRef.current;
+
+			const distanceFromBottom = scrollHeight - (scrollTop + clientHeight);
+
+			if(distanceFromBottom >= 300){
+				console.log("when this is");
+				
+				setChatScrollDownLock(false);
+			}
+
+			if(distanceFromBottom === 0){
+				setChatScrollDownLock(true);
+			}
+		}
+	};
+
+	const handleOnScrollDown = () => {
+		chatDivRef.current?.removeEventListener("scroll", handleScroll);
+		scrollToBottom();
+		setChatScrollDownLock(true);
+		chatDivRef.current?.addEventListener("scroll", handleScroll);
+	};
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -54,16 +79,43 @@ const GameRoomChat = ({ closeChat, messages, arePlaying }: Props) => {
 		};
 	}, []);
 
+	useEffect(() => {
+		//if chat is in 'scroll down on new message mode' then scroll to bottom on each new message (duh)
+		if (chatScrollDownLock) {
+			scrollToBottom();
+		}
+	}, [messages]);
+
+	useEffect(() => {
+		chatDivRef.current?.addEventListener("scroll", handleScroll);
+
+		return () => {
+			chatDivRef.current?.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
+
 	return (
 		<div className={`gamechat ${arePlaying ? "--playing" : ""}`} ref={gameChatRef}>
+			<button className='gamechat--chat--closebtn' onClick={closeChat} aria-label='close chat button'>
+				Close chat
+			</button>
+
+			<button
+				className={`gamechat--scrollbtn ${
+					chatDivRef.current &&
+					chatDivRef.current.scrollHeight > chatDivRef.current.clientHeight &&
+					!chatScrollDownLock &&
+					"--visible"
+				}`}
+				onClick={handleOnScrollDown}
+				aria-label='scroll down button'
+			>
+				<AiOutlineArrowDown />
+			</button>
+
 			<div className='gamechat--chat' ref={chatDivRef}>
-				<button onClick={closeChat}>close</button>
-				{messages.map((message) => (
-					<>
-						<ChatMessage msg={{ message: message, type: "info" }} key={v4()} />
-						<ChatMessage msg={{ message: message, type: "me" }} key={v4()} />
-						<ChatMessage msg={{ message: message, type: "anon", nickname: 'anon-2137' }} key={v4()} />
-					</>
+				{messages.map((message, idx) => (
+					<ChatMessage key={idx + message.type + message.message} msg={message} />
 				))}
 			</div>
 			<div className='gamechat--input'>

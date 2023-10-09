@@ -8,6 +8,7 @@ import GamePlay from "../Game/GamePlay/GamePlay";
 import ShipPlacement from "../Game/ShipPlacement";
 import GameRoomChat from "../Game/GameRoomChat";
 import { BsFillChatFill } from "react-icons/bs";
+import { ChatMessageType } from "../Game/ChatMessage";
 
 export type someoneLeftObject = {
 	updatedRoom: GameRoomType;
@@ -74,9 +75,10 @@ const GameRoom = () => {
 	};
 
 	//chat
-	const [messages, setMessages] = useState<string[]>([]);
+	const [messages, setMessages] = useState<ChatMessageType[]>([]);
 	const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
 	const [unreadMessagesCounter, setUnreadMessagesCounter] = useState<number>(0);
+	const [chatScrollDownLock, setChatScrollDownLock] = useState<boolean>(false);
 
 	const handleOpenChat = () => {
 		setUnreadMessagesCounter(0);
@@ -90,23 +92,21 @@ const GameRoom = () => {
 
 	useEffect(() => {
 		socket.on("someoneJoined", (updatedRoom: GameRoomType, nickname: string) => {
+			const newMessage: ChatMessageType = { message: `${nickname} has joined the room`, type: "info" };
 			setRoom(updatedRoom);
 			const nMessages = messages;
-			nMessages.push(`${nickname} has joined the room`);
+			nMessages.push(newMessage);
 			setMessages(nMessages);
-			if (!isChatOpen) {
-				setUnreadMessagesCounter((unreadMessagesNumber) => unreadMessagesNumber + 1);
-			}
 		});
 
 		socket.on("someoneLeft", (someoneLeft: someoneLeftObject, nickname: string) => {
-			setRoom(someoneLeft.updatedRoom);
+			const newMessage: ChatMessageType = { message: `${nickname} has left the room`, type: "info" };
 			const nMessages = messages;
-			nMessages.push(`${nickname} has left the room`);
+			nMessages.push(newMessage);
+
 			setMessages(nMessages);
-			if (!isChatOpen) {
-				setUnreadMessagesCounter((unreadMessagesNumber) => unreadMessagesNumber + 1);
-			}
+
+			setRoom(someoneLeft.updatedRoom);
 		});
 
 		socket.on("readinessChange", (room: GameRoomType) => {
@@ -122,8 +122,17 @@ const GameRoom = () => {
 		});
 
 		socket.on("recieveMessage", (message: string, nickname: string) => {
+			const newMessage: ChatMessageType = {
+				message: message,
+				type: user.nickname === nickname ? "me" : "anon",
+				nickname: nickname,
+				displayNick: false,
+			};
+
+			if (messages.length === 0 || messages[messages.length - 1].nickname !== nickname) newMessage.displayNick = true;
+
 			const nMessages = messages;
-			nMessages.push(`${nickname}: ${message}`);
+			nMessages.push(newMessage);
 			setMessages([...nMessages]);
 			if (!isChatOpen) {
 				setUnreadMessagesCounter((unreadMessagesNumber) => unreadMessagesNumber + 1);
@@ -186,6 +195,8 @@ const GameRoom = () => {
 			</div>
 			{isChatOpen && (
 				<GameRoomChat
+					setChatScrollDownLock={setChatScrollDownLock}
+					chatScrollDownLock={chatScrollDownLock}
 					messages={messages}
 					setMessages={setMessages}
 					closeChat={handleCloseChat}
