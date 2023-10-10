@@ -11,6 +11,7 @@ type Props = {
 	isFlipped: boolean;
 	setShipsCounter: React.Dispatch<SetStateAction<number[]>>;
 	shipsCounter: number[];
+	cell: number,
 };
 
 const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCounter, shipsCounter }: Props) => {

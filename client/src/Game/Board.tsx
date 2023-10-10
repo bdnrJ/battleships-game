@@ -43,6 +43,7 @@ const Board = ({ boardState, setBoardState, isFlipped, setShipsCounter, shipsCou
 								rowId={rowIdx}
 								board={boardState}
 								id={parseInt(rowIdx.toString() + columnIdx)}
+								cell={cell}
 							/>
 						))
 					)}
