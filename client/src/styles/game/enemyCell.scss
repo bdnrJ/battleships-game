@@ -20,13 +20,9 @@
       cursor: pointer;
     }
   
-    &.--hit,
-    &.--damaged,
-    &.--dead,
-    &.--arounddead {
+    &.--hit{
       position: relative;
       background-color: white;
-  
       &:before,
       &:after {
         content: "";
@@ -47,6 +43,13 @@
         transform: rotate(-45deg);
       }
     }
+    
+
+    &.--damaged,
+    &.--dead,
+    &.--arounddead {
+      position: relative;
+      background-color: white;
   
     &.--damaged {
       background-color: red;
@@ -63,4 +66,5 @@
       background-color: grey;
     }
   }
+}
   

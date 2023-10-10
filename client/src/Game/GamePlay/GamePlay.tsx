@@ -45,6 +45,19 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	]);
 
+	const [myEnemyBoardHitLog, setMyEnemyBoardHitLog] = useState<number[][]>([
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	]);
+
 	useEffect(() => {
 		socket.on("updateGameState", (gameplayState: gameplayState, rowIdx: number, colIdx: number, playerId: string) => {
 			setPlayerTimer(30);
@@ -153,7 +166,12 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 				</div>
 				<div className='gameplay__player'>
 					<div className='gameplay__player--title'>{enemyNickname}</div>
-					<EnemyBoard enemyBoard={enemyBoard} gameplayStageRoom={gameplayStageRoom} />
+					<EnemyBoard
+						enemyBoard={enemyBoard}
+						gameplayStageRoom={gameplayStageRoom}
+						myEnemyBoardHitLog={myEnemyBoardHitLog}
+						setMyEnemyBoardHitLog={setMyEnemyBoardHitLog}
+					/>
 				</div>
 			</div>
 		</div>
