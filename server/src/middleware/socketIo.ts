@@ -110,13 +110,12 @@ export default function setupSocketIO(app: Express) {
 				//we delete room completly by removing clients and calling cleanup function
 				//TODO optimize maybe? this can be done without cleanup
 				if (room.gameState !== GameStage.WAITING) {
+					io.to(roomId).emit("enemyLeft", "Your enemy left the game :/");
+					
 					room.clients = [];
 					cleanupRooms();
-
-					//TODO message that room is being deleted
 					return;
 				}
-
 
 				room.clients = room.clients.filter((client) => client.id !== socket.id);
 
@@ -319,7 +318,7 @@ export default function setupSocketIO(app: Express) {
 		//placement stage
 
 		socket.on("sendPlayerBoard", (board: matrix, roomId: string) => {
-			const room = rooms.find((rm) => (rm.id = roomId));
+			const room = rooms.find((rm) => (rm.id === roomId));
 
 			if (!room) return;
 
