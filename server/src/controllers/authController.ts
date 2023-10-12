@@ -43,7 +43,9 @@ export async function login(req: Request, res: Response): Promise<void> {
 
             res.status(200).cookie('token', token, {
                 httpOnly: true,
-                maxAge: 2 * 60 * 60 * 1000, // 2 hours in milliseconds
+                maxAge: 2 * 60 * 60 * 1000, // 2 hours in milliseconds,
+                sameSite: true,
+                secure: true,
             }).json({
                 message: "Successfuly signed in",
                 userInfo
