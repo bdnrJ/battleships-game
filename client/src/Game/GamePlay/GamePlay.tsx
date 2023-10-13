@@ -139,6 +139,11 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 				}
 
 				socket.emit("missleShot", cords[0], cords[1], gameplayStageRoom.roomId);
+				setMyEnemyBoardHitLog((prev) => {
+					const updatedBoard = [...prev];
+					updatedBoard[cords[0]][cords[1]] = 1;
+					return updatedBoard;
+				});
 			}
 		}
 	}, [playerTimer]);

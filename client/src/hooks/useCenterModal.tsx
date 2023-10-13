@@ -2,8 +2,8 @@ import { createContext, useContext, useState, ReactNode } from "react";
 import Modal from "../components/modals/Modal";
 
 type CenterModalContextType = {
-	showCenterModal: (content: ReactNode) => void;
-  closePopup: () => void;
+	showCenterModal: (content: ReactNode, customCloseFunction?: () => void) => void;
+	closePopup: () => void;
 };
 
 export const CenterModalContext = createContext<CenterModalContextType | undefined>(undefined);
@@ -22,12 +22,15 @@ type PopupProviderProps = {
 
 export const CenterModalProvider = ({ children }: PopupProviderProps) => {
 	const [popupInfo, setPopupInfo] = useState<{ content: ReactNode } | null>(null);
+	const [customClosePopup, setCustomClosePopup] = useState<() => void>();
 
-	const showCenterModal = (content: ReactNode) => {
+	const showCenterModal = (content: ReactNode, 	customCloseFunction?: () => void) => {
 		setPopupInfo({ content });
+		setCustomClosePopup(customCloseFunction);
 	};
 
 	const closePopup = () => {
+		if(customClosePopup) customClosePopup();
 		setPopupInfo(null);
 	};
 

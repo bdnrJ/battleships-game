@@ -9,6 +9,8 @@ import ShipPlacement from "../Game/ShipPlacement";
 import GameRoomChat from "../Game/GameRoomChat";
 import { BsFillChatFill } from "react-icons/bs";
 import { ChatMessageType } from "../Game/ChatMessage";
+import { useCenterModal } from "../hooks/useCenterModal";
+import EnemyLeft from "../components/modals/EnemyLeft";
 
 export type someoneLeftObject = {
 	updatedRoom: GameRoomType;
@@ -52,6 +54,11 @@ const GameRoom = () => {
 
 	const { user } = useContext(UserContext);
 	const { room, setRoom } = useContext(RoomContext);
+	const { showCenterModal, closePopup } = useCenterModal();
+
+	const handleClosePopup = () => {
+		navigate("/rooms");
+	};
 
 	const useEffectRef = useRef<boolean>(false);
 
@@ -121,6 +128,10 @@ const GameRoom = () => {
 			setGameplayStageRoom(newRoom);
 		});
 
+		socket.on("enemyLeft", () => {
+			showCenterModal(<EnemyLeft handleClose={ () => {handleClosePopup(); closePopup()}} />, handleClosePopup);
+		});
+
 		socket.on("recieveMessage", (message: string, nickname: string) => {
 			const newMessage: ChatMessageType = {
 				message: message,
@@ -155,6 +166,7 @@ const GameRoom = () => {
 			socket.off("someoneJoined");
 			socket.off("someoneLeft");
 			socket.off("recieveMessage");
+			socket.off("enemyLeft");
 		};
 	}, []);
 
