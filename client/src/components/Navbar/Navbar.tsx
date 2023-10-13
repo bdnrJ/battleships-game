@@ -17,18 +17,22 @@ const Navbar = () => {
 	const [playersOnline, setPlayersOnline] = useState<number>(0);
 	const navigate = useNavigate();
 	const links: link[] = [
-		{
-			name: "Game",
-			direction: "/game",
-		},
+		// {
+		// 	name: "Game",
+		// 	direction: "/game",
+		// },
 		{
 			name: "Rooms",
 			direction: "/rooms",
 		},
 		{
-			name: "Ranking",
-			direction: "/ranking",
+			name: "Quick game",
+			direction: "/findgame",
 		},
+		// {
+		// 	name: "Ranking",
+		// 	direction: "/ranking",
+		// },
 	];
 
 	useEffect(() => {

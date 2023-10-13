@@ -1,6 +1,8 @@
 import { Server } from "socket.io";
 import { createServer, Server as HttpServer } from "http";
 import { Express } from "express";
+import { log } from "console";
+import { v4 } from "uuid";
 
 type matrix = number[][];
 
@@ -41,6 +43,16 @@ interface Client {
 	readiness: boolean;
 }
 
+interface WaitingRoom {
+	id: string;
+	waitingList: WaitingClient[];
+}
+
+interface WaitingClient {
+	nickname: string;
+	id: string;
+}
+
 interface GameRoom {
 	id: string;
 	roomName: string;
@@ -65,9 +77,13 @@ export default function setupSocketIO(app: Express) {
 	});
 
 	const rooms: GameRoom[] = [];
-	let connectedPlayers: number= 0;
+	let connectedPlayers: number = 0;
 	const gamePlayBoards: gameplayState[] = [];
 	const emptyMatrix: matrix = Array.from({ length: 10 }, () => Array(10).fill(0));
+	const playersWaitingRoom: WaitingRoom = {
+		id: "GlobalWaitingRoom",
+		waitingList: [],
+	};
 
 	//offsets are used to determine whether a ship that has been hit is merely damaged or if it has been completely sunk
 	const offsets = [
@@ -106,12 +122,13 @@ export default function setupSocketIO(app: Express) {
 		const onRoomLeave = (roomId: string, nickname: string): void => {
 			const room = rooms.find((roomX) => roomX.id === roomId);
 			if (room) {
+				socket.leave(roomId);
 				//if room state is not waiting meaning that game already started
 				//we delete room completly by removing clients and calling cleanup function
 				//TODO optimize maybe? this can be done without cleanup
 				if (room.gameState !== GameStage.WAITING) {
 					io.to(roomId).emit("enemyLeft", "Your enemy left the game :/");
-					
+
 					room.clients = [];
 					cleanupRooms();
 					return;
@@ -120,8 +137,6 @@ export default function setupSocketIO(app: Express) {
 				room.clients = room.clients.filter((client) => client.id !== socket.id);
 
 				//if 0 clients left this will remove room
-				cleanupRooms();
-
 				//if room wasnt deleted by cleanup() - emit message and reset readyCheck
 				if (room && room.clients.length !== 0) {
 					room.clients[0].readiness = false;
@@ -163,9 +178,9 @@ export default function setupSocketIO(app: Express) {
 			cleanupRooms();
 		});
 
-		socket.on('getPlayers', () => {
+		socket.on("getPlayers", () => {
 			socket.emit("playerCount", connectedPlayers);
-		})
+		});
 
 		//room systems
 
@@ -204,48 +219,7 @@ export default function setupSocketIO(app: Express) {
 			emitRoomsList();
 		});
 
-		socket.on("quickGame", (nickname: string) => {
-			const waitingRoomIndex = rooms.findIndex((room) => room.id === "waitingRoom");
-			const waitingRoom = rooms[waitingRoomIndex];
-	
-			if (waitingRoom.clients.length > 0) {
-					const newGameRoomId = "random"; //TODO 
-					const newGameRoom: GameRoom = {
-							id: newGameRoomId,
-							roomName: "Quick Game Room",
-							hostName: nickname,
-							clients: [...waitingRoom.clients, { id: socket.id, nickname, board: emptyMatrix, readiness: false }],
-							gameState: GameStage.PLACEMENT,
-							hasPassword: false,
-							password: "",
-					};
-	
-					// Remove players from the waiting room
-					waitingRoom.clients = [];
-	
-					// Add new game room to the rooms list
-					rooms.push(newGameRoom);
-	
-					// Join the new game room
-					socket.join(newGameRoomId);
-	
-					// Emit events to update UI for both players
-					io.to("waitingRoom").emit("quickGameMatched", newGameRoom);
-					io.to(newGameRoomId).emit("roomJoined", newGameRoom, socket.id);
-					emitRoomsList();
-			} else {
-					// No players in the waiting room, add the current player to the waiting room
-					waitingRoom.clients.push({ id: socket.id, nickname, board: emptyMatrix, readiness: false });
-	
-					// Join the waiting room
-					socket.join("waitingRoom");
-	
-					// Emit event to update UI for the waiting player
-					io.to("waitingRoom").emit("waitingForOpponent", waitingRoom);
-			}
-	});
-
-		socket.on("joinRoom", (roomId: string, nickname: string, password: string) => {
+		socket.on("joinRoom", (roomId: string, nickname: string, password: string, emitRooms: boolean = true) => {
 			const room = rooms.find((r) => r.id === roomId);
 			if (!room) {
 				socket.emit("roomError", "Room does not exist.");
@@ -257,8 +231,8 @@ export default function setupSocketIO(app: Express) {
 				return;
 			}
 
-			if(room.hasPassword){
-				if(room.password !== password){
+			if (room.hasPassword) {
+				if (room.password !== password) {
 					console.log("wrong password");
 					return;
 				}
@@ -281,7 +255,7 @@ export default function setupSocketIO(app: Express) {
 
 			io.to(roomId).emit("someoneJoined", room, nickname);
 
-			emitRoomsList();
+			if (emitRooms) emitRoomsList();
 		});
 
 		socket.on("leaveRoom", (roomId: string, nickname: string) => {
@@ -295,6 +269,55 @@ export default function setupSocketIO(app: Express) {
 		socket.on("sendMessage", (message: string, roomId: string, nickname: string) => {
 			console.log("send message by " + nickname);
 			io.to(roomId).emit("recieveMessage", message, nickname);
+		});
+
+		//waiting list
+
+		socket.on("joinWaitingRoom", (nickname: string) => {
+			if (playersWaitingRoom.waitingList.length > 1) {
+				socket.emit("quickGameError", "Waiting room is already full somehow...");
+				console.log("--- ERROR ---: global waiting room had 2 players and third one tried to join, bad!");
+				return;
+			}
+
+			if (playersWaitingRoom.waitingList.find((client) => client.id === socket.id)) {
+				socket.emit("quickGameError", "You are already in a waiting room");
+				return;
+			}
+
+			playersWaitingRoom.waitingList.push({ nickname: nickname, id: socket.id });
+			socket.join("GlobalWaitingRoom");
+			socket.emit("inWaitingList");
+
+			if (playersWaitingRoom.waitingList.length > 1) {
+				console.log(playersWaitingRoom);
+				const randomRoomId = v4();
+
+				const newRoom: GameRoom = {
+					id: randomRoomId,
+					roomName: "Quick Game Room",
+					hostName: playersWaitingRoom.waitingList[0].nickname,
+					clients: [],
+					gameState: GameStage.WAITING,
+
+					hasPassword: false,
+					password: "",
+				};
+
+				rooms.push(newRoom);
+
+				socket.to('GlobalWaitingRoom').emit("joinQuickGameRoom", randomRoomId);
+
+				playersWaitingRoom.waitingList = [];
+			}
+		});
+
+		socket.on("leaveWaitingListForBackend", () => {
+			socket.leave('GlobalWaitingRoom');
+		})
+
+		socket.on("leaveWaitingList", () => {
+			playersWaitingRoom.waitingList = playersWaitingRoom.waitingList.filter((client) => client.id !== socket.id);
 		});
 
 		//waiting stage
@@ -318,7 +341,7 @@ export default function setupSocketIO(app: Express) {
 		//placement stage
 
 		socket.on("sendPlayerBoard", (board: matrix, roomId: string) => {
-			const room = rooms.find((rm) => (rm.id === roomId));
+			const room = rooms.find((rm) => rm.id === roomId);
 
 			if (!room) return;
 
@@ -336,7 +359,7 @@ export default function setupSocketIO(app: Express) {
 					room.gameState = GameStage.PLAYING;
 
 					const roomWithoutBoardStates: GameRoom = { ...room };
-					roomWithoutBoardStates.clients.forEach((client) => ({...client, board: []}));
+					roomWithoutBoardStates.clients.forEach((client) => ({ ...client, board: [] }));
 
 					//were creating empty matrix like that because of shallow copying which
 					//wasted at least 5h of debugging xd
@@ -464,7 +487,11 @@ export default function setupSocketIO(app: Express) {
 					if (sumOfDeadShips === 20) {
 						gameplayState.turn = "";
 						io.to(roomId).emit("updateGameState", gameplayState, rowIdx, colIdx, socket.id);
-						io.to(roomId).emit("victory", `${room.clients.filter((client) => client.id === socket.id)[0].nickname} has won!`, socket.id);
+						io.to(roomId).emit(
+							"victory",
+							`${room.clients.filter((client) => client.id === socket.id)[0].nickname} has won!`,
+							socket.id
+						);
 						return;
 					}
 				}
