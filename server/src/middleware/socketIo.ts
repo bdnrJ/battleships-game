@@ -306,15 +306,36 @@ export default function setupSocketIO(app: Express) {
 
 				rooms.push(newRoom);
 
-				socket.to('GlobalWaitingRoom').emit("joinQuickGameRoom", randomRoomId);
+				const socketsInRoom = io.sockets.adapter.rooms.get("GlobalWaitingRoom");
+				console.log("Sockets in GlobalWaitingRoom:", socketsInRoom);
 
-				playersWaitingRoom.waitingList = [];
+				//this is where the fun begins
+				//so idk why but it seems like when someone joins waiting room as the second player
+				//and i try here to emit event to 'GlobalWaitingRoom' second player is not getting this
+				//even when im 100% sure he is in this room, even delaying event by 1s does nothing
+				//as this still bugs out so what i did is just take sockets connected to the 'GlobalWaitingRoom'
+				//and send to each one of them evenet to join room separatly - quite retarded but this way
+				//this works ;)
+				if (socketsInRoom) {
+					// Convert the Set of socket IDs to an array
+					const socketIds = Array.from(socketsInRoom);
+
+					// Iterate through the array of socket IDs and emit an event to each socket
+					socketIds.forEach((socketId) => {
+						// Get the socket instance using the socket ID
+						const socket = io.sockets.sockets.get(socketId);
+
+						// Emit an event to the socket and leave GlobalWaitingRoom
+						if (socket) {
+							socket.emit("joinQuickGameRoom", randomRoomId);
+							socket.leave("GlobalWaitingRoom");
+						}
+					});
+
+					playersWaitingRoom.waitingList = [];
+				}
 			}
 		});
-
-		socket.on("leaveWaitingListForBackend", () => {
-			socket.leave('GlobalWaitingRoom');
-		})
 
 		socket.on("leaveWaitingList", () => {
 			playersWaitingRoom.waitingList = playersWaitingRoom.waitingList.filter((client) => client.id !== socket.id);

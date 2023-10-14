@@ -30,8 +30,6 @@ const QuickGame = () => {
     })
 
     socket.on('joinQuickGameRoom', (roomId: string) => {
-      socket.emit('leaveWaitingListForBackend');
-
       console.log("joim quick game room");
       
       //(roomId: string, nickname: string, password: string, emitRooms: boolean = true)
@@ -41,7 +39,7 @@ const QuickGame = () => {
     socket.on("roomJoined", (room: GameRoomType, sessionId: string) => {
 			//set user room
 			setRoom(room);
-			console.log("joined room called");
+			console.log("joined qucik room called");
 			console.log(user);
 			console.log({ ...user, sessionId: sessionId });
 
