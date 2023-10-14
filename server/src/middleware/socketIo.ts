@@ -31,20 +31,18 @@ export default function setupSocketIO(app: Express) {
 
 	//offsets are used to determine whether a ship that has been hit is merely damaged or if it has been completely sunk
 
-	io.on("connection", () => {
-		setupRoomEvents(io, rooms, connectedPlayers, emptyMatrix);
+	setupRoomEvents(io, rooms, connectedPlayers, emptyMatrix);
 
-		setupUtilEvents(io, connectedPlayers);
-		
-		setupChatEvents(io);
-		
-		setupWaitingListEvents(io, playersWaitingRoom, rooms);
-		
-		//gameplay
-		setupWaitingStageEvents(io, rooms);
-		setupPlacementStageEvents(io, rooms, emptyMatrix, gamePlayBoards);
-		setupGameplayEvents(io, rooms, gamePlayBoards);
-	});
+	setupUtilEvents(io, connectedPlayers);
+
+	setupChatEvents(io);
+
+	setupWaitingListEvents(io, playersWaitingRoom, rooms);
+
+	//gameplay
+	setupWaitingStageEvents(io, rooms);
+	setupPlacementStageEvents(io, rooms, emptyMatrix, gamePlayBoards);
+	setupGameplayEvents(io, rooms, gamePlayBoards);
 
 	return httpServer;
 }
