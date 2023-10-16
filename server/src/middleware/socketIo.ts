@@ -29,17 +29,14 @@ export default function setupSocketIO(app: Express) {
 		waitingList: [],
 	};
 
-	//offsets are used to determine whether a ship that has been hit is merely damaged or if it has been completely sunk
+	setupRoomEvents(io, rooms, emptyMatrix);
 
-	setupRoomEvents(io, rooms, connectedPlayers, emptyMatrix);
-
-	setupUtilEvents(io, connectedPlayers);
+	setupUtilEvents(io, rooms);
 
 	setupChatEvents(io);
 
 	setupWaitingListEvents(io, playersWaitingRoom, rooms);
 
-	//gameplay
 	setupWaitingStageEvents(io, rooms);
 	setupPlacementStageEvents(io, rooms, emptyMatrix, gamePlayBoards);
 	setupGameplayEvents(io, rooms, gamePlayBoards);

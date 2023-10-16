@@ -86,6 +86,7 @@ const GameRoom = () => {
 	const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
 	const [unreadMessagesCounter, setUnreadMessagesCounter] = useState<number>(0);
 	const [chatScrollDownLock, setChatScrollDownLock] = useState<boolean>(false);
+	const [isLeaving, setIsLeaving] = useState<boolean>(false);
 
 	const handleOpenChat = () => {
 		setUnreadMessagesCounter(0);
@@ -152,7 +153,7 @@ const GameRoom = () => {
 
 		return () => {
 			// this makes sure that unmounting component (leaving game room) notices server about it
-			if (useEffectRef.current) leaveRoom();
+			if (useEffectRef.current && !isLeaving) leaveRoom();
 
 			useEffectRef.current = true;
 			// this makes sure that unmounting component (leaving game room) notices server about it
@@ -176,7 +177,7 @@ const GameRoom = () => {
 				<div className='gameroom__left'>
 					<div className='gameroom__left--top'>
 						<div className='gameroom__left--top--leave'>
-							<button className='gameroom__leave-button' onClick={leaveRoom} aria-label='leave button'>
+							<button className='gameroom__leave-button' onClick={() => {setIsLeaving(true); leaveRoom();}} aria-label='leave button'>
 								{"<- Leave"}
 							</button>
 						</div>

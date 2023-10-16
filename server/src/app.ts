@@ -38,7 +38,7 @@ async function main() {
 
         const httpServer = setupSocketIO(app);
 
-        httpServer.listen(PORT, '192.168.1.20', () => {
+        httpServer.listen(PORT, '192.168.0.101', () => {
             console.log(`Server is running on 192.168.1.21:${PORT}`);
         });
         // httpServer.listen(PORT, () => {

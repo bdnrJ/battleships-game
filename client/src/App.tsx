@@ -29,7 +29,7 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "/",
-				element: <GameRoom />,
+				element: <Rooms />,
 			},
 			{
 				path: "/rooms",

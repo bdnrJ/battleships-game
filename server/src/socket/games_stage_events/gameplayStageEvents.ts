@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { CellType, GameRoom, ShipTypes, gameplayState, matrix } from "../types.js";
+import { CellType, GameRoom, GameStage, ShipTypes, gameplayState, matrix } from "../types.js";
 
 export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoards: gameplayState[] ) {
 	const offsets = [
@@ -116,6 +116,7 @@ export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoard
 
 					if (sumOfDeadShips === 20) {
 						gameplayState.turn = "";
+						room.gameState = GameStage.ENDED;
 						io.to(roomId).emit("updateGameState", gameplayState, rowIdx, colIdx, socket.id);
 						io.to(roomId).emit(
 							"victory",
