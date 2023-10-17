@@ -137,6 +137,22 @@ export function setupRoomEvents(io: Server, rooms: GameRoom[], emptyMatrix: matr
 			emitRoomsList(io, rooms);
 		});
 
+		socket.on('findRoom', (roomId: string) => {
+			const room = rooms.find((r) => r.id === roomId);
+
+			if (!room) {
+				socket.emit("roomError", "Room that you tried to join no longer exists");
+				return;
+			}
+
+			if (room.clients.length >= 2) {
+				socket.emit("roomError", "Room that you tried to join is full");
+				return;
+			}
+
+			socket.emit("roomFound", room);
+		})
+
 		socket.on("joinRoom", (roomId: string, nickname: string, password: string, emitRooms: boolean = true) => {
 			const room = rooms.find((r) => r.id === roomId);
 			if (!room) {

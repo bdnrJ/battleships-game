@@ -131,7 +131,10 @@ const GameRoom = () => {
 		});
 
 		socket.on("enemyLeft", () => {
-			showCenterModal(<EnemyLeft handleClose={ () => {handleClosePopup(); closePopup()}} />, handleClosePopup);
+			if(room.gameState === GameStage.ENDED){
+				showCenterModal(<EnemyLeft hasGameEnded={true}  handleClose={ () => {handleClosePopup(); closePopup()}} />, handleClosePopup);
+			}
+			showCenterModal(<EnemyLeft hasGameEnded={false} handleClose={ () => {handleClosePopup(); closePopup()}} />, handleClosePopup);
 		});
 
 		socket.on("recieveMessage", (message: string, nickname: string) => {

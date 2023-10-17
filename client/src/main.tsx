@@ -30,4 +30,4 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
 //TODO
 //recreate timer to work from backend
-// players online counter
+// when game ended different communicate when enemy leaves ;d fix on backend

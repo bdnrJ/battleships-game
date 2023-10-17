@@ -8,6 +8,7 @@ export enum GameStage {
     WAITING = 0,
     PLACEMENT = 1,
     PLAYING = 2,
+    ENDED = 3,
 }
 
 interface Client {

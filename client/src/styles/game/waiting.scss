@@ -57,4 +57,34 @@
 			}
 		}
 	}
+
+	.waiting__invite{
+		margin-top: 50px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+
+		.waiting__invite--copy{
+			height: 30px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 15px;
+			font-size: 15px;
+			
+			color: black;
+			border: 1px solid black;
+			background-color: white;
+
+			transition: all 0.3s ease;
+			cursor: pointer;
+
+			&:hover{
+				color: white;;
+				background-color: black;
+			}
+		}
+	}
 }
