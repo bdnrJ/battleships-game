@@ -11,6 +11,7 @@ import { BsFillChatFill } from "react-icons/bs";
 import { ChatMessageType } from "../Game/ChatMessage";
 import { useCenterModal } from "../hooks/useCenterModal";
 import EnemyLeft from "../components/modals/EnemyLeft";
+import AcceptLeavingRoom from "../components/modals/AcceptLeavingRoom";
 
 export type someoneLeftObject = {
 	updatedRoom: GameRoomType;
@@ -177,7 +178,7 @@ const GameRoom = () => {
 				<div className='gameroom__left'>
 					<div className='gameroom__left--top'>
 						<div className='gameroom__left--top--leave'>
-							<button className='gameroom__leave-button' onClick={() => {setIsLeaving(true); leaveRoom();}} aria-label='leave button'>
+							<button className='gameroom__leave-button' onClick={() => {setIsLeaving(true); showCenterModal(<AcceptLeavingRoom leaveRoom={leaveRoom} handleClose={closePopup} />)}} aria-label='leave button'>
 								{"<- Leave"}
 							</button>
 						</div>

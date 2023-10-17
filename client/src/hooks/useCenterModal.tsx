@@ -1,43 +1,44 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useCallback } from "react";
 import Modal from "../components/modals/Modal";
 
 type CenterModalContextType = {
-	showCenterModal: (content: ReactNode, customCloseFunction?: () => void) => void;
-	closePopup: () => void;
+    showCenterModal: (content: ReactNode, customOnClose?: () => void) => void;
+    closePopup: () => void;
 };
 
 export const CenterModalContext = createContext<CenterModalContextType | undefined>(undefined);
 
 export const useCenterModal = () => {
-	const context = useContext(CenterModalContext);
-	if (!context) {
-		throw new Error("usePopup must be used within a PopupProvider");
-	}
-	return context;
+    const context = useContext(CenterModalContext);
+    if (!context) {
+        throw new Error("usePopup must be used within a PopupProvider");
+    }
+
+		return context;
 };
 
 type PopupProviderProps = {
-	children: ReactNode;
+    children: ReactNode;
 };
 
 export const CenterModalProvider = ({ children }: PopupProviderProps) => {
-	const [popupInfo, setPopupInfo] = useState<{ content: ReactNode } | null>(null);
-	const [customClosePopup, setCustomClosePopup] = useState<() => void>();
+    const [popupInfo, setPopupInfo] = useState<{ content: ReactNode; customOnClose?: () => void } | null>(null);
 
-	const showCenterModal = (content: ReactNode, 	customCloseFunction?: () => void) => {
-		setPopupInfo({ content });
-		setCustomClosePopup(customCloseFunction);
-	};
+    const showCenterModal = (content: ReactNode, customOnClose?: () => void) => {
+        setPopupInfo({ content, customOnClose });
+    };
 
-	const closePopup = () => {
-		if(customClosePopup) customClosePopup();
-		setPopupInfo(null);
-	};
+    const closePopup = () => {
+        if (popupInfo?.customOnClose) {
+            popupInfo.customOnClose();
+        }
+        setPopupInfo(null);
+    };
 
-	return (
-		<CenterModalContext.Provider value={{ showCenterModal, closePopup }}>
-			{children}
-			{popupInfo && <Modal onClose={closePopup}>{popupInfo.content}</Modal>}
-		</CenterModalContext.Provider>
-	);
+    return (
+        <CenterModalContext.Provider value={{ showCenterModal, closePopup }}>
+            {children}
+            {popupInfo && <Modal onClose={closePopup}>{popupInfo.content}</Modal>}
+        </CenterModalContext.Provider>
+    );
 };
