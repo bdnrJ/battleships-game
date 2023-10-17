@@ -13,6 +13,7 @@ type Props = {
 	nicknames: string[];
 	gameplayStageRoom: gameplayState;
 	setGameplayStageRoom: Dispatch<SetStateAction<gameplayState>>;
+	setIsGameEnded: Dispatch<SetStateAction<boolean>>;
 };
 
 export enum CellType {
@@ -23,7 +24,7 @@ export enum CellType {
 	AROUNDDEAD = 4,
 }
 
-const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGameplayStageRoom }: Props) => {
+const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGameplayStageRoom, setIsGameEnded }: Props) => {
 	const [enemyBoard, setEnemyBoard] = useState<number[][]>(Array(10).fill(Array(10).fill(0)));
 	const { user } = useContext(UserContext);
 	const enemyNickname = nicknames.find((nickname) => nickname !== user.nickname) || "unknown";
@@ -108,6 +109,7 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 
 		socket.on("victory", (victoryMessage: string, userId: string) => {
 			setHasGameEnded(true);
+			setIsGameEnded(true);
 			showCenterModal(<VictoryModal userId={userId} victoryMessage={victoryMessage} closePopup={closePopup} />);
 		});
 

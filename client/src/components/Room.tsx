@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { GameRoomType } from "../context/RoomContext";
 import socket from "../utils/socket";
-import { UserContext } from "../context/UserContext";
+import { UserContext, handleUserWithNoNickanmeBeforeJoin } from "../context/UserContext";
 import { AiOutlineArrowRight, AiOutlineLock } from "react-icons/ai";
 import { useCenterModal } from "../hooks/useCenterModal";
 import JoinRoomWithPassword from "./modals/JoinRoomWithPassword";
@@ -12,12 +12,20 @@ type Props = {
 
 const Room = ({ gameRoom }: Props) => {
 	const { showCenterModal, closePopup } = useCenterModal();
+	const {setUser} = useContext(UserContext);
 
 	const { user } = useContext(UserContext);
 	if (gameRoom.clients.length === 0 || gameRoom.clients.length === 2) return null;
 
 	const onRoomJoin = () => {
-		if (!gameRoom.hasPassword) socket.emit("joinRoom", gameRoom.id, user.nickname);
+		if (!gameRoom.hasPassword){
+			if(user.nickname === ""){
+				const nickname = handleUserWithNoNickanmeBeforeJoin(setUser);
+				socket.emit("joinRoom", gameRoom.id, nickname);
+			}else{
+				socket.emit("joinRoom", gameRoom.id, user.nickname);
+			}
+		} 
 		else {
 			showCenterModal(<JoinRoomWithPassword gameRoom={gameRoom} closePopup={closePopup}/>);
 		}

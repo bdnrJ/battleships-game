@@ -27,7 +27,7 @@ export const onRoomLeave = (socket: Socket ,io: Server,rooms: GameRoom[] ,roomId
 		//if room state is not waiting meaning that game already started
 		//we delete room completly by removing clients and calling cleanup function
 		//TODO optimize maybe? this can be done without cleanup
-		if (room.gameState !== GameStage.WAITING && room.gameState !== GameStage.ENDED) {
+		if (room.gameState !== GameStage.WAITING) {
 			io.to(roomId).emit("enemyLeft", "Your enemy left the game :/");
 
 			room.clients = [];

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import socket from "../utils/socket";
-import { UserContext } from "../context/UserContext";
+import { UserContext, handleUserWithNoNickanmeBeforeJoin } from "../context/UserContext";
 import { GameRoomType, RoomContext } from "../context/RoomContext";
 import { useNavigate } from "react-router-dom";
 
@@ -43,7 +43,9 @@ const QuickGame = () => {
 			console.log(user);
 			console.log({ ...user, sessionId: sessionId });
 
-			setUser({ ...user, sessionId: sessionId });
+      if (user.nickname === "") handleUserWithNoNickanmeBeforeJoin(setUser, sessionId);
+			else setUser({ ...user, sessionId: sessionId });
+
 			navigate(`/room/${room.id}`);
 		});
 

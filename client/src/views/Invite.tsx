@@ -1,7 +1,7 @@
 import { useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import socket from "../utils/socket";
-import { UserContext } from "../context/UserContext";
+import { UserContext, handleUserWithNoNickanmeBeforeJoin } from "../context/UserContext";
 import { GameRoomType, RoomContext } from "../context/RoomContext";
 import { useCenterModal } from "../hooks/useCenterModal";
 import JoinRoomWithPassword from "../components/modals/JoinRoomWithPassword";
@@ -23,7 +23,12 @@ const Invite = () => {
 
 		socket.on("roomFound", (room: GameRoomType) => {
 			if (!room.hasPassword) {
-				socket.emit("joinRoom", id, user.nickname);
+				if (user.nickname === "") {
+					const nickname = handleUserWithNoNickanmeBeforeJoin(setUser);
+					socket.emit("joinRoom", id, nickname);
+				} else {
+					socket.emit("joinRoom", id, user.nickname);
+				}
 			} else {
 				showCenterModal(<JoinRoomWithPassword gameRoom={room} closePopup={closePopup} />);
 			}
@@ -36,7 +41,9 @@ const Invite = () => {
 			console.log(user);
 			console.log({ ...user, sessionId: sessionId });
 
-			setUser({ ...user, sessionId: sessionId });
+			if (user.nickname === "") handleUserWithNoNickanmeBeforeJoin(setUser);
+			else setUser({ ...user, sessionId: sessionId });
+
 			navigate(`/room/${room.id}`);
 		});
 

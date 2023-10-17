@@ -2,7 +2,7 @@ import  { useContext, useState } from "react";
 import { GameRoomType } from "../../context/RoomContext";
 import socket from "../../utils/socket";
 import { useAlert } from "../../hooks/useAlert";
-import { UserContext } from "../../context/UserContext";
+import { UserContext, handleUserWithNoNickanmeBeforeJoin } from "../../context/UserContext";
 
 type Props = {
 	gameRoom: GameRoomType;
@@ -12,14 +12,16 @@ type Props = {
 const JoinRoomWithPassword = ({ gameRoom, closePopup }: Props) => {
 	const [password, setPassword] = useState<string>("");
 	const { showAlert } = useAlert();
-  const {user} = useContext(UserContext);
+  const {user, setUser} = useContext(UserContext);
 
 	const handleRoomJoin = () => {
-    console.log(password);
-    console.log(gameRoom.password);
-    
 		if (password === gameRoom.password) {
-			socket.emit("joinRoom", gameRoom.id, user.nickname, password);
+			if(user.nickname === ""){
+				const nickname = handleUserWithNoNickanmeBeforeJoin(setUser);
+				socket.emit("joinRoom", gameRoom.id, nickname);
+			}else{
+				socket.emit("joinRoom", gameRoom.id, user.nickname);
+			}
       closePopup();
 		} else {
 			showAlert("Wrong password", "failure");

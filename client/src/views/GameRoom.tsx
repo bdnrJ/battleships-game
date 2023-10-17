@@ -88,6 +88,7 @@ const GameRoom = () => {
 	const [unreadMessagesCounter, setUnreadMessagesCounter] = useState<number>(0);
 	const [chatScrollDownLock, setChatScrollDownLock] = useState<boolean>(false);
 	const [isLeaving, setIsLeaving] = useState<boolean>(false);
+	const [isGameEnded, setIsGameEnded] = useState<boolean>(false);
 
 	const handleOpenChat = () => {
 		setUnreadMessagesCounter(0);
@@ -131,7 +132,7 @@ const GameRoom = () => {
 		});
 
 		socket.on("enemyLeft", () => {
-			if(room.gameState === GameStage.ENDED){
+			if(isGameEnded){
 				showCenterModal(<EnemyLeft hasGameEnded={true}  handleClose={ () => {handleClosePopup(); closePopup()}} />, handleClosePopup);
 			}
 			showCenterModal(<EnemyLeft hasGameEnded={false} handleClose={ () => {handleClosePopup(); closePopup()}} />, handleClosePopup);
@@ -197,6 +198,7 @@ const GameRoom = () => {
 								nicknames={[room.clients[0].nickname, room.clients[1].nickname]}
 								gameplayStageRoom={gameplayStageRoom}
 								setGameplayStageRoom={setGameplayStageRoom}
+								setIsGameEnded={setIsGameEnded}
 							/>
 						)}
 					</div>
