@@ -51,31 +51,20 @@ export const handleUserWithNoNickanme = (setUser: React.Dispatch<SetStateAction<
 	}
 };
 
-export const handleUserWithNoNickanmeBeforeJoin = (
-	setUser: React.Dispatch<SetStateAction<UserType>>,
-): string => {
+export const handleUserWithNoNickanmeBeforeJoin = (setUser: React.Dispatch<SetStateAction<UserType>>): string => {
 	if (getCookie("userInfo")) {
 		const userFromCookie = JSON.parse(getCookie("userInfo"));
-		setUser({
-			nickname: userFromCookie,
-			sessionId: "",
-		});
+		setUser((prev) => ({ ...prev, nickname: userFromCookie }));
 		return userFromCookie;
 	} else {
 		if (getCookie("anonNickname")) {
 			const nickname = getCookie("anonNickname");
-			setUser({
-				nickname: nickname,
-				sessionId: "",
-			});
+			setUser((prev) => ({ ...prev, nickname: nickname }));
 			return nickname;
 		} else {
 			const nickname = `Anon-${v4().substr(0, 8)}`;
 			setCookie("anonNickname", nickname, 999);
-			setUser({
-				nickname: nickname,
-				sessionId: "",
-			});
+			setUser((prev) => ({ ...prev, nickname: nickname }));
 			return nickname;
 		}
 	}

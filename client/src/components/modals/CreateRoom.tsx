@@ -29,7 +29,7 @@ const CreateRoom = ({ createRoom, inModal, closePopup }: Props) => {
 		socket.on("createdAndJoined", (newRoom, sessionId) => {
 			setRoom(newRoom);
 
-			if (user.nickname === "") handleUserWithNoNickanmeBeforeJoin(setUser, sessionId);
+			if (user.nickname === "") handleUserWithNoNickanmeBeforeJoin(setUser);
 			else setUser({ ...user, sessionId: sessionId });
 
 			navigate(`/room/${newRoom.id}`);

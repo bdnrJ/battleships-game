@@ -43,7 +43,7 @@ const QuickGame = () => {
 			console.log(user);
 			console.log({ ...user, sessionId: sessionId });
 
-      if (user.nickname === "") handleUserWithNoNickanmeBeforeJoin(setUser, sessionId);
+      if (user.nickname === "") handleUserWithNoNickanmeBeforeJoin(setUser);
 			else setUser({ ...user, sessionId: sessionId });
 
 			navigate(`/room/${room.id}`);
