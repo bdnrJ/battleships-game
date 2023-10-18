@@ -38,12 +38,17 @@ const Signup = () => {
 				setSignupError("Passwords do not match");
 				return;
 			}
+			
+			console.log("it did");
 
 			await axiosClient.post("/signup", {
 				nickname: userData.nickname,
 				password: userData.password,
 				confirmPassword: userData.confirmPassword,
 			});
+
+			console.log("it did");
+			
 
 			navigate("/");
 		} catch (error: any) {

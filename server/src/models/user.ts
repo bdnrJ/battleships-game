@@ -13,16 +13,16 @@ export interface User {
 class UserModel {
     static async createUser(user: User): Promise<number> {
         const connection: PoolConnection = await createDatabaseConnection();
-
+        
         const insertQuery = 'INSERT INTO users (nickname, password) VALUES (?, ?)';
-
+        
         const hashedPassword = bcrypt.hashSync(user.password, 10); 
-
+        
         const [result] = (await connection.execute(insertQuery, [
             user.nickname,
             hashedPassword,
         ])) as ResultSetHeader[]; // Use type assertion to specify the expected return type
-
+        
         connection.release();
 
         return result.insertId;
