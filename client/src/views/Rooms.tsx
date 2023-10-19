@@ -65,13 +65,13 @@ const Rooms = () => {
 					className='g__button --200w'
 					onClick={() => showCenterModal(<CreateRoom closePopup={closePopup} createRoom={createRoom} inModal={true} />)}
 				>
-					<span>Create Room</span>
+					<span>Create Game Room</span>
 					<AiOutlinePlus />
 				</button>
 			</div>
-			<div className='rooms__game-rooms'>
+			<div className={`rooms__game-rooms ${rooms.length === 0 ? "--empty" : ""}`}>
 				{rooms.length === 0 ? (
-					<h2>No free rooms exist at the moment</h2>
+					<h2>No free rooms exist at the moment. <br /> Go and create one yourself</h2>
 				) : (
 					<>
 						{rooms.map((room) => (

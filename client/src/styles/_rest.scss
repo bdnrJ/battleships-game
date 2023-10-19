@@ -15,7 +15,11 @@
 html,
 body {
     height: 100%;
-    font-family: 'Roboto:ital', sans-serif;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+button, input{
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .layout {

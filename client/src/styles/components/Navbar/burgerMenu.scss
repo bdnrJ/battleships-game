@@ -1,24 +1,27 @@
-.burgermenu{
+.burgermenu {
+	display: none;
+	position: absolute;
+	background-color: white;
+	width: 100vw;
+	left: 0px;
+	z-index: 5;
+  border-bottom: 2px solid darken(white, 25%);
+  
+	@include tablet {
+    top: 85px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
-  display: none;
-  position: absolute;
-  background-color: white;
-  top: 70px;
-  width: 100vw;
-  left: 0px;
-  z-index: 5;
-
-  @include tablet{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  @include mobile{
+    top: 70px;
   }
 
-  .burgermenu__links{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-
-  }
+	.burgermenu__links {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		align-items: center;
+	}
 }

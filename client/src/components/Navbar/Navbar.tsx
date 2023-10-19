@@ -22,7 +22,7 @@ const Navbar = () => {
 		// 	direction: "/game",
 		// },
 		{
-			name: "Rooms",
+			name: "Game rooms",
 			direction: "/rooms",
 		},
 		{
@@ -49,7 +49,6 @@ const Navbar = () => {
 
 	return (
 		<div className='navbar'>
-			{/* TODO <div className='navbar--logo' onClick={() => navigate('/')}> */}
 			<div className='navbar--logo' onClick={() => navigate("/rooms")}>
 				<img src={logo} alt='logo' />
 				<span>Players online: {playersOnline}</span>
@@ -62,14 +61,9 @@ const Navbar = () => {
 				))}
 			</section>
 			<div className='navbar__utils'>
-				<div className='navbar--account dontTriggerEvent'>
-					<button
-						onClick={() => {
-							if (!isUserPopupOn) setIsUserPopupOn(true);
-							setIsBurgerOn(false);
-						}}
-					>
-						<BiUser />
+				<div className='navbar--account dontTriggerUserPopupEvent'>
+					<button  className='navbar--account--button dontTriggerUserPopupEvent' onClick={() => setIsUserPopupOn((prev) => !prev)}>
+						<BiUser className='dontTriggerUserPopupEvent' />
 					</button>
 					{isUserPopupOn && (
 						<UserPopup
@@ -81,7 +75,7 @@ const Navbar = () => {
 					)}
 				</div>
 				<button
-					className={`navbar--burger ${isBurgerOn ? "--active" : ""}`}
+					className={`navbar--burger ${isBurgerOn ? "--active" : ""} dontTriggerEvent`}
 					onClick={() => setIsBurgerOn((prev) => !prev)}
 				>
 					<span className='dontTriggerEvent'></span>

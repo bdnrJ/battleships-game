@@ -26,7 +26,7 @@ const QuickGame = () => {
 
   useEffect(() => {
     socket.on('inWaitingList', () => {
-      setState("Waiting for oponent...");
+      setState("Waiting for opponent...");
     })
 
     socket.on('joinQuickGameRoom', (roomId: string) => {
@@ -65,13 +65,13 @@ const QuickGame = () => {
 		<div className='quickgame--wrapper'>
 			<div className='quickgame'>
 				<h1 className='quickgame--title'>
-          Find oponent to play with
+          Find opponent to play with
         </h1>
         <div className="quickgame__state">
           {state}
         </div>
         <div className="quickgame__controlls">
-          <button disabled={state !== ""}  onClick={handlePlay} >Play</button>
+          <button className="g__button" disabled={state !== ""}  onClick={handlePlay} >Play</button>
         </div>
 			</div>
 		</div>

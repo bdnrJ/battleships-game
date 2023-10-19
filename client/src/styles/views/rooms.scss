@@ -46,6 +46,10 @@
         flex-direction: column;
         gap: 15px;
 
+        &.--empty{
+            height: 400px;
+        }
+
         h2{
             text-align: center;
         }

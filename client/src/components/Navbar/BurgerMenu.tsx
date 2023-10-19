@@ -1,15 +1,14 @@
 import { link } from "./Navbar";
 import { Link } from "react-router-dom";
-import {useEffect, useRef} from 'react';
+import { useEffect, useRef } from "react";
 
 type Props = {
 	links: link[];
-  closeBurgerMenu: () => void;
+	closeBurgerMenu: () => void;
 };
 
 const BurgerMenu = ({ links, closeBurgerMenu }: Props) => {
-
-  const popupRef = useRef<any>(null);
+	const popupRef = useRef<any>(null);
 
 	//handling popup visibility
 	useEffect(() => {
@@ -19,10 +18,13 @@ const BurgerMenu = ({ links, closeBurgerMenu }: Props) => {
 		htmlElement.style.overflow = "hidden";
 
 		function handleClickOutside(event: Event) {
+			const target = event.target as Element; // Cast event.target as Element
 			if (
 				popupRef.current &&
-				!popupRef.current.contains(event.target)
+				!popupRef.current.contains(target) &&
+				!Array.from(document.querySelectorAll(".dontTriggerEvent")).includes(target)
 			) {
+				console.log(Array.from(document.querySelectorAll(".dontTriggerEvent")).includes(target));
 				closeBurgerMenu();
 			}
 		}

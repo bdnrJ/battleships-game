@@ -51,7 +51,6 @@ const Waiting = () => {
 					<FaRegCopy />
 				</button>
 			</div>}
-			<button onClick={() => console.log(user)} >log user</button>
 		</div>
 	);
 };

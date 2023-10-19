@@ -46,7 +46,7 @@ const CreateRoom = ({ createRoom, inModal, closePopup }: Props) => {
 			roomName: z.string().min(3, "min 3 chars required"),
 			hasPassword: z.boolean(),
 			password: z.string().refine((value) => !hasPassword || value.trim() !== "", {
-				message: "Password is required when 'hasPassword' is true",
+				message: "Password is required when 'hasPassword' is selected",
 			}),
 		})
 		.refine((data) => !data.hasPassword || data.password.trim().length >= 3, {

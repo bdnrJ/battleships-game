@@ -98,8 +98,12 @@
 		font-size: 30px;
 		position: relative;
 
+		.navbar--account--button{
+			cursor: pointer;
+		}
+
 		button {
-            z-index: 2;
+      z-index: 2;
 			cursor: pointer;
 			all: unset;
 			display: flex;

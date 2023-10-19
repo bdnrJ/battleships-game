@@ -7,8 +7,7 @@
 	justify-content: space-between;
 	background-color: white;
 	gap: 10px;
-	border-radius: 15px;
-	border: 1px solid $middleOrange;
+	border: 1px solid black;
 
 	@include mobile {
 		flex-direction: column;
@@ -43,10 +42,10 @@
 
 		cursor: pointer;
 		border: 1px solid transparent;
-		color: $middleOrange;
+		color: black;
 
 		&:hover {
-			color: darken($middleOrange, 20%);
+			color: ligthen(black, 20%);
 		}
 	}
 }

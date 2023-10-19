@@ -14,11 +14,14 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 	//handling popup visibility
 	useEffect(() => {
 		function handleClickOutside(event: Event) {
+			const target = event.target as Element; // Cast event.target as Element
 			if (
 				popupRef.current &&
-				!popupRef.current.contains(event.target) &&
-				!Array.from(document.querySelectorAll(".dontTriggerEvent")).includes(event.target as HTMLElement)
+				!popupRef.current.contains(target) &&
+				!Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")).includes(target)
 			) {
+				console.log(Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")).includes(target));
+				console.log(Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")));
 				hideUserPopup();
 			}
 		}
