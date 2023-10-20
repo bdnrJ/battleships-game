@@ -15,8 +15,8 @@ export default function setupSocketIO(app: Express) {
 	const httpServer: HttpServer = createServer(app);
 	const io: Server = new Server(httpServer, {
 		cors: {
-			// origin: "*",
-			origin: allowedOrigins,
+			origin: "*",
+			// origin: allowedOrigins,
 			methods: ["GET", "POST"],
 		},
 	});
