@@ -2,7 +2,7 @@ import express from 'express';
 import createDatabaseConnection from './config/database.js';
 import { loggerMiddleware } from './utils/logger.js';
 import { createUser, getUserById, deleteUser } from './controllers/userController.js';
-import { login } from './controllers/authController.js';
+import { isLoggedIn, login } from './controllers/authController.js';
 import cors from 'cors'
 import authMiddleware from './middleware/auth.js';
 import corsOptions from './config/cors.js';
@@ -27,6 +27,7 @@ async function main() {
         router.get('/users/:id', authMiddleware, getUserById);
         router.delete('/users/:id', authMiddleware, deleteUser);
         
+        router.get('/isUser', authMiddleware, isLoggedIn);
         router.post('/signup', createUser);
         router.post('/signin', login);
         router.get('/test', (req, res) => {

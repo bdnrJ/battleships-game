@@ -36,6 +36,9 @@
     .gameplay__boards{
         gap: 50px;
         display: flex;
+        justify-content: flex-end;
+        text-align: center;
+        align-items: flex-end;
     }
 
     .gameplay__player{
@@ -46,10 +49,10 @@
         
         .gameplay__player--title{
             font-size: 30px;
+            text-wrap: nowrap;
             
             @include mobile{
                 font-size: 22px;
-                text-wrap: nowrap;
             }
         }
     }

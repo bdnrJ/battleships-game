@@ -1,15 +1,26 @@
 import { useContext, useEffect, useRef } from "react";
 import { UserContext } from "../../context/UserContext";
 import { Link } from "react-router-dom";
+import axiosClient from "../../axios-client";
 
 type Props = {
 	hideUserPopup: () => void;
 };
 
 const UserPopup = ({ hideUserPopup }: Props) => {
-	const { user } = useContext(UserContext);
+	const { user, loggedUser, setLoggedUser } = useContext(UserContext);
 
 	const popupRef = useRef<any>(null);
+
+	const handleCheckIfUserIsLogged = async () => {
+		try{
+			const res = await axiosClient.get('/isUser', {withCredentials: true});
+
+			setLoggedUser({id: res.data.user_id})
+		}catch(err: any){
+			console.log(err);
+		}
+	}
 
 	//handling popup visibility
 	useEffect(() => {
@@ -44,6 +55,8 @@ const UserPopup = ({ hideUserPopup }: Props) => {
         <Link to={'/signup'} className="g__link">
           Sign Up
         </Link>
+				<span>UserID: {loggedUser.id}</span>
+				<button onClick={handleCheckIfUserIsLogged} >check if logged</button>
       </section>
 		</div>
 	);

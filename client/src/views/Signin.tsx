@@ -18,7 +18,7 @@ const Signin = () => {
     nickname: z.string().min(1, "required"),
     password: z.string().min(1, "required"),
   });
-  const { setUser} = useContext(UserContext);
+  const { setUser, setLoggedUser} = useContext(UserContext);
   const navigate = useNavigate();
 
   const {
@@ -45,6 +45,8 @@ const Signin = () => {
       }
 
       setUser(userFromResponse);
+
+      setLoggedUser({id: response.data.userInfo.user_id});
 
       const userFromResponseParsed = JSON.stringify(userFromResponse);
 

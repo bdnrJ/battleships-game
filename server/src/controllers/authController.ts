@@ -39,6 +39,7 @@ export async function login(req: Request, res: Response): Promise<void> {
 
             const userInfo = {
                 nickname: user.nickname,
+                user_id: user.id
             }
 
             res.status(200).cookie('token', token, {
@@ -50,7 +51,7 @@ export async function login(req: Request, res: Response): Promise<void> {
                 message: "Successfuly signed in",
                 userInfo
             })
-            return
+            return;
         }
 
         res.status(400).json({message: "Wrong login or password"})
@@ -58,4 +59,8 @@ export async function login(req: Request, res: Response): Promise<void> {
         console.error('Error while signing in:', err);
         res.status(500).json({ message: 'An error occurred while singing in' });
     }
+}
+
+export const isLoggedIn = async (req: Request, res: Response): Promise<void> => {
+    res.status(200).json({user_id: req.user.user_id});
 }

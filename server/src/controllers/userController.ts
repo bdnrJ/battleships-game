@@ -52,7 +52,7 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 					sameSite: 'none',
 					secure: true // This ensures the cookie is only sent over HTTPS connections
 				})
-				.json({nickname: nickname, message: "user created successfully" });
+				.json({nickname: nickname, message: "user created successfully", user_id: userId });
 		} catch (err: any) {
 			if (err.errno === 1062) {
 				res.status(400).json({ message: "username already used!" });

@@ -114,7 +114,7 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 		});
 
 		setInterval(() => {
-			//in prod will work correctly ;d
+			//in prod will work correctly
 			setPlayerTimer((prevTimer) => prevTimer - 1);
 		}, 1000);
 

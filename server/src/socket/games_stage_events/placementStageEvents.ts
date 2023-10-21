@@ -42,8 +42,7 @@ export function setupPlacementStageEvents(
 
 					gamePlayBoards.push(gameStateBoards);
 
-					io.to(roomId).emit("startPlayingStage", roomWithoutBoardStates);
-					io.to(roomId).emit("playingStageBoards", gameStateBoards);
+					io.to(roomId).emit("startPlayingStage", roomWithoutBoardStates, gameStateBoards);
 				}
 			}
 		});

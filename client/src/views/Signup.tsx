@@ -14,7 +14,7 @@ type userInput = {
 };
 
 const Signup = () => {
-	const {setUser} = useContext(UserContext);
+	const {setUser, setLoggedUser} = useContext(UserContext);
 	const [signupError, setSignupError] = useState("");
 	const schema = z
 		.object({
@@ -52,6 +52,9 @@ const Signup = () => {
 				nickname: res.data.nickname,
 				sessionId: prev.sessionId,
 			}));
+
+      setLoggedUser({id: res.data.user_id});
+
 
 			const userFromResponse: UserType = {
         nickname: res.data.nickname,

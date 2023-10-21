@@ -123,12 +123,17 @@ const GameRoom = () => {
 			setRoom(room);
 		});
 
-		socket.on("startPlayingStage", (room: GameRoomType) => {
+		socket.on("startPlayingStage", (room: GameRoomType, newRoom: gameplayState) => {
 			setRoom(room);
-		});
-
-		socket.on("playingStageBoards", (newRoom: gameplayState) => {
 			setGameplayStageRoom(newRoom);
+
+			if(user.sessionId === ''){
+				alert("no session id on user smh");
+				console.log("---- user has no session id when gameplay starts!!! ----");
+				console.log(user);
+				console.log(room);
+				console.log(newRoom);
+			}
 		});
 
 		socket.on("enemyLeft", () => {
@@ -168,7 +173,6 @@ const GameRoom = () => {
 			socket.off("recieveMessage");
 			socket.off("readinessChange");
 			socket.off("startPlayingStage");
-			socket.off("playingStageBoards");
 			socket.off("someoneJoined");
 			socket.off("someoneLeft");
 			socket.off("recieveMessage");

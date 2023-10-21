@@ -1,7 +1,25 @@
 import { Server } from "socket.io";
 import { CellType, GameRoom, GameStage, ShipTypes, gameplayState, matrix } from "../types.js";
+import GameModel, { Game } from "../../models/game.js";
 
-export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoards: gameplayState[] ) {
+const createGameLog = async () => {
+	console.log("--- create game log ---")
+	const game: Game = {
+		player1_id: 1,
+		player2_id: 2,
+		p1_won: true,
+		game_date: new Date(),
+	};
+
+	try {
+		const res = await GameModel.createGame(game);
+		console.log(res);
+	} catch (err: any) {
+		console.log(err);
+	}
+};
+
+export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoards: gameplayState[]) {
 	const offsets = [
 		[-1, -1],
 		[1, 1],
@@ -123,6 +141,9 @@ export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoard
 							`${room.clients.filter((client) => client.id === socket.id)[0].nickname} has won!`,
 							socket.id
 						);
+
+						createGameLog();
+
 						return;
 					}
 				}
