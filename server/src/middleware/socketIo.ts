@@ -9,7 +9,6 @@ import { setupGameplayEvents } from "../socket/games_stage_events/gameplayStageE
 import { setupWaitingListEvents } from "../socket/waitingListEvents.js";
 import { setupPlacementStageEvents } from "../socket/games_stage_events/placementStageEvents.js";
 import { setupWaitingStageEvents } from "../socket/games_stage_events/waitingStageEvents.js";
-import { allowedOrigins } from "../config/cors.js";
 
 export default function setupSocketIO(app: Express) {
 	const httpServer: HttpServer = createServer(app);

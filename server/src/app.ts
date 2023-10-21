@@ -25,7 +25,7 @@ async function main() {
 
         // Define routes and link them to the controller functions
         router.get('/users/:id', authMiddleware, getUserById);
-        router.delete('/users/:id', deleteUser);
+        router.delete('/users/:id', authMiddleware, deleteUser);
         
         router.post('/signup', createUser);
         router.post('/signin', login);
@@ -38,12 +38,12 @@ async function main() {
 
         const httpServer = setupSocketIO(app);
 
-        httpServer.listen(PORT, '192.168.0.104', () => {
-            console.log(`Server is running on 192.168.0.104:${PORT}`);
-        });
-        // httpServer.listen(PORT, () => {
-        //     console.log(`Server is running on someip:${PORT}`);
+        // httpServer.listen(PORT, '192.168.0.104', () => {
+        //     console.log(`Server is running on 192.168.0.104:${PORT}`);
         // });
+        httpServer.listen(PORT, () => {
+            console.log(`Server is running on someip:${PORT}`);
+        });
     } catch (err) {
         console.error('Error starting the server:', err);
         process.exit(1);

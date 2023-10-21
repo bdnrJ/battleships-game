@@ -8,6 +8,7 @@ export const emitRoomsList = (io: Server, rooms: GameRoom[]): void => {
 };
 
 export const cleanupRooms = (io: Server, rooms: GameRoom[]): void => {
+	console.log(rooms);
 	rooms.forEach((room, index) => {
 		//if room has no clients then it gets removed
 		if (room.clients.length === 0) {
@@ -35,10 +36,15 @@ export const onRoomLeave = (socket: Socket ,io: Server,rooms: GameRoom[] ,roomId
 			return;
 		}
 
-
 		room.clients = room.clients.filter((client) => client.id !== socket.id);
 
 		//if 0 clients left this will remove room
+
+		if(room.clients.length === 0){
+			cleanupRooms(io ,rooms);
+			return;
+		}
+
 		//if room wasnt deleted by cleanup() - emit message and reset readyCheck
 		if (room && room.clients.length !== 0) {
 			room.clients[0].readiness = false;
@@ -55,6 +61,7 @@ export const onRoomLeave = (socket: Socket ,io: Server,rooms: GameRoom[] ,roomId
 
 			io.to(roomId).emit("someoneLeft", someoneLeft, nickname);
 		}
+
 		console.log("someone left room");
 	}
 };
@@ -62,44 +69,6 @@ export const onRoomLeave = (socket: Socket ,io: Server,rooms: GameRoom[] ,roomId
 export function setupRoomEvents(io: Server, rooms: GameRoom[], emptyMatrix: matrix) {
 	io.on("connection", (socket) => {
 		
-		const onRoomLeave = (roomId: string, nickname: string): void => {
-			const room = rooms.find((roomX) => roomX.id === roomId);
-			if (room) {
-				socket.leave(roomId);
-				//if room state is not waiting meaning that game already started
-				//we delete room completly by removing clients and calling cleanup function
-				//TODO optimize maybe? this can be done without cleanup
-				if (room.gameState !== GameStage.WAITING) {
-					io.to(roomId).emit("enemyLeft", "Your enemy left the game :/");
-
-					room.clients = [];
-					cleanupRooms(io, rooms);
-					return;
-				}
-
-				room.clients = room.clients.filter((client) => client.id !== socket.id);
-
-				//if 0 clients left this will remove room
-				//if room wasnt deleted by cleanup() - emit message and reset readyCheck
-				if (room && room.clients.length !== 0) {
-					room.clients[0].readiness = false;
-
-					//if host left, change host
-					if (room.clients[0].nickname !== room.hostName) {
-						room.hostName = room.clients[0].nickname;
-					}
-
-					const someoneLeft = {
-						updatedRoom: room,
-						idOfUserThatLeft: socket.id,
-					};
-
-					io.to(roomId).emit("someoneLeft", someoneLeft, nickname);
-				}
-				console.log("someone left room");
-			}
-		};
-
 		socket.on("createRoom", ({ roomName, hostName, hasPassword, password, id }: GameRoom, nickname: string) => {
 			// Check if the room already exists
 			const existingRoom = rooms.find((room) => room.id === id);
@@ -194,7 +163,7 @@ export function setupRoomEvents(io: Server, rooms: GameRoom[], emptyMatrix: matr
 		});
 
 		socket.on("leaveRoom", (roomId: string, nickname: string) => {
-			onRoomLeave(roomId, nickname);
+			onRoomLeave(socket, io, rooms ,roomId, nickname);
 		});
 
 		socket.on("getRooms", () => {

@@ -39,7 +39,7 @@ const Signin = () => {
         { withCredentials: true }
       );
 
-      let userFromResponse: UserType = {
+      const userFromResponse: UserType = {
         nickname: response.data.userInfo.nickname,
         sessionId: '',
       }

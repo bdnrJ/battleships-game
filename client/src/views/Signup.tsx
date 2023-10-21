@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosClient from "../axios-client";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext, UserType } from "../context/UserContext";
+import { setCookie } from "../utils/cookies";
 
 type userInput = {
 	nickname: string;
@@ -12,6 +14,7 @@ type userInput = {
 };
 
 const Signup = () => {
+	const {setUser} = useContext(UserContext);
 	const [signupError, setSignupError] = useState("");
 	const schema = z
 		.object({
@@ -33,22 +36,35 @@ const Signup = () => {
 
 	const onSignup = async (userData: userInput) => {
 		setSignupError("");
-		try {
-			if (userData.password !== userData.confirmPassword) {
-				setSignupError("Passwords do not match");
-				return;
-			}
-			
-			console.log("it did");
+		if (userData.password !== userData.confirmPassword) {
+			setSignupError("Passwords do not match");
+			return;
+		}
 
-			await axiosClient.post("/signup", {
+		try {
+			const res = await axiosClient.post("/signup", {
 				nickname: userData.nickname,
 				password: userData.password,
 				confirmPassword: userData.confirmPassword,
-			});
+			}, {withCredentials: true});
 
-			console.log("it did");
-			
+			setUser((prev) => ({
+				nickname: res.data.nickname,
+				sessionId: prev.sessionId,
+			}));
+
+			const userFromResponse: UserType = {
+        nickname: res.data.nickname,
+        sessionId: '',
+      }
+
+			const userFromResponseParsed = JSON.stringify(userFromResponse);
+
+			setCookie(
+        "userInfo",
+        userFromResponseParsed,
+        7
+      );
 
 			navigate("/");
 		} catch (error: any) {

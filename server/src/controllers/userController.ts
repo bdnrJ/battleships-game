@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import UserModel, { User } from "../models/user.js";
 
@@ -39,7 +40,19 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 		try {
 			const userId: number = await UserModel.createUser(newUser);
 
-			res.status(201).json({ id: userId, message: "user created successfully" });
+			const token = jwt.sign({ user_id: userId, nickname }, `${process.env.TOKEN_KEY}`, {
+				expiresIn: "7d",
+			});
+
+			res
+				.status(201)
+				.cookie("token", token, {
+					httpOnly: true,
+					maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+					sameSite: 'none',
+					secure: true // This ensures the cookie is only sent over HTTPS connections
+				})
+				.json({nickname: nickname, message: "user created successfully" });
 		} catch (err: any) {
 			if (err.errno === 1062) {
 				res.status(400).json({ message: "username already used!" });

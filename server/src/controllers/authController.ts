@@ -33,7 +33,7 @@ export async function login(req: Request, res: Response): Promise<void> {
                 { user_id: user.id, nickname },
                     `${process.env.TOKEN_KEY}`,
                 {
-                    expiresIn: "2h",
+                    expiresIn: "7d",
                 }
             );
 
@@ -43,7 +43,7 @@ export async function login(req: Request, res: Response): Promise<void> {
 
             res.status(200).cookie('token', token, {
                 httpOnly: true,
-                maxAge: 2 * 60 * 60 * 1000, // 2 hours in milliseconds,
+                maxAge:  7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds,
                 sameSite: true,
                 secure: true,
             }).json({
