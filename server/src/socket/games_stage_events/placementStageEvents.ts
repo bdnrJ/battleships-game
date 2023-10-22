@@ -35,8 +35,10 @@ export function setupPlacementStageEvents(
 						roomId: room.id,
 						player1: room.clients[0].id,
 						player1Board: [...emptyMatrix.map((row) => [...row])],
+						player1_id: room.clients[0].user_id,
 						player2: room.clients[1].id,
 						player2Board: [...emptyMatrix.map((row) => [...row])],
+						player2_id: room.clients[1].user_id,
 						turn: Math.random() < 0.5 ? room.clients[0].id : room.clients[1].id,
 					};
 

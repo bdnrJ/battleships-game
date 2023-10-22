@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const QuickGame = () => {
 
   const [state, setState] = useState<string>("");
-  const {user, setUser} = useContext(UserContext);
+  const {user, setUser, loggedUser} = useContext(UserContext);
   const {setRoom} = useContext(RoomContext);
   const componentRef = useRef<boolean>(false);
 
@@ -33,7 +33,7 @@ const QuickGame = () => {
       console.log("joim quick game room");
       
       //(roomId: string, nickname: string, password: string, emitRooms: boolean = true)
-      socket.emit('joinRoom', roomId, user.nickname, "", false);
+      socket.emit('joinRoom', roomId, user.nickname, "", loggedUser.id, false);
     })
 
     socket.on("roomJoined", (room: GameRoomType, sessionId: string) => {

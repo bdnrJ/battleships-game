@@ -8,7 +8,7 @@ import JoinRoomWithPassword from "../components/modals/JoinRoomWithPassword";
 import RoomError from "../components/modals/RoomError";
 
 const Invite = () => {
-	const { user, setUser } = useContext(UserContext);
+	const { user, setUser, loggedUser } = useContext(UserContext);
 	const { setRoom } = useContext(RoomContext);
 	const navigate = useNavigate();
 	const { id } = useParams();
@@ -25,9 +25,9 @@ const Invite = () => {
 			if (!room.hasPassword) {
 				if (user.nickname === "") {
 					const nickname = handleUserWithNoNickanmeBeforeJoin(setUser);
-					socket.emit("joinRoom", id, nickname);
+					socket.emit("joinRoom", id, nickname, "", loggedUser.id);
 				} else {
-					socket.emit("joinRoom", id, user.nickname);
+					socket.emit("joinRoom", id, user.nickname, "", loggedUser.id);
 				}
 			} else {
 				showCenterModal(<JoinRoomWithPassword gameRoom={room} closePopup={closePopup} />);

@@ -11,7 +11,7 @@ import { useCenterModal } from "../hooks/useCenterModal";
 const Rooms = () => {
 	const [rooms, setRooms] = useState<GameRoomType[]>([]);
 	const { setRoom } = useContext(RoomContext);
-	const { user, setUser } = useContext(UserContext);
+	const { user, setUser, loggedUser } = useContext(UserContext);
 	const navigate = useNavigate();
 	const { showCenterModal, closePopup } = useCenterModal();
 
@@ -55,7 +55,7 @@ const Rooms = () => {
 
 	// Function to create a new room
 	const createRoom = (gameRoom: GameRoomType) => {
-		socket.emit("createRoom", gameRoom, user.nickname);
+		socket.emit("createRoom", gameRoom, user.nickname, loggedUser.id);
 	};
 
 	return (

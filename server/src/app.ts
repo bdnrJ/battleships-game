@@ -7,6 +7,7 @@ import cors from 'cors'
 import authMiddleware from './middleware/auth.js';
 import corsOptions from './config/cors.js';
 import setupSocketIO from './middleware/socketIo.js';
+import { getUserGamesById } from './controllers/gameController.js';
 
 const app = express();
 const PORT = 3000;
@@ -28,6 +29,7 @@ async function main() {
         router.delete('/users/:id', authMiddleware, deleteUser);
         
         router.get('/isUser', authMiddleware, isLoggedIn);
+        router.get('/getUserGames/:id', getUserGamesById);
         router.post('/signup', createUser);
         router.post('/signin', login);
         router.get('/test', (req, res) => {

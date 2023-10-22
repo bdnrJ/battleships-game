@@ -12,15 +12,15 @@ type Props = {
 const JoinRoomWithPassword = ({ gameRoom, closePopup }: Props) => {
 	const [password, setPassword] = useState<string>("");
 	const { showAlert } = useAlert();
-  const {user, setUser} = useContext(UserContext);
+  const {user, setUser, loggedUser} = useContext(UserContext);
 
 	const handleRoomJoin = () => {
 		if (password === gameRoom.password) {
 			if(user.nickname === ""){
 				const nickname = handleUserWithNoNickanmeBeforeJoin(setUser);
-				socket.emit("joinRoom", gameRoom.id, nickname);
+				socket.emit("joinRoom", gameRoom.id, nickname, password, loggedUser.id);
 			}else{
-				socket.emit("joinRoom", gameRoom.id, user.nickname);
+				socket.emit("joinRoom", gameRoom.id, user.nickname, password, loggedUser.id);
 			}
       closePopup();
 		} else {

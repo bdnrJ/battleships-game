@@ -26,8 +26,10 @@ export type gameplayState = {
 	roomId: string;
 	player1: string;
 	player1Board: matrix;
+	player1_id: number;
 	player2: string;
 	player2Board: matrix;
+	player2_id: number,
 	turn: string;
 };
 
@@ -36,6 +38,7 @@ export interface Client {
 	nickname: string;
 	board: matrix;
 	readiness: boolean;
+	user_id: number;
 }
 
 export interface WaitingRoom {

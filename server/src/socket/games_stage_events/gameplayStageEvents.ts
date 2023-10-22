@@ -2,12 +2,15 @@ import { Server } from "socket.io";
 import { CellType, GameRoom, GameStage, ShipTypes, gameplayState, matrix } from "../types.js";
 import GameModel, { Game } from "../../models/game.js";
 
-const createGameLog = async () => {
-	console.log("--- create game log ---")
+const createGameLog = async (player1_id: number, player2_id: number, p1_won: boolean) => {
+	console.log("--- create game log ---");
+	const p1_id = player1_id === -1 ? null : player1_id;
+	const p2_id = player2_id === -1 ? null : player2_id;
+
 	const game: Game = {
-		player1_id: 1,
-		player2_id: 2,
-		p1_won: true,
+		player1_id: p1_id,
+		player2_id: p2_id,
+		p1_won: p1_won,
 		game_date: new Date(),
 	};
 
@@ -135,6 +138,10 @@ export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoard
 					if (sumOfDeadShips === 20) {
 						gameplayState.turn = "";
 						room.gameState = GameStage.ENDED;
+
+						const playerWhoWon = room.clients.findIndex((client) => client.id === socket.id);
+						console.log(playerWhoWon);
+
 						io.to(roomId).emit("updateGameState", gameplayState, rowIdx, colIdx, socket.id);
 						io.to(roomId).emit(
 							"victory",
@@ -142,7 +149,7 @@ export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoard
 							socket.id
 						);
 
-						createGameLog();
+						createGameLog(gameplayState.player1_id, gameplayState.player2_id, playerWhoWon === 0);
 
 						return;
 					}
