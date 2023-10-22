@@ -55,6 +55,9 @@ const UserPopup = ({ hideUserPopup }: Props) => {
         <Link to={'/signup'} className="g__link">
           Sign Up
         </Link>
+        <Link to={'/my_games'} className="g__link">
+          Games history
+        </Link>
 				<span>UserID: {loggedUser.id}</span>
 				<button onClick={handleCheckIfUserIsLogged} >check if logged</button>
       </section>
