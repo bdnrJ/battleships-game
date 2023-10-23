@@ -7,8 +7,14 @@
 	gap: 20px;
 	align-items: center;
 	justify-content: center;
+	padding-top: 20px;
 	border-radius: 10px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+
+	&.--black {
+		border: 1px solid black;
+		border-radius: 0px;
+	}
 
 	&.--inmodal {
 		box-shadow: none;
@@ -76,7 +82,7 @@
 
 			.g__form--input {
 				width: 100%;
-				border: 2px solid black;
+				border: 1px solid black;
 				height: 40px;
 				border-radius: 5px;
 				padding-left: 10px;
@@ -126,6 +132,7 @@
 		display: flex;
 		align-items: center;
 		flex-direction: column;
+		text-decoration: none;
 		gap: 10px;
 
 		button {
@@ -136,8 +143,10 @@
 			justify-content: center;
 			width: 100px;
 			background-color: white;
-			font-family: "Oswald";
-			font-size: 15px;
+			font-weight: bold;
+			font-size: 20px;
+			color: black;
+			text-decoration: none;
 		}
 	}
 }
@@ -199,6 +208,18 @@
 	}
 }
 
-.g__uppercase{
+.g__uppercase {
 	text-transform: uppercase;
+}
+
+.g__form--whyaccount{
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	text-align: center;
+	font-size: 12px;
+	
+	&.--unfunny{
+		font-size: 5px;
+	}
 }

@@ -29,10 +29,10 @@ const Navbar = () => {
 			name: "Quick game",
 			direction: "/findgame",
 		},
-		// {
-		// 	name: "Ranking",
-		// 	direction: "/ranking",
-		// },
+		{
+			name: "Ranking",
+			direction: "/ranking",
+		},
 	];
 
 	useEffect(() => {

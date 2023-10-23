@@ -14,7 +14,7 @@ type userInput = {
 };
 
 const Signup = () => {
-	const {setUser, setLoggedUser} = useContext(UserContext);
+	const { setUser, setLoggedUser } = useContext(UserContext);
 	const [signupError, setSignupError] = useState("");
 	const schema = z
 		.object({
@@ -42,32 +42,31 @@ const Signup = () => {
 		}
 
 		try {
-			const res = await axiosClient.post("/signup", {
-				nickname: userData.nickname,
-				password: userData.password,
-				confirmPassword: userData.confirmPassword,
-			}, {withCredentials: true});
+			const res = await axiosClient.post(
+				"/signup",
+				{
+					nickname: userData.nickname,
+					password: userData.password,
+					confirmPassword: userData.confirmPassword,
+				},
+				{ withCredentials: true }
+			);
 
 			setUser((prev) => ({
 				nickname: res.data.nickname,
 				sessionId: prev.sessionId,
 			}));
 
-      setLoggedUser({id: res.data.user_id});
-
+			setLoggedUser({ id: res.data.user_id });
 
 			const userFromResponse: UserType = {
-        nickname: res.data.nickname,
-        sessionId: '',
-      }
+				nickname: res.data.nickname,
+				sessionId: "",
+			};
 
 			const userFromResponseParsed = JSON.stringify(userFromResponse);
 
-			setCookie(
-        "userInfo",
-        userFromResponseParsed,
-        7
-      );
+			setCookie("userInfo", userFromResponseParsed, 7);
 
 			navigate("/");
 		} catch (error: any) {
@@ -77,7 +76,7 @@ const Signup = () => {
 
 	return (
 		<div className='signup'>
-			<form onSubmit={handleSubmit(onSignup)} className='g__form'>
+			<form onSubmit={handleSubmit(onSignup)} className='g__form --black'>
 				<div className='g__form--title'>Sign up</div>
 				<div className='g__form__inputs'>
 					<div className='g__form__inputs--inputwrapper'>
@@ -123,8 +122,13 @@ const Signup = () => {
 						</div>
 					</div>
 				</div>
-				<input type='submit' value={"Sign up"} className='g__form--submit' />
+				<input type='submit' value={"Sign up"} className='g__button --200w' />
 				<div className='g__form--error'>{signupError !== "" ? signupError : ""}</div>
+				<div className='g__form--whyaccount'>
+					<span>Why would i need to create an account?</span>
+					<span>For games history, to be in the ranking, and making fame</span>
+					<span className="g__form--whyaccount --unfunny" >and to make developer happy, that he did not waste time buidling backend</span>
+				</div>
 				<div className='g__form--link'>
 					<span>Already have an account?</span>
 					<Link to='/signin'>

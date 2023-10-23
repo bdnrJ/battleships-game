@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { CellType, GameRoom, GameStage, ShipTypes, gameplayState, matrix } from "../types.js";
 import GameModel, { Game } from "../../models/game.js";
+import RankingModel from "../../models/ranking.js";
 
 const createGameLog = async (player1_id: number, player2_id: number, p1_won: boolean) => {
 	console.log("--- create game log ---");
@@ -21,6 +22,19 @@ const createGameLog = async (player1_id: number, player2_id: number, p1_won: boo
 		console.log(err);
 	}
 };
+
+const updateRanking = async (player1_id: number, player2_id: number, p1_won: boolean) => {
+	console.log("--- update ranking ---");
+
+	if(player2_id === -1 && player2_id === -1) return;
+
+	try {
+		const res = await RankingModel.updateRankingAfterGame(player1_id, player2_id, p1_won);
+		console.log(res);
+	} catch (err: any) {
+		console.log(err);
+	}
+}
 
 export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoards: gameplayState[]) {
 	const offsets = [
@@ -150,6 +164,7 @@ export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoard
 						);
 
 						createGameLog(gameplayState.player1_id, gameplayState.player2_id, playerWhoWon === 0);
+						updateRanking(gameplayState.player1_id, gameplayState.player2_id, playerWhoWon === 0);
 
 						return;
 					}

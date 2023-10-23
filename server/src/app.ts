@@ -1,13 +1,14 @@
-import express from 'express';
-import createDatabaseConnection from './config/database.js';
-import { loggerMiddleware } from './utils/logger.js';
-import { createUser, getUserById, deleteUser } from './controllers/userController.js';
-import { isLoggedIn, login } from './controllers/authController.js';
-import cors from 'cors'
-import authMiddleware from './middleware/auth.js';
-import corsOptions from './config/cors.js';
-import setupSocketIO from './middleware/socketIo.js';
-import { getUserGamesById } from './controllers/gameController.js';
+import express from "express";
+import createDatabaseConnection from "./config/database.js";
+import { loggerMiddleware } from "./utils/logger.js";
+import { createUser, getUserById, deleteUser } from "./controllers/userController.js";
+import { isLoggedIn, login } from "./controllers/authController.js";
+import cors from "cors";
+import authMiddleware from "./middleware/auth.js";
+import corsOptions from "./config/cors.js";
+import setupSocketIO from "./middleware/socketIo.js";
+import { getUserGamesById } from "./controllers/gameController.js";
+import { getTop100Ranking } from "./controllers/rankingController.js";
 
 const app = express();
 const PORT = 3000;
@@ -17,40 +18,48 @@ app.use(express.json());
 app.use(loggerMiddleware);
 
 async function main() {
-    try {
-        // Connect to MySQL Database
-        const connection = await createDatabaseConnection();
+	try {
+		// Connect to MySQL Database
+		const connection = await createDatabaseConnection();
 
-        // Routes
-        const router = express.Router();
+		// Routes
+		const router = express.Router();
 
-        // Define routes and link them to the controller functions
-        router.get('/users/:id', authMiddleware, getUserById);
-        router.delete('/users/:id', authMiddleware, deleteUser);
+		// user rouets
+		router.get("/users/:id", authMiddleware, getUserById);
+		router.delete("/users/:id", authMiddleware, deleteUser);
         
-        router.get('/isUser', authMiddleware, isLoggedIn);
-        router.get('/getUserGames/:id', getUserGamesById);
-        router.post('/signup', createUser);
-        router.post('/signin', login);
-        router.get('/test', (req, res) => {
-            res.status(201).json({message: 'it works!' });
-        });
+        //game routes
+		router.get("/getUserGames/:id", getUserGamesById);
+        
+        //auth routes
+		router.post("/signup", createUser);
+		router.post("/signin", login);
+		router.get("/isUser", authMiddleware, isLoggedIn);
 
-        // Use the router for all routes starting with '/api'
-        app.use('/api', router);
+        //ranking routes
+		router.get("/ranking", getTop100Ranking);
 
-        const httpServer = setupSocketIO(app);
+        //tests
+		router.get("/test", (req, res) => {
+			res.status(201).json({ message: "it works!" });
+		});
 
-        // httpServer.listen(PORT, '192.168.0.104', () => {
-        //     console.log(`Server is running on 192.168.0.104:${PORT}`);
-        // });
-        httpServer.listen(PORT, () => {
-            console.log(`Server is running on someip:${PORT}`);
-        });
-    } catch (err) {
-        console.error('Error starting the server:', err);
-        process.exit(1);
-    }
+		// Use the router for all routes starting with '/api'
+		app.use("/api", router);
+
+		const httpServer = setupSocketIO(app);
+
+		// httpServer.listen(PORT, '192.168.0.104', () => {
+		//     console.log(`Server is running on 192.168.0.104:${PORT}`);
+		// });
+		httpServer.listen(PORT, () => {
+			console.log(`Server is running on someip:${PORT}`);
+		});
+	} catch (err) {
+		console.error("Error starting the server:", err);
+		process.exit(1);
+	}
 }
 
 main();

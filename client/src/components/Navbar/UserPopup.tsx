@@ -13,14 +13,14 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 	const popupRef = useRef<any>(null);
 
 	const handleCheckIfUserIsLogged = async () => {
-		try{
-			const res = await axiosClient.get('/isUser', {withCredentials: true});
+		try {
+			const res = await axiosClient.get("/isUser", { withCredentials: true });
 
-			setLoggedUser({id: res.data.user_id})
-		}catch(err: any){
+			setLoggedUser({ id: res.data.user_id });
+		} catch (err: any) {
 			console.log(err);
 		}
-	}
+	};
 
 	//handling popup visibility
 	useEffect(() => {
@@ -47,20 +47,27 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 	return (
 		<div className='userpopup' ref={popupRef}>
 			<span className='userpopup__nickname'>{user.nickname}</span>
-      <hr />
-      <section className="userpopup__buttons">
-        <Link to={'/signin'} className="g__link">
-          Sign In
-        </Link>
-        <Link to={'/signup'} className="g__link">
-          Sign Up
-        </Link>
-        <Link to={'/my_games'} className="g__link">
-          Games history
-        </Link>
-				<span>UserID: {loggedUser.id}</span>
-				<button onClick={handleCheckIfUserIsLogged} >check if logged</button>
-      </section>
+			<hr />
+			<section className='userpopup__buttons'>
+				{loggedUser.id === -1 ? (
+					<>
+						<Link to={"/signin"} className='g__link'>
+							Sign In
+						</Link>
+						<Link to={"/signup"} className='g__link'>
+							Sign Up
+						</Link>
+					</>
+				) : (
+					<>
+						<Link to={"/my_games"} className='g__link'>
+							Games history
+						</Link>
+						<span>UserID: {loggedUser.id}</span>
+						<button onClick={handleCheckIfUserIsLogged}>check if logged</button>
+					</>
+				)}
+			</section>
 		</div>
 	);
 };

@@ -9,6 +9,7 @@ import { CenterModalProvider } from "./hooks/useCenterModal";
 import QuickGame from "./views/QuickGame";
 import Invite from "./views/Invite";
 import MyGames from "./views/MyGames";
+import Ranking from "./views/Ranking";
 
 export const Layout = () => {
 	return (
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
 			{
 				path: "/my_games",
 				element: <MyGames />,
+			},
+			{
+				path: "/ranking",
+				element: <Ranking />,
 			},
 		],
 	},

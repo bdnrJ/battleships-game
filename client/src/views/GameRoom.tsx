@@ -182,6 +182,7 @@ const GameRoom = () => {
 
 	return (
 		<div className={`gameroom-wrapper ${room.gameState === GameStage.PLAYING ? " --playing" : ""}`}>
+			<button onClick={() => console.log(user)} >User</button>
 			<div className={`gameroom ${room.gameState === GameStage.PLAYING ? " --playing" : ""}`}>
 				<div className='gameroom__left'>
 					<div className='gameroom__left--top'>
