@@ -1,64 +1,79 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axiosClient from "../axios-client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-// id: 3
-// ​​
-// nickname: "useruser"
-// ​​
-// total_games_played: 2
-// ​​
-// total_wins: 2
-// ​​
-// user_id: 44
-// ​​
-// win_rate: "0.00"
+type RankingRow = {
+	id: number;
+	nickname: string;
+	total_games_played: number;
+	total_wins: number;
+	user_id: number;
+	win_rate: number;
+};
 
 const Ranking = () => {
-	const [ranking, setRanking] = useState<any>([]);
+	const queryClient = useQueryClient();
 
-	const getRanking = async () => {
+	const fetchRanking = async () => {
 		try {
+			const cachedData = queryClient.getQueryData(["ranking"]);
+
+			if (cachedData) {
+				// Return cached data if available
+				console.log("cached");
+
+				return cachedData;
+			}
+
+			console.log("requested ranking");
+
 			const res = await axiosClient.get("/ranking");
 
-			console.log(res.data);
-			setRanking(res.data);
+			queryClient.setQueryData(["ranking"], res.data);
+
+			return res.data;
 		} catch (err: any) {
 			console.log(err);
 		}
 	};
 
+	const { data, isError } = useQuery({
+		queryKey: ["ranking"],
+		queryFn: fetchRanking,
+		staleTime: 1000 * 60 * 5,
+		enabled: false,
+	});
+
 	useEffect(() => {
-		getRanking();
+		fetchRanking();
 	}, []);
+
+	if (isError) {
+		return (
+			<div className='ranking--wrapper'>
+				<div className='ranking'>
+          Error while trying to get ranking
+        </div>
+			</div>
+		);
+	}
 
 	return (
 		<div className='ranking--wrapper'>
 			<div className='ranking'>
-				{ranking.map((row: any, idx: number) => (
-					<>
+				{data?.map((row: RankingRow, idx: number) => (
+					<div key={row.id + idx + row.user_id}>
 						<div>{idx}</div>
-            <div>{row.nickname}</div>
-            <div>games played: {row.total_games_played}</div>
-            <div>wins: {row.total_wins}</div>
-            <div>loses: {row.total_games_played - row.total_wins}</div>
-            <div>winrate: {(row.total_wins / row.total_games_played)*100 }%</div>
-					</>
+						<div>{row.nickname}</div>
+						<div>games played: {row.total_games_played}</div>
+						<div>wins: {row.total_wins}</div>
+						<div>loses: {row.total_games_played - row.total_wins}</div>
+						<div>winrate: {(row.total_wins / row.total_games_played) * 100}%</div>
+					</div>
 				))}
 			</div>
 		</div>
 	);
 };
-
-// id: 3
-// ​​
-// nickname: "useruser"
-// ​​
-// total_games_played: 2
-// ​​
-// total_wins: 2
-// ​​
-// user_id: 44
-// ​​
-// win_rate: "0.00"
 
 export default Ranking;
