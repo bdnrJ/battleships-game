@@ -19,6 +19,12 @@ export interface Front__Game {
 	game_date: Date;
 }
 
+export interface RankingInfo {
+	total_games_played: number; 
+	total_wins: number;
+	win_rate: number;
+}
+
 class GameModel {
 	static createGame = async (game: Game) => {
 		const connection: PoolConnection = await createDatabaseConnection();
@@ -86,6 +92,29 @@ class GameModel {
 
 		return games;
 	};
+
+	static getUserRanking = async (user_id: number): Promise<RankingInfo | null> => {
+    const connection: PoolConnection = await createDatabaseConnection();
+
+    const query = `
+        SELECT total_games_played, total_wins, win_rate
+        FROM ranking_table
+        WHERE user_id = ?;
+    `;
+
+    const [rankingRows] = (await connection.execute(query, [user_id])) as RowDataPacket[];
+    connection.release();
+
+    if (rankingRows.length === 0) return null;
+
+    const rankingInfo: RankingInfo = {
+        total_games_played: rankingRows[0].total_games_played,
+        total_wins: rankingRows[0].total_wins,
+        win_rate: rankingRows[0].win_rate,
+    };
+
+    return rankingInfo;
+};
 }
 
 export default GameModel;

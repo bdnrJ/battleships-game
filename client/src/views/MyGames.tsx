@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import axiosClient from "../axios-client";
 import { UserContext } from "../context/UserContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -20,10 +20,20 @@ type MyGame = {
 	game_date: string;
 };
 
+type MyStats = {
+	total_games_played: number;
+	total_wins: number;
+	total_loses: number;
+	win_rate: number;
+};
+
 const MyGames = () => {
 	const { loggedUser } = useContext(UserContext);
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
+
+	const [stats, setStats] = useState<MyStats>({ total_games_played: 0, total_wins: 0, win_rate: 0, total_loses: 0 });
+	const [games, setGames] = useState<MyGame[]>([]);
 
 	const fetchUserGames = async () => {
 		try {
@@ -38,7 +48,9 @@ const MyGames = () => {
 
 			console.log("requested mygames");
 
-			const res = await axiosClient.get(`/getUserGames/${loggedUser.id}`);
+			const res = await axiosClient.get(`/getUserGamesAndStats/${loggedUser.id}`);
+
+			console.log(res);
 
 			queryClient.setQueryData(["mygames"], res.data);
 			return res.data;
@@ -62,6 +74,28 @@ const MyGames = () => {
 		}
 	}, []);
 
+	useEffect(() => {
+		if (data) {
+			console.log(data);
+			// Sort games by date in descending order (newest first)
+			const sortedGames = [...data.userGames].sort((a, b) => {
+				const dateA = new Date(a.game_date).getTime();
+				const dateB = new Date(b.game_date).getTime();
+				return dateB - dateA;
+			});
+
+			setGames(sortedGames);
+
+			const totalGames = data.userStats.total_games_played;
+			const totalWins = data.userStats.total_wins;
+
+			const loses = totalGames - totalWins;
+			const winrate = (totalWins / totalGames) * 100;
+
+			setStats({ total_games_played: totalGames, total_wins: totalWins, win_rate: winrate, total_loses: loses });
+		}
+	}, [data]);
+
 	if (isError) {
 		return (
 			<div className='mygames--wrapper'>
@@ -73,24 +107,51 @@ const MyGames = () => {
 	return (
 		<div className='mygames--wrapper'>
 			<div className='mygames'>
-				<h1>My games history</h1>
-			</div>
-			<div className='mygames__games'>
-				{data?.map((game: MyGame) => (
-					<div className='mygames__games--elem' key={game.id + game.player1_id + game.player2_id}>
-						<div>id: {game.id}</div>
-						<div>p1 nick: {game.player1_nickname === null ? "Anon" : game.player1_nickname}</div>
-						<div>p2 nick: {game.player2_nickname === null ? "Anon" : game.player2_nickname}</div>
-						<div>
-							{game.player1_id === loggedUser.id && game.p1_won === 1
+				<h1 className='mygames--title'>My games history</h1>
+				<section className='mygames__stats'>
+					<span>
+						Games played: <b>{stats.total_games_played}</b>
+					</span>
+					<span>
+						Wins: <b className='g__green'>{stats.total_wins}</b>
+					</span>
+					<span>
+						Loses: <b className='g__red'>{stats.total_loses}</b>
+					</span>
+					<span>
+						Winrate: <b>{stats.win_rate.toPrecision(3)}%</b>{" "}
+					</span>
+				</section>
+				<section className='mygames__games'>
+					{games?.map((game: MyGame) => {
+						const date = game.game_date.split("T")[0];
+						const time = game.game_date.split("T")[1].split(".")[0].slice(0, 5);
+
+						const hasWon =
+							game.player1_id === loggedUser.id && game.p1_won === 1
 								? "Victory"
 								: game.player2_id === loggedUser.id && game.p1_won === 0
 								? "Victory"
-								: "Defeat"}
-						</div>
-						<div>date: {game.game_date}</div>
-					</div>
-				))}
+								: "Defeat";
+
+						return (
+							<div
+								className={`mygames__games--elem ${hasWon === "Victory" ? "--victory" : "--defeat"}`}
+								key={game.id + game.player1_id + game.player2_id}
+							>
+								<div>
+									{game.player1_nickname === null ? "Anon" : game.player1_nickname} VS{" "}
+									{game.player2_nickname === null ? "Anon" : game.player2_nickname}
+								</div>
+								<div>{hasWon}</div>
+								<div>
+									<div>{date}</div>
+									<div>{time}</div>
+								</div>
+							</div>
+						);
+					})}
+				</section>
 			</div>
 		</div>
 	);

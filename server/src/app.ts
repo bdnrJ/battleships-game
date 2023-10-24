@@ -7,7 +7,7 @@ import cors from "cors";
 import authMiddleware from "./middleware/auth.js";
 import corsOptions from "./config/cors.js";
 import setupSocketIO from "./middleware/socketIo.js";
-import { getUserGamesById } from "./controllers/gameController.js";
+import { getUserGamesAndStatsById, getUserGamesById } from "./controllers/gameController.js";
 import { getTop100Ranking } from "./controllers/rankingController.js";
 
 const app = express();
@@ -31,6 +31,7 @@ async function main() {
         
         //game routes
 		router.get("/getUserGames/:id", getUserGamesById);
+		router.get("/getUserGamesAndStats/:id", getUserGamesAndStatsById);
         
         //auth routes
 		router.post("/signup", createUser);
