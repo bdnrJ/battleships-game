@@ -14,7 +14,8 @@
 
     .modal__content {
         width: min(400px, 100vw);
-        background-color: #fff;
+        background-color: var(--bg);
+        color: var(--text);
         display: flex;
         flex-direction: column;
         align-items: flex-start;

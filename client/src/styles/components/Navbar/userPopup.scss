@@ -2,7 +2,7 @@
   position: absolute;
   top: 34px;
   border: 1px solid grey;
-  background-color: WHITE;
+  background-color: var(--bg);
   z-index: 10;
   padding: 5px;
   font-size: 20px;
@@ -10,6 +10,7 @@
   right: 0px;
 
   .userpopup__buttons{
+    background-color: var(--bg);
     margin-top: 10px;
     display: flex;
     flex-direction: column;

@@ -4,11 +4,8 @@ import { UserContext } from "../context/UserContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-//       id: row.id,
-//       player1_nickname: row.player1_nickname,
-//       player2_nickname: row.player2_nickname,
-//       p1_won: row.p1_won,
-//       game_date: row.game_date
+//TODO
+// make this with infiite scroll or smth to not display fucking 1000 games at once :D
 
 type MyGame = {
 	id: number;

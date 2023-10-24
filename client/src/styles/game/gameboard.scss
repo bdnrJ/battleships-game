@@ -1,42 +1,43 @@
-.gameboard{
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+.gameboard {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
 
-    .gameboard--uppermarks{
-        display: flex;
-        justify-content: flex-end;
-        width: 100%;
+	.gameboard--uppermarks {
+		display: flex;
+		justify-content: flex-end;
+		width: 100%;
+	}
 
-    }
+	.gameboard__marks--elem {
+		height: 40px;
+		width: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
-    .gameboard__marks--elem{
-        height: 40px;
-        width: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        @include tablet{
-            height: 20px;
-            width: 20px;
-        }
-    }
+		border: 1px solid var(--text);
 
-    .gameboard__board{
-        display: grid;
-        grid-template-columns: repeat(10, 40px);
-        grid-template-rows: repeat(10, 40px);
+		@include tablet {
+			height: 20px;
+			width: 20px;
+		}
+	}
 
-        @include tablet{
-            grid-template-columns: repeat(10, 20px);
-            grid-template-rows: repeat(10, 20px);
-        }
-    }
+	.gameboard__board {
+		display: grid;
+		grid-template-columns: repeat(10, 40px);
+		grid-template-rows: repeat(10, 40px);
 
-    .gameboard__rest{
-        display: flex;
-    }
+		@include tablet {
+			grid-template-columns: repeat(10, 20px);
+			grid-template-rows: repeat(10, 20px);
+		}
+	}
+
+	.gameboard__rest {
+		display: flex;
+	}
 }

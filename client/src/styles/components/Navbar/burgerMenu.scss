@@ -1,10 +1,10 @@
 .burgermenu {
 	display: none;
 	position: absolute;
-	background-color: white;
+	background-color: var(--bg);
 	width: 100vw;
 	left: 0px;
-	z-index: 5;
+	z-index: 100;
   border-bottom: 2px solid darken(white, 25%);
   
 	@include tablet {

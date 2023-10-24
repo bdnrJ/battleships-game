@@ -22,6 +22,10 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 		}
 	};
 
+	const switchTheme = () => {
+		document.body.classList.toggle('--black');
+	}
+
 	//handling popup visibility
 	useEffect(() => {
 		function handleClickOutside(event: Event) {
@@ -67,6 +71,7 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 						<button onClick={handleCheckIfUserIsLogged}>check if logged</button>
 					</>
 				)}
+				White / Dark mode: <button onClick={switchTheme} >switcheroo</button>
 			</section>
 		</div>
 	);

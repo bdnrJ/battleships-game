@@ -1,5 +1,6 @@
 .g__form {
-	background-color: white;
+	background-color: var(--bg);
+	color: var(--text);
 	width: min(400px, 100vw);
 	padding: 0px 40px 20px 40px;
 	display: flex;
@@ -82,7 +83,9 @@
 
 			.g__form--input {
 				width: 100%;
-				border: 1px solid black;
+				border: 1px solid var(--text);
+				background-color: var(--bg);
+				color: var(--text);
 				height: 40px;
 				border-radius: 5px;
 				padding-left: 10px;
@@ -154,7 +157,8 @@
 .g__link {
 	text-decoration: none;
 	cursor: pointer;
-	color: black;
+	
+	color: var(--text);
 
 	cursor: pointer;
 	background-color: transparent;
@@ -170,8 +174,10 @@
 .g__button {
 	cursor: pointer;
 	background-color: white;
+	background-color: var(--bg);
 	color: black;
-	border: 1px solid black;
+	color: var(--text);
+	border: 1px solid var(--text);
 	height: 35px;
 	min-width: 100px;
 	transition: all 0.3s ease;
