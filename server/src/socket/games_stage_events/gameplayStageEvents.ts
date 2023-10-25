@@ -26,7 +26,7 @@ const createGameLog = async (player1_id: number, player2_id: number, p1_won: boo
 const updateRanking = async (player1_id: number, player2_id: number, p1_won: boolean) => {
 	console.log("--- update ranking ---");
 
-	if(player2_id === -1 && player2_id === -1) return;
+	if (player1_id === -1 && player2_id === -1) return;
 
 	try {
 		const res = await RankingModel.updateRankingAfterGame(player1_id, player2_id, p1_won);
@@ -34,7 +34,7 @@ const updateRanking = async (player1_id: number, player2_id: number, p1_won: boo
 	} catch (err: any) {
 		console.log(err);
 	}
-}
+};
 
 export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoards: gameplayState[]) {
 	const offsets = [

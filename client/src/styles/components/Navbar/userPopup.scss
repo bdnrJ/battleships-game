@@ -1,20 +1,55 @@
-.userpopup{
-  position: absolute;
-  top: 34px;
-  border: 1px solid grey;
-  background-color: var(--bg);
-  z-index: 10;
-  padding: 5px;
-  font-size: 20px;
-  min-width: 200px;
-  right: 0px;
+.userpopup {
+	position: absolute;
+	top: 34px;
+	border: 1px solid grey;
+	background-color: var(--bg);
+	z-index: 10;
+	padding: 5px;
+	font-size: 20px;
+	min-width: 200px;
+	right: 0px;
 
-  .userpopup__buttons{
-    background-color: var(--bg);
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
+	.userpopup__buttons {
+		background-color: var(--bg);
+		margin-top: 10px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+
+		.userpopup__buttons--darkmode {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+			cursor: pointer;
+
+			button {
+				width: 40px;
+				height: 20px;
+				border: 1px solid var(--text);
+				border-radius: 25px;
+				position: relative;
+
+				span {
+					position: absolute;
+					width: 15px;
+					height: 15px;
+					background-color: var(--text);
+					border-radius: 99999px;
+				}
+
+				&.--on {
+					span {
+						left: 5px;
+					}
+				}
+
+				&.--off {
+					span {
+						right: 5px;
+					}
+				}
+			}
+		}
+	}
 }

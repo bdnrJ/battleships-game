@@ -3,6 +3,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+  color: var(--text);
+  background-color: var(--bg);
 
 	.mygames {
     margin-bottom: 30px;
@@ -14,6 +16,7 @@
 		align-items: center;
 		flex-direction: column;
 		gap: 30px;
+    overflow-y: auto;
     
 
     .mygames--title{

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import { Link } from "react-router-dom";
 import axiosClient from "../../axios-client";
@@ -9,6 +9,7 @@ type Props = {
 
 const UserPopup = ({ hideUserPopup }: Props) => {
 	const { user, loggedUser, setLoggedUser } = useContext(UserContext);
+	const [isDarkModeOn, setIsDarkModeOn] = useState<boolean>(localStorage.getItem("dark_mode") === "true");
 
 	const popupRef = useRef<any>(null);
 
@@ -23,8 +24,17 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 	};
 
 	const switchTheme = () => {
-		document.body.classList.toggle('--black');
-	}
+		const isDarkMode = localStorage.getItem("dark_mode") === "true";
+		if (isDarkMode) {
+			localStorage.setItem("dark_mode", "false");
+			document.body.classList.remove("--black");
+			setIsDarkModeOn(false);
+		} else {
+			localStorage.setItem("dark_mode", "true");
+			document.body.classList.add("--black");
+			setIsDarkModeOn(true);
+		}
+	};
 
 	//handling popup visibility
 	useEffect(() => {
@@ -71,7 +81,12 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 						<button onClick={handleCheckIfUserIsLogged}>check if logged</button>
 					</>
 				)}
-				White / Dark mode: <button onClick={switchTheme} >switcheroo</button>
+				<div className='userpopup__buttons--darkmode'>
+					Dark mode:{" "}
+					<button className={`${isDarkModeOn ? "--on" : "--off"}`} onClick={switchTheme}>
+						<span></span>
+					</button>
+				</div>
 			</section>
 		</div>
 	);

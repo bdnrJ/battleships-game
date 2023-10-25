@@ -110,6 +110,14 @@ export const UserProvider = ({ children }: Props) => {
 	}
 
 	useEffect(() => {
+		const isDarkMode = localStorage.getItem("dark_mode") === "true";
+		// Set body class based on dark mode setting
+		if (isDarkMode) {
+			document.body.classList.add('--black');
+		} else {
+			document.body.classList.remove('--black');
+		}
+
 		if (getCookie("userInfo")) {
 			const userFromCookie = JSON.parse(getCookie("userInfo"));
 

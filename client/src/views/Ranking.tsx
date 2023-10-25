@@ -61,6 +61,7 @@ const Ranking = () => {
 	return (
 		<div className='ranking--wrapper'>
 			<div className='ranking'>
+				<h1>Ranking</h1>
 				{data?.map((row: RankingRow, idx: number) => (
 					<div key={row.id + idx + row.user_id}>
 						<div>{idx}</div>

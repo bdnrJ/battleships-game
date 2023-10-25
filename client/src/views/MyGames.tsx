@@ -56,7 +56,7 @@ const MyGames = () => {
 		}
 	};
 
-	const { data, isError } = useQuery({
+	const { data, isError, isLoading } = useQuery({
 		queryKey: ["mygames"],
 		queryFn: fetchUserGames,
 		staleTime: 1000 * 60 * 5,
@@ -99,6 +99,12 @@ const MyGames = () => {
 				<div className='mygames'>Error while trying to get your games</div>
 			</div>
 		);
+	}
+
+	if (isLoading) {
+		<div className='mygames--wrapper'>
+			<div className='mygames'>Loading...</div>
+		</div>;
 	}
 
 	return (
