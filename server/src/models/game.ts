@@ -52,30 +52,36 @@ class GameModel {
 	//   "game_date": "2023-10-22T14:31:12.000Z"
 	// }
 
-	static getUserGames = async (user_id: number): Promise<Game[]> => {
+	static getUserGames = async (
+		user_id: number,
+		page: number = 1,
+		pageSize: number = 20
+	): Promise<Game[]> => {
 		const connection: PoolConnection = await createDatabaseConnection();
 
+		// Calculate the offset based on the current page and page size
+		const offset = (page - 1) * pageSize;
+
 		const query = `
-			SELECT games.id, 
-			player1.id AS player1_id, 
-			player1.nickname AS player1_nickname, 
-			player2.id AS player2_id, 
-			player2.nickname AS player2_nickname, 
-			games.p1_won, 
-			games.game_date
-			FROM games
-			LEFT JOIN users AS player1 
-			ON games.player1_id = player1.id
-			LEFT JOIN users AS player2 
-			ON games.player2_id = player2.id
-			WHERE player1.id = ? OR player2.id = ?
-			ORDER BY games.game_date DESC;
-    `;
+		SELECT games.id, 
+		player1.id AS player1_id, 
+		player1.nickname AS player1_nickname, 
+		player2.id AS player2_id, 
+		player2.nickname AS player2_nickname, 
+		games.p1_won, 
+		games.game_date
+		FROM games
+		LEFT JOIN users AS player1 
+		ON games.player1_id = player1.id
+		LEFT JOIN users AS player2 
+		ON games.player2_id = player2.id
+		WHERE player1.id = ? OR player2.id = ?
+		ORDER BY games.game_date DESC
+		LIMIT ? OFFSET ?
+		`;
 
-		const [rows] = (await connection.execute(query, [user_id, user_id])) as RowDataPacket[];
+		const [rows] = (await connection.execute(query, [user_id, user_id, pageSize.toString(), offset.toString()])) as RowDataPacket[];
 		connection.release();
-
-		console.log(rows);
 
 		if (rows.length === 0) return [];
 

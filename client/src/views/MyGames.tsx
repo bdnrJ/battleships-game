@@ -31,10 +31,11 @@ const MyGames = () => {
 
 	const [stats, setStats] = useState<MyStats>({ total_games_played: 0, total_wins: 0, win_rate: 0, total_loses: 0 });
 	const [games, setGames] = useState<MyGame[]>([]);
+	const [page, setPage] = useState<number>(1);
 
 	const fetchUserGames = async () => {
 		try {
-			const cachedData = queryClient.getQueryData(["mygames"]);
+			const cachedData = queryClient.getQueryData(["mygames", page]);
 
 			if (cachedData) {
 				// Return cached data if available
@@ -44,12 +45,17 @@ const MyGames = () => {
 			}
 
 			console.log("requested mygames");
+			console.log(page);
 
-			const res = await axiosClient.get(`/getUserGamesAndStats/${loggedUser.id}`);
+			// const res = await axiosClient.get(`/getUserGamesAndStats/${loggedUser.id}?page=${page}`, {params: {
+			// 	page: page
+			// }});
+
+			const res = await axiosClient.get(`/getUserGamesAndStats/${loggedUser.id}?page=${page}`);
 
 			console.log(res);
 
-			queryClient.setQueryData(["mygames"], res.data);
+			queryClient.setQueryData(["mygames", page], res.data);
 			return res.data;
 		} catch (err: any) {
 			console.log(err);
@@ -57,7 +63,7 @@ const MyGames = () => {
 	};
 
 	const { data, isError, isLoading } = useQuery({
-		queryKey: ["mygames"],
+		queryKey: ["mygames", page],
 		queryFn: fetchUserGames,
 		staleTime: 1000 * 60 * 5,
 		enabled: false,
@@ -69,19 +75,13 @@ const MyGames = () => {
 		} else {
 			fetchUserGames();
 		}
-	}, []);
+	}, [page]);
 
 	useEffect(() => {
 		if (data) {
-			console.log(data);
-			// Sort games by date in descending order (newest first)
-			const sortedGames = [...data.userGames].sort((a, b) => {
-				const dateA = new Date(a.game_date).getTime();
-				const dateB = new Date(b.game_date).getTime();
-				return dateB - dateA;
-			});
+			const newGames = [...games, ...data.userGames];
 
-			setGames(sortedGames);
+			setGames(newGames);
 
 			const totalGames = data.userStats.total_games_played;
 			const totalWins = data.userStats.total_wins;
@@ -93,19 +93,19 @@ const MyGames = () => {
 		}
 	}, [data]);
 
-	if (isError) {
-		return (
-			<div className='mygames--wrapper'>
-				<div className='mygames'>Error while trying to get your games</div>
-			</div>
-		);
-	}
+	// if (isError) {
+	// 	return (
+	// 		<div className='mygames--wrapper'>
+	// 			<div className='mygames'>Error while trying to get your games</div>
+	// 		</div>
+	// 	);
+	// }
 
-	if (isLoading) {
-		<div className='mygames--wrapper'>
-			<div className='mygames'>Loading...</div>
-		</div>;
-	}
+	// if (isLoading) {
+	// 	<div className='mygames--wrapper'>
+	// 		<div className='mygames'>Loading...</div>
+	// 	</div>;
+	// }
 
 	return (
 		<div className='mygames--wrapper'>
@@ -142,6 +142,7 @@ const MyGames = () => {
 								className={`mygames__games--elem ${hasWon === "Victory" ? "--victory" : "--defeat"}`}
 								key={game.id + game.player1_id + game.player2_id}
 							>
+								<div>{game.id}</div>
 								<div>
 									{game.player1_nickname === null ? "Anon" : game.player1_nickname} VS{" "}
 									{game.player2_nickname === null ? "Anon" : game.player2_nickname}
@@ -154,7 +155,14 @@ const MyGames = () => {
 							</div>
 						);
 					})}
+					{games.length < stats.total_games_played && (
+						<button className='g__button --100w' onClick={() => setPage((prev) => prev + 1)}>
+							Show more
+						</button>
+					)}
 				</section>
+				{isLoading && "Loading..."}
+				{isError && "There was an error while trying to get your games..."}
 			</div>
 		</div>
 	);

@@ -5,8 +5,9 @@ import GameModel, { Game, RankingInfo } from "../models/game.js";
 export const getUserGamesById = async (req: Request, res: Response) => {
 	try {
     const user_id: number = parseInt(req.params.id, 10);
+		const page: number = parseInt(req.params.page, 10);
 
-    const userGames: Game[] | null = await GameModel.getUserGames(user_id);
+    const userGames: Game[] | null = await GameModel.getUserGames(user_id, page, 0);
 
     if (!userGames) {
 			res.status(404).json({ message: "Not found any games for this user" });
@@ -23,8 +24,9 @@ export const getUserGamesById = async (req: Request, res: Response) => {
 export const getUserGamesAndStatsById = async (req: Request, res: Response) => {
 	try {
     const user_id: number = parseInt(req.params.id, 10);
+		const page: number = parseInt(req.query.page as string, 10) || 1; // Retrieve 'page' from query parameters
 
-    const userGames: Game[] | null = await GameModel.getUserGames(user_id);
+    const userGames: Game[] | null = await GameModel.getUserGames(user_id, page);
 		const userStats: RankingInfo | null = await GameModel.getUserRanking(user_id);
 
     if (!userGames) {
