@@ -2,7 +2,7 @@ import express from "express";
 import createDatabaseConnection from "./config/database.js";
 import { loggerMiddleware } from "./utils/logger.js";
 import { createUser, getUserById, deleteUser } from "./controllers/userController.js";
-import { isLoggedIn, login } from "./controllers/authController.js";
+import { isLoggedIn, login, logout } from "./controllers/authController.js";
 import cors from "cors";
 import authMiddleware from "./middleware/auth.js";
 import corsOptions from "./config/cors.js";
@@ -36,6 +36,7 @@ async function main() {
         //auth routes
 		router.post("/signup", createUser);
 		router.post("/signin", login);
+		router.post('/logout', logout);
 		router.get("/isUser", authMiddleware, isLoggedIn);
 
         //ranking routes

@@ -64,7 +64,9 @@
 
 				@include mobile {
 					flex-direction: column;
-					height: 100px;
+					height: fit-content;
+					padding-top: 3px;
+					padding-bottom: 3px;
 					width: 90vw;
 				}
 			}

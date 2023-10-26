@@ -142,7 +142,7 @@ const MyGames = () => {
 								className={`mygames__games--elem ${hasWon === "Victory" ? "--victory" : "--defeat"}`}
 								key={game.id + game.player1_id + game.player2_id}
 							>
-								<div>{game.id}</div>
+								<div>id: {game.id}</div>
 								<div>
 									{game.player1_nickname === null ? "Anon" : game.player1_nickname} VS{" "}
 									{game.player2_nickname === null ? "Anon" : game.player2_nickname}

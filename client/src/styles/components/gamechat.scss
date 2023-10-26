@@ -5,7 +5,7 @@
 	top: 0%;
 	right: 0%;
 	border-left: 1px solid black;
-	background-color: rgb(231, 231, 231);
+	background-color: lighten(#1c1c1f, 10%);
 	width: 375px;
 	overflow-y: hidden;
 	overflow-x: hidden;
@@ -53,8 +53,9 @@
 		justify-content: center;
 		gap: 5px;
 		height: 45px;
-		background-color: rgb(202, 202, 202);
+		background-color: lighten(#1c1c1f, 60%);
 		border-top: 1px solid rgb(163, 163, 163);
+		color: white;
 		width: 100%;
 
 		label {
@@ -64,6 +65,7 @@
 			align-items: center;
 			justify-content: center;
 			input {
+				color: black;
 				height: 100%;
 			}
 		}

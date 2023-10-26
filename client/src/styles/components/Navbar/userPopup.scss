@@ -17,6 +17,10 @@
 		align-items: center;
 		gap: 10px;
 
+		button{
+			cursor: pointer;
+		}
+
 		.userpopup__buttons--darkmode {
 			display: flex;
 			gap: 10px;
@@ -24,6 +28,7 @@
 			cursor: pointer;
 
 			button {
+				cursor: pointer;
 				width: 40px;
 				height: 20px;
 				border: 1px solid var(--text);

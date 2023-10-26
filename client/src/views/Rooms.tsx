@@ -4,7 +4,7 @@ import CreateRoom from "../components/modals/CreateRoom";
 import Room from "../components/Room";
 import { useNavigate } from "react-router-dom";
 import { GameRoomType, RoomContext } from "../context/RoomContext";
-import { UserContext, handleUserWithNoNickanmeBeforeJoin } from "../context/UserContext";
+import { UserContext, handleUserWithNoNickanme } from "../context/UserContext";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useCenterModal } from "../hooks/useCenterModal";
 
@@ -36,7 +36,7 @@ const Rooms = () => {
 			console.log(user);
 			console.log({ ...user, sessionId: sessionId });
 
-			if (user.nickname === "") handleUserWithNoNickanmeBeforeJoin(setUser);
+			if (user.nickname === "") handleUserWithNoNickanme(setUser, sessionId);
 			else setUser({ ...user, sessionId: sessionId });
 
 			navigate(`/room/${room.id}`);

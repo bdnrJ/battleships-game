@@ -51,9 +51,7 @@ const Ranking = () => {
 	if (isError) {
 		return (
 			<div className='ranking--wrapper'>
-				<div className='ranking'>
-          Error while trying to get ranking
-        </div>
+				<div className='ranking'>Error while trying to get ranking</div>
 			</div>
 		);
 	}
@@ -62,16 +60,18 @@ const Ranking = () => {
 		<div className='ranking--wrapper'>
 			<div className='ranking'>
 				<h1>Ranking</h1>
-				{data?.map((row: RankingRow, idx: number) => (
-					<div key={row.id + idx + row.user_id}>
-						<div>{idx}</div>
-						<div>{row.nickname}</div>
-						<div>games played: {row.total_games_played}</div>
-						<div>wins: {row.total_wins}</div>
-						<div>loses: {row.total_games_played - row.total_wins}</div>
-						<div>winrate: {(row.total_wins / row.total_games_played) * 100}%</div>
-					</div>
-				))}
+				<section className='ranking__list'>
+					{data?.map((row: RankingRow, idx: number) => (
+						<div className="ranking__list--elem" key={row.id + idx + row.user_id}>
+							<div className="ranking__list--elem--idx" >{idx + 1}</div>
+							<div className="ranking__list--elem--nick" >{row.nickname}</div>
+							<div className="ranking__list--elem--totalgames" >{row.total_games_played} games</div>
+							<div className="ranking__list--elem--won">{row.total_wins} won</div>
+							<div className="ranking__list--elem--lost">{row.total_games_played - row.total_wins} lost </div>
+							<div className="ranking__list--elem--wr" >{((row.total_wins / row.total_games_played) * 100).toFixed(1)}% wr</div>
+						</div>
+					))}
+				</section>
 			</div>
 		</div>
 	);

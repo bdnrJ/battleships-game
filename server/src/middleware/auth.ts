@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import dotenv from "dotenv";
+import { log } from "console";
 
 // hack to fix ts errors
 declare global {
@@ -25,7 +26,7 @@ function authMiddleware(req: Request, res: Response, next: NextFunction): void {
 		//split cookies (a litrally string of all cookies) on " " space
 		//split them again because every cookie looks like that anonNickname=Anon-4591aca2;
 		//find the one that has on index [0] 'token' - our jwt cookie
-		//if found then throw out the ';' at the end and viola!
+		//if found then throw out the ';' at the end
 		req.headers.cookie
 			?.split(" ")
 			.map((item) => item.split("="))

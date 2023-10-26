@@ -186,7 +186,7 @@ const GameRoom = () => {
 				<div className='gameroom__left'>
 					<div className='gameroom__left--top'>
 						<div className='gameroom__left--top--leave'>
-							<button className='gameroom__leave-button' onClick={() => {setIsLeaving(true); showCenterModal(<AcceptLeavingRoom leaveRoom={leaveRoom} handleClose={closePopup} />)}} aria-label='leave button'>
+							<button className='g__button' onClick={() => {setIsLeaving(true); showCenterModal(<AcceptLeavingRoom leaveRoom={leaveRoom} handleClose={closePopup} />)}} aria-label='leave button'>
 								{"<- Leave"}
 							</button>
 						</div>

@@ -12,22 +12,21 @@ type Props = {
 
 const Room = ({ gameRoom }: Props) => {
 	const { showCenterModal, closePopup } = useCenterModal();
-	const {setUser, loggedUser} = useContext(UserContext);
+	const { setUser, loggedUser } = useContext(UserContext);
 
 	const { user } = useContext(UserContext);
 	if (gameRoom.clients.length === 0 || gameRoom.clients.length === 2) return null;
 
 	const onRoomJoin = () => {
-		if (!gameRoom.hasPassword){
-			if(user.nickname === ""){
+		if (!gameRoom.hasPassword) {
+			if (user.nickname === "") {
 				const nickname = handleUserWithNoNickanmeBeforeJoin(setUser);
 				socket.emit("joinRoom", gameRoom.id, nickname, " ", loggedUser.id);
-			}else{
+			} else {
 				socket.emit("joinRoom", gameRoom.id, user.nickname, " ", loggedUser.id);
 			}
-		} 
-		else {
-			showCenterModal(<JoinRoomWithPassword gameRoom={gameRoom} closePopup={closePopup}/>);
+		} else {
+			showCenterModal(<JoinRoomWithPassword gameRoom={gameRoom} closePopup={closePopup} />);
 		}
 	};
 
