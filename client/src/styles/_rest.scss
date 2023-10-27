@@ -21,11 +21,13 @@ body {
 
 	--bg: white;
 	--text: black;
+	--bgdarker: #ebeef1;
 }
 
 body.--black {
 	background-color: #1c1c1f;
- 
+	
+	--bgdarker: #31313c;
 	--bg: #1c1c1f;
 	--text: white;
 }

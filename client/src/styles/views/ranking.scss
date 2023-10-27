@@ -18,6 +18,12 @@
       display: flex;
       gap: 5px;
       text-align: center;
+      background-color: var(--bgdarker);
+      height: 40px;
+      align-items: center;
+      padding: 10px;
+      color: var(--text);
+      background-color: var(--);
 
       @include tablet{
         width: 90vw;
