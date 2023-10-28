@@ -6,7 +6,7 @@ let connectedPlayers = 0;
 
 export function setupUtilEvents(io: Server, rooms: GameRoom[]) {
 	io.on("connection", (socket) => {
-		console.log(`New client connected: ${socket.id}`);
+		// console.log(`New client connected: ${socket.id}`);
 		connectedPlayers += 1;
 
 		socket.on("getPlayers", () => {
@@ -14,7 +14,7 @@ export function setupUtilEvents(io: Server, rooms: GameRoom[]) {
 		});
 
 		socket.on("disconnect", () => {
-			console.log(`Client disconnected: ${socket.id}`);
+			// console.log(`Client disconnected: ${socket.id}`);
 			connectedPlayers -= 1;
 			// Remove the client from any rooms when disconnected
 			rooms.forEach((room) => {

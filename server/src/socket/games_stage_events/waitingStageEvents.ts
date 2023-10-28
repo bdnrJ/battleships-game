@@ -5,7 +5,7 @@ export function setupWaitingStageEvents(io: Server, rooms: GameRoom[]) {
     io.on("connection", (socket) => {
 
       socket.on("declareReady", (roomId: string, nickname: string) => {
-        console.log(`${nickname} declared ready`);
+        // console.log(`${nickname} declared ready`);
         const room = rooms.find((r) => r.id === roomId);
   
         if (!room) return;

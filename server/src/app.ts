@@ -28,21 +28,21 @@ async function main() {
 		// user rouets
 		router.get("/users/:id", authMiddleware, getUserById);
 		router.delete("/users/:id", authMiddleware, deleteUser);
-        
-        //game routes
+
+		//game routes
 		router.get("/getUserGames/:id", getUserGamesById);
 		router.get("/getUserGamesAndStats/:id", getUserGamesAndStatsById);
-        
-        //auth routes
+
+		//auth routes
 		router.post("/signup", createUser);
 		router.post("/signin", login);
-		router.post('/logout', logout);
+		router.post("/logout", logout);
 		router.get("/isUser", authMiddleware, isLoggedIn);
 
-        //ranking routes
+		//ranking routes
 		router.get("/ranking", getTop100Ranking);
 
-        //tests
+		//tests
 		router.get("/test", (req, res) => {
 			res.status(201).json({ message: "it works!" });
 		});

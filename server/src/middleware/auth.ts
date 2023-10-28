@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { log } from "console";
+import { doesNotMatch } from "assert";
 
 // hack to fix ts errors
 declare global {
@@ -42,6 +43,9 @@ function authMiddleware(req: Request, res: Response, next: NextFunction): void {
 		// Verify the token with your secret key (should match the key used during token creation)
 		const decodedToken = jwt.verify(token, `${process.env.TOKEN_KEY}` as Secret) as DecodedToken;
 		req.user = decodedToken; // Store the decoded token in the request object for use in other routes
+
+		// log(decodedToken);
+
 		next(); // Move on to the next middleware or route handler
 	} catch (err) {
 		res.status(401).json({ message: "Unauthorized: Invalid token" });

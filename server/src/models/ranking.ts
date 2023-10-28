@@ -6,6 +6,7 @@ export interface Ranking {
 	user_id: number;
 	total_games_played: number;
 	total_wins: number;
+	points: number;
 	win_rate: number;
 }
 
@@ -27,9 +28,10 @@ class RankingModel {
 				await connection.execute(
 					`UPDATE ranking_table
                   SET total_games_played = total_games_played + 1,
-                      total_wins = total_wins + ?
+                      total_wins = total_wins + ?,
+											points = points + ?
                   WHERE user_id = ?`,
-					[p1Won ? 1 : 0, player1Id]
+					[p1Won ? 1 : 0, p1Won ? 3 : -2, player1Id]
 				);
 			}
 
@@ -44,9 +46,10 @@ class RankingModel {
 				await connection.execute(
 					`UPDATE ranking_table
                   SET total_games_played = total_games_played + 1,
-                      total_wins = total_wins + ?
+                      total_wins = total_wins + ?,
+											points = points + ?
                   WHERE user_id = ?`,
-					[p1Won ? 0 : 1, player2Id]
+					[p1Won ? 0 : 1, p1Won ? -2 : 3, player2Id]
 				);
 			}
 
@@ -68,7 +71,7 @@ class RankingModel {
 				`SELECT ranking_table.*, users.nickname 
             FROM ranking_table 
             LEFT JOIN users ON ranking_table.user_id = users.id 
-            ORDER BY ranking_table.total_games_played DESC, ranking_table.win_rate DESC 
+            ORDER BY ranking_table.points DESC
             LIMIT 100`
 			);
 

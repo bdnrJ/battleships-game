@@ -18,21 +18,21 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 
 	const popupRef = useRef<any>(null);
 
-	const handleCheckIfUserIsLogged = async () => {
-		try {
-			const res = await axiosClient.get("/isUser", { withCredentials: true });
+	// const handleCheckIfUserIsLogged = async () => {
+	// 	try {
+	// 		const res = await axiosClient.get("/isUser", { withCredentials: true });
 
-			setLoggedUser({ id: res.data.user_id });
-		} catch (err: any) {
-			console.log(err);
-		}
-	};
+	// 		setLoggedUser({ id: res.data.user_id });
+	// 	} catch (err: any) {
+	// 		// console.log(err);
+	// 	}
+	// };
 
 	const handleLogout = async () => {
 		try {
 			await axiosClient.post("/logout", {}, { withCredentials: true });
 		} catch (err: any) {
-			console.log(err);
+			// console.log(err);
 		}
 
 		deleteCookie("userInfo");
@@ -66,8 +66,8 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 				!popupRef.current.contains(target) &&
 				!Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")).includes(target)
 			) {
-				console.log(Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")).includes(target));
-				console.log(Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")));
+				// console.log(Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")).includes(target));
+				// console.log(Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")));
 				hideUserPopup();
 			}
 		}
@@ -100,7 +100,7 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 						</Link>
 						<button onClick={handleLogout}>Log out</button>
 						<span>UserID: {loggedUser.id}</span>
-						<button onClick={handleCheckIfUserIsLogged}>check if logged</button>
+						{/* <button onClick={handleCheckIfUserIsLogged}>check if logged</button> */}
 					</>
 				)}
 				<div className='userpopup__buttons--darkmode'>

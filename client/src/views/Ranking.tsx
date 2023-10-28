@@ -20,12 +20,8 @@ const Ranking = () => {
 
 			if (cachedData) {
 				// Return cached data if available
-				console.log("cached");
-
 				return cachedData;
 			}
-
-			console.log("requested ranking");
 
 			const res = await axiosClient.get("/ranking");
 
@@ -33,7 +29,6 @@ const Ranking = () => {
 
 			return res.data;
 		} catch (err: any) {
-			console.log(err);
 		}
 	};
 
@@ -57,24 +52,36 @@ const Ranking = () => {
 	}
 
 	return (
-		<div className='ranking--wrapper'>
-			<div className='ranking'>
-				<h1>Ranking</h1>
-				<section className='ranking__list'>
-					{data?.map((row: RankingRow, idx: number) => (
-						<div className="ranking__list--elem" key={row.id + idx + row.user_id}>
-							<div className="ranking__list--elem--idx" >{idx + 1}</div>
-							<div className="ranking__list--elem--nick" >{row.nickname}</div>
-							<div className="ranking__list--elem--totalgames" >{row.total_games_played} games</div>
-							<div className="ranking__list--elem--won">{row.total_wins} won</div>
-							<div className="ranking__list--elem--lost">{row.total_games_played - row.total_wins} lost </div>
-							<div className="ranking__list--elem--wr" >{((row.total_wins / row.total_games_played) * 100).toFixed(1)}% wr</div>
-						</div>
-					))}
-				</section>
-			</div>
-		</div>
-	);
+    <div className='ranking--wrapper'>
+      <div className='ranking'>
+        <h1>Ranking</h1>
+        <table className='ranking__table'>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Nickname</th>
+              <th>Total Games</th>
+              <th className="ranking__table--nomobile">Won</th>
+              <th className="ranking__table--nomobile">Lost</th>
+              <th>WR</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.map((row: RankingRow, idx: number) => (
+              <tr key={idx}>
+                <td>{idx + 1}</td>
+                <td>{row.nickname}</td>
+                <td>{row.total_games_played}</td>
+                <td className="ranking__table--nomobile" >{row.total_wins}</td>
+                <td className="ranking__table--nomobile">{row.total_games_played - row.total_wins}</td>
+                <td>{((row.total_wins / row.total_games_played) * 100).toFixed(1)}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default Ranking;

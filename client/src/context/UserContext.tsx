@@ -41,7 +41,7 @@ export const handleUserWithNoNickanme = (setUser: React.Dispatch<SetStateAction<
 	if (getCookie("userInfo")) {
 		const userFromCookie = JSON.parse(getCookie("userInfo")).nickname;
 
-		console.log(userFromCookie);
+		// console.log(userFromCookie);
 
 		setUser({
 			nickname: userFromCookie,
@@ -105,7 +105,7 @@ export const UserProvider = ({ children }: Props) => {
 
 			setLoggedUser({id: res.data.user_id})
 		}catch(err: any){
-			console.log(err);
+			// console.log(err);
 		}
 	}
 
@@ -120,9 +120,6 @@ export const UserProvider = ({ children }: Props) => {
 
 		if (getCookie("userInfo")) {
 			const userFromCookie = JSON.parse(getCookie("userInfo"));
-
-			console.log("i get called");
-			
 			setUser(userFromCookie);
 
 			handleCheckIfUserIsLogged();

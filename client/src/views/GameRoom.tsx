@@ -128,11 +128,12 @@ const GameRoom = () => {
 			setGameplayStageRoom(newRoom);
 
 			if(user.sessionId === ''){
-				alert("no session id on user smh");
-				console.log("---- user has no session id when gameplay starts!!! ----");
-				console.log(user);
-				console.log(room);
-				console.log(newRoom);
+				alert("no session id on user");
+				navigate('/rooms');
+				// console.log("---- user has no session id when gameplay starts!!! ----");
+				// console.log(user);
+				// console.log(room);
+				// console.log(newRoom);
 			}
 		});
 

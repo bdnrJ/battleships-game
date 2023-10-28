@@ -1,59 +1,52 @@
-.ranking{
+.ranking {
   color: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   max-width: 1400px;
+  width: 900px;
   gap: 30px;
 
-  .ranking__list{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+  .ranking__table {
+    width: 100%;
+    border-collapse: collapse;
 
-    .ranking__list--elem{
-      width: 700px;
-      justify-content: space-between;
-      display: flex;
-      gap: 5px;
-      text-align: center;
-      background-color: var(--bgdarker);
-      height: 40px;
-      align-items: center;
+    @include tablet{
+      width: 90%;
+    }
+
+    .ranking__table--nomobile{
+      @include mobile{
+        display: none;
+      }
+    }
+
+    th, td {
+      border: 1px solid var(--border); 
       padding: 10px;
-      color: var(--text);
-      background-color: var(--);
+      text-align: center;
+    }
 
-      @include tablet{
-        width: 90vw;
-      }
+    th {
+      background-color: var(--bgdarker2);
+    }
 
-      div{
-        width: 116px;
-
-        @include tablet{
-          width: fit-content;
+    tbody {
+      tr {
+        &:nth-child(odd) {
+          background-color: var(--bgdarker);
         }
       }
 
-      .ranking__list--elem--won, .ranking__list--elem--lost{
-        @include mobile{
-          display: none;
-        }
-      }
-
-      .ranking__list--elem--idx{
-        width: 30px;
-        text-align: left;
+      tr{
+        background-color: var(--bgdarkerl);
       }
     }
   }
-  
 }
 
-
-.ranking--wrapper{
+.ranking--wrapper {
   display: flex;
   align-items: center;
   justify-content: center;

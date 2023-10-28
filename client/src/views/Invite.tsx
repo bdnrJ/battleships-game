@@ -37,9 +37,9 @@ const Invite = () => {
 		socket.on("roomJoined", (room: GameRoomType, sessionId: string) => {
 			//set user room
 			setRoom(room);
-			console.log("joined room called");
-			console.log(user);
-			console.log({ ...user, sessionId: sessionId });
+			// console.log("joined room called");
+			// console.log(user);
+			// console.log({ ...user, sessionId: sessionId });
 
 			if (user.nickname === "") handleUserWithNoNickanme(setUser, sessionId);
 			else setUser({ ...user, sessionId: sessionId });

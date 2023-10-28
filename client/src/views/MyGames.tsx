@@ -39,13 +39,9 @@ const MyGames = () => {
 
 			if (cachedData) {
 				// Return cached data if available
-				console.log("cached");
-
 				return cachedData;
 			}
 
-			console.log("requested mygames");
-			console.log(page);
 
 			// const res = await axiosClient.get(`/getUserGamesAndStats/${loggedUser.id}?page=${page}`, {params: {
 			// 	page: page
@@ -53,12 +49,12 @@ const MyGames = () => {
 
 			const res = await axiosClient.get(`/getUserGamesAndStats/${loggedUser.id}?page=${page}`);
 
-			console.log(res);
+			// console.log(res);
 
 			queryClient.setQueryData(["mygames", page], res.data);
 			return res.data;
 		} catch (err: any) {
-			console.log(err);
+			// console.log(err);
 		}
 	};
 

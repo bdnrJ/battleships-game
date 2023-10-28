@@ -72,7 +72,7 @@ const Cell = ({ id, board, rowId, columnId, setBoardState, isFlipped, setShipsCo
 	};
 
 	useEffect(() => {
-		console.log(isFlipped);
+		// console.log(isFlipped);
 	}, [isFlipped])
 
 	const dropShip = () => {

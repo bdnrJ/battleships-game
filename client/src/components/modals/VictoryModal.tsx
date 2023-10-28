@@ -28,7 +28,7 @@ const VictoryModal = ({userId, closePopup}: Props) => {
         {userId === user.sessionId ? "You have WON!" : "You have lost!"}
       </h1>
       <div className="victory__buttons">
-        <button className='g__button' onClick={handleOk} >OK</button>
+        <button className='g__button' onClick={handleOk} >Leave</button>
         <button className='g__button' onClick={handleStay}>Stay to chat</button>
       </div>
     </div>

@@ -4,7 +4,7 @@ import GameModel, { Game } from "../../models/game.js";
 import RankingModel from "../../models/ranking.js";
 
 const createGameLog = async (player1_id: number, player2_id: number, p1_won: boolean) => {
-	console.log("--- create game log ---");
+	// console.log("--- create game log ---");
 	const p1_id = player1_id === -1 ? null : player1_id;
 	const p2_id = player2_id === -1 ? null : player2_id;
 
@@ -16,23 +16,23 @@ const createGameLog = async (player1_id: number, player2_id: number, p1_won: boo
 	};
 
 	try {
-		const res = await GameModel.createGame(game);
-		console.log(res);
+	  await GameModel.createGame(game);
+		// console.log(res);
 	} catch (err: any) {
-		console.log(err);
+		// console.log(err);
 	}
 };
 
 const updateRanking = async (player1_id: number, player2_id: number, p1_won: boolean) => {
-	console.log("--- update ranking ---");
+	// console.log("--- update ranking ---");
 
 	if (player1_id === -1 && player2_id === -1) return;
 
 	try {
-		const res = await RankingModel.updateRankingAfterGame(player1_id, player2_id, p1_won);
-		console.log(res);
+		RankingModel.updateRankingAfterGame(player1_id, player2_id, p1_won);
+		// console.log(res);
 	} catch (err: any) {
-		console.log(err);
+		// console.log(err);
 	}
 };
 
@@ -109,7 +109,7 @@ export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoard
 			if (!room || !gameplayState) return;
 
 			if (gameplayState.turn !== socket.id) {
-				console.log("player somehow requested move, but it is not his turn");
+				// console.log("player somehow requested move, but it is not his turn");
 				return;
 			}
 
@@ -154,7 +154,7 @@ export function setupGameplayEvents(io: Server, rooms: GameRoom[], gamePlayBoard
 						room.gameState = GameStage.ENDED;
 
 						const playerWhoWon = room.clients.findIndex((client) => client.id === socket.id);
-						console.log(playerWhoWon);
+						// console.log(playerWhoWon);
 
 						io.to(roomId).emit("updateGameState", gameplayState, rowIdx, colIdx, socket.id);
 						io.to(roomId).emit(

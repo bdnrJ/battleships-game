@@ -3,21 +3,21 @@ import { Client, GameRoom, GameStage, matrix } from "./types.js";
 
 export const emitRoomsList = (io: Server, rooms: GameRoom[]): void => {
 	io.emit("roomsList", rooms);
-	console.log(rooms);
-	console.log("emitted rooms");
+	// console.log(rooms);
+	// console.log("emitted rooms");
 };
 
 export const cleanupRooms = (io: Server, rooms: GameRoom[]): void => {
-	console.log(rooms);
+	// console.log(rooms);
 	rooms.forEach((room, index) => {
 		//if room has no clients then it gets removed
 		if (room.clients.length === 0) {
-			console.log("cleaned rooms");
+			// console.log("cleaned rooms");
 			rooms.splice(index, 1);
 		}
 	});
 	//emit rooms after cleanup
-	console.log("emit after cleanup");
+	// console.log("emit after cleanup");
 	emitRoomsList(io, rooms);
 };
 
@@ -62,7 +62,7 @@ export const onRoomLeave = (socket: Socket, io: Server, rooms: GameRoom[], roomI
 			io.to(roomId).emit("someoneLeft", someoneLeft, nickname);
 		}
 
-		console.log("someone left room");
+		// console.log("someone left room");
 	}
 };
 
@@ -101,10 +101,10 @@ export function setupRoomEvents(io: Server, rooms: GameRoom[], emptyMatrix: matr
 
 				socket.join(id);
 
-				console.log("room has been created");
+				// console.log("room has been created");
 				socket.emit("createdAndJoined", newRoom, socket.id);
 
-				console.log("emit after creation");
+				// console.log("emit after creation");
 				emitRoomsList(io, rooms);
 			}
 		);
@@ -128,12 +128,12 @@ export function setupRoomEvents(io: Server, rooms: GameRoom[], emptyMatrix: matr
 		socket.on(
 			"joinRoom",
 			(roomId: string, nickname: string, password: string, user_id: number, emitRooms: boolean = true) => {
-				console.log("---- join rooom ----");
-				console.log(roomId);
-				console.log(nickname);
-				console.log(password);
-				console.log(user_id);
-				console.log(emitRooms);
+				// console.log("---- join rooom ----");
+				// console.log(roomId);
+				// console.log(nickname);
+				// console.log(password);
+				// console.log(user_id);
+				// console.log(emitRooms);
 
 				const room = rooms.find((r) => r.id === roomId);
 				if (!room) {
@@ -148,13 +148,13 @@ export function setupRoomEvents(io: Server, rooms: GameRoom[], emptyMatrix: matr
 
 				if (room.hasPassword) {
 					if (room.password !== password) {
-						console.log("wrong password");
+						// console.log("wrong password");
 						return;
 					}
 				}
 
 				// Join the room
-				console.log("joined into room");
+				// console.log("joined into room");
 				socket.join(roomId);
 
 				const newClient: Client = {
@@ -171,8 +171,8 @@ export function setupRoomEvents(io: Server, rooms: GameRoom[], emptyMatrix: matr
 
 				io.to(roomId).emit("someoneJoined", room, nickname);
 
-				console.log("emit after joining room");
-				console.log(room.clients);
+				// console.log("emit after joining room");
+				// console.log(room.clients);
 				if (emitRooms) emitRoomsList(io, rooms);
 			}
 		);

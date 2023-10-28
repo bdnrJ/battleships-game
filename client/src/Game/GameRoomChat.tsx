@@ -47,7 +47,7 @@ const GameRoomChat = ({ closeChat, messages, arePlaying, chatScrollDownLock, set
 			const distanceFromBottom = scrollHeight - (scrollTop + clientHeight);
 
 			if(distanceFromBottom >= 300){
-				console.log("when this is");
+				// console.log("when this is");
 				
 				setChatScrollDownLock(false);
 			}

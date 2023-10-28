@@ -30,7 +30,7 @@ const QuickGame = () => {
     })
 
     socket.on('joinQuickGameRoom', (roomId: string) => {
-      console.log("joim quick game room");
+      // console.log("joim quick game room");
       
       //(roomId: string, nickname: string, password: string, emitRooms: boolean = true)
       socket.emit('joinRoom', roomId, user.nickname, "", loggedUser.id, false);
@@ -39,9 +39,9 @@ const QuickGame = () => {
     socket.on("roomJoined", (room: GameRoomType, sessionId: string) => {
 			//set user room
 			setRoom(room);
-			console.log("joined qucik room called");
-			console.log(user);
-			console.log({ ...user, sessionId: sessionId });
+			// console.log("joined qucik room called");
+			// console.log(user);
+			// console.log({ ...user, sessionId: sessionId });
 
       if (user.nickname === "") handleUserWithNoNickanmeBeforeJoin(setUser);
 			else setUser({ ...user, sessionId: sessionId });
