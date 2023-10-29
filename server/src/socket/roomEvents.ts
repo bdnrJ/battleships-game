@@ -4,7 +4,7 @@ import { Client, GameRoom, GameStage, matrix } from "./types.js";
 export const emitRoomsList = (io: Server, rooms: GameRoom[]): void => {
 	io.emit("roomsList", rooms);
 	// console.log(rooms);
-	// console.log("emitted rooms");
+	console.log("emitted rooms");
 };
 
 export const cleanupRooms = (io: Server, rooms: GameRoom[]): void => {

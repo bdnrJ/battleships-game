@@ -79,13 +79,16 @@ const MyGames = () => {
 
 			setGames(newGames);
 
-			const totalGames = data.userStats.total_games_played;
-			const totalWins = data.userStats.total_wins;
+			if(data.userStats){
 
-			const loses = totalGames - totalWins;
-			const winrate = (totalWins / totalGames) * 100;
-
-			setStats({ total_games_played: totalGames, total_wins: totalWins, win_rate: winrate, total_loses: loses });
+				const totalGames = data.userStats.total_games_played;
+				const totalWins = data.userStats.total_wins;
+				
+				const loses = totalGames - totalWins;
+				const winrate = (totalWins / totalGames) * 100;
+				
+				setStats({ total_games_played: totalGames, total_wins: totalWins, win_rate: winrate, total_loses: loses });
+			}
 		}
 	}, [data]);
 
