@@ -28,6 +28,8 @@ const updateRanking = async (player1_id: number, player2_id: number, p1_won: boo
 
 	if (player1_id === -1 && player2_id === -1) return;
 
+	if(player1_id === player2_id) return;
+
 	try {
 		RankingModel.updateRankingAfterGame(player1_id, player2_id, p1_won);
 		// console.log(res);

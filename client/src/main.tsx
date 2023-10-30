@@ -37,3 +37,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 //TODO
 //recreate timer to work from backend
 // when game ended different communicate when enemy leaves ;d fix on backend
+
+//time goes on - if someone minmizes on phone
