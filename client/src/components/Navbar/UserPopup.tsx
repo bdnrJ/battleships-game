@@ -1,26 +1,47 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../../context/UserContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { handleUserWithNoNickanmeBeforeJoin } from "../../context/UserContext";
 import axiosClient from "../../axios-client";
+import { deleteCookie } from "../../utils/cookies";
+import { useAlert } from "../../hooks/useAlert";
 
 type Props = {
 	hideUserPopup: () => void;
 };
 
 const UserPopup = ({ hideUserPopup }: Props) => {
-	const { user, loggedUser, setLoggedUser } = useContext(UserContext);
+	const { user, loggedUser, setLoggedUser, setUser } = useContext(UserContext);
 	const [isDarkModeOn, setIsDarkModeOn] = useState<boolean>(localStorage.getItem("dark_mode") === "true");
+	const { showAlert } = useAlert();
+	const navigate = useNavigate();
 
 	const popupRef = useRef<any>(null);
 
-	const handleCheckIfUserIsLogged = async () => {
-		try {
-			const res = await axiosClient.get("/isUser", { withCredentials: true });
+	// const handleCheckIfUserIsLogged = async () => {
+	// 	try {
+	// 		const res = await axiosClient.get("/isUser", { withCredentials: true });
 
-			setLoggedUser({ id: res.data.user_id });
+	// 		setLoggedUser({ id: res.data.user_id });
+	// 	} catch (err: any) {
+	// 		// console.log(err);
+	// 	}
+	// };
+
+	const handleLogout = async () => {
+		try {
+			await axiosClient.post("/logout", {}, { withCredentials: true });
 		} catch (err: any) {
-			console.log(err);
+			// console.log(err);
 		}
+
+		deleteCookie("userInfo");
+		// deleteCookie('token');
+		setLoggedUser({ id: -1 });
+		handleUserWithNoNickanmeBeforeJoin(setUser);
+
+		showAlert("Successfully logged out", "success");
+		navigate("/rooms");
 	};
 
 	const switchTheme = () => {
@@ -45,8 +66,8 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 				!popupRef.current.contains(target) &&
 				!Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")).includes(target)
 			) {
-				console.log(Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")).includes(target));
-				console.log(Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")));
+				// console.log(Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")).includes(target));
+				// console.log(Array.from(document.querySelectorAll(".dontTriggerUserPopupEvent")));
 				hideUserPopup();
 			}
 		}
@@ -77,8 +98,9 @@ const UserPopup = ({ hideUserPopup }: Props) => {
 						<Link to={"/my_games"} className='g__link'>
 							Games history
 						</Link>
+						<button onClick={handleLogout}>Log out</button>
 						<span>UserID: {loggedUser.id}</span>
-						<button onClick={handleCheckIfUserIsLogged}>check if logged</button>
+						{/* <button onClick={handleCheckIfUserIsLogged}>check if logged</button> */}
 					</>
 				)}
 				<div className='userpopup__buttons--darkmode'>

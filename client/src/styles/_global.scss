@@ -51,7 +51,7 @@
 					/* Set the size of the checkbox */
 					width: 18px;
 					height: 18px;
-					border: 2px solid black;
+					border: 2px solid var(--text);
 					border-radius: 4px;
 
 					/* Custom checkmark styling when the checkbox is checked */
@@ -195,8 +195,8 @@
 	}
 
 	&:hover {
-		background-color: black;
-		color: white;
+		background-color: var(--text);
+		color: var(--bg);
 	}
 
 	&.--bold {

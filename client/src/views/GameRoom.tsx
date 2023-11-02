@@ -128,11 +128,12 @@ const GameRoom = () => {
 			setGameplayStageRoom(newRoom);
 
 			if(user.sessionId === ''){
-				alert("no session id on user smh");
-				console.log("---- user has no session id when gameplay starts!!! ----");
-				console.log(user);
-				console.log(room);
-				console.log(newRoom);
+				alert("no session id on user");
+				navigate('/rooms');
+				// console.log("---- user has no session id when gameplay starts!!! ----");
+				// console.log(user);
+				// console.log(room);
+				// console.log(newRoom);
 			}
 		});
 
@@ -186,7 +187,7 @@ const GameRoom = () => {
 				<div className='gameroom__left'>
 					<div className='gameroom__left--top'>
 						<div className='gameroom__left--top--leave'>
-							<button className='gameroom__leave-button' onClick={() => {setIsLeaving(true); showCenterModal(<AcceptLeavingRoom leaveRoom={leaveRoom} handleClose={closePopup} />)}} aria-label='leave button'>
+							<button className='g__button' onClick={() => {setIsLeaving(true); showCenterModal(<AcceptLeavingRoom leaveRoom={leaveRoom} handleClose={closePopup} />)}} aria-label='leave button'>
 								{"<- Leave"}
 							</button>
 						</div>

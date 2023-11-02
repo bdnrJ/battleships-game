@@ -24,7 +24,7 @@ const BurgerMenu = ({ links, closeBurgerMenu }: Props) => {
 				!popupRef.current.contains(target) &&
 				!Array.from(document.querySelectorAll(".dontTriggerEvent")).includes(target)
 			) {
-				console.log(Array.from(document.querySelectorAll(".dontTriggerEvent")).includes(target));
+				// console.log(Array.from(document.querySelectorAll(".dontTriggerEvent")).includes(target));
 				closeBurgerMenu();
 			}
 		}

@@ -20,12 +20,8 @@ const Ranking = () => {
 
 			if (cachedData) {
 				// Return cached data if available
-				console.log("cached");
-
 				return cachedData;
 			}
-
-			console.log("requested ranking");
 
 			const res = await axiosClient.get("/ranking");
 
@@ -33,7 +29,6 @@ const Ranking = () => {
 
 			return res.data;
 		} catch (err: any) {
-			console.log(err);
 		}
 	};
 
@@ -51,30 +46,42 @@ const Ranking = () => {
 	if (isError) {
 		return (
 			<div className='ranking--wrapper'>
-				<div className='ranking'>
-          Error while trying to get ranking
-        </div>
+				<div className='ranking'>Error while trying to get ranking</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className='ranking--wrapper'>
-			<div className='ranking'>
-				<h1>Ranking</h1>
-				{data?.map((row: RankingRow, idx: number) => (
-					<div key={row.id + idx + row.user_id}>
-						<div>{idx}</div>
-						<div>{row.nickname}</div>
-						<div>games played: {row.total_games_played}</div>
-						<div>wins: {row.total_wins}</div>
-						<div>loses: {row.total_games_played - row.total_wins}</div>
-						<div>winrate: {(row.total_wins / row.total_games_played) * 100}%</div>
-					</div>
-				))}
-			</div>
-		</div>
-	);
+    <div className='ranking--wrapper'>
+      <div className='ranking'>
+        <h1>Ranking</h1>
+        <table className='ranking__table'>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Nickname</th>
+              <th>Total Games</th>
+              <th className="ranking__table--nomobile">Won</th>
+              <th className="ranking__table--nomobile">Lost</th>
+              <th>WR</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.map((row: RankingRow, idx: number) => (
+              <tr key={idx}>
+                <td>{idx + 1}</td>
+                <td>{row.nickname}</td>
+                <td>{row.total_games_played}</td>
+                <td className="ranking__table--nomobile" >{row.total_wins}</td>
+                <td className="ranking__table--nomobile">{row.total_games_played - row.total_wins}</td>
+                <td>{((row.total_wins / row.total_games_played) * 100).toFixed(1)}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default Ranking;

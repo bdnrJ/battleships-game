@@ -21,12 +21,19 @@ body {
 
 	--bg: white;
 	--text: black;
+	--bgdarkerl: #eeeeee;
+	--bgdarker: #ebeef1;
+	--bgdarker2: #d9dcdf;
 }
 
+html,
 body.--black {
 	background-color: #1c1c1f;
- 
+	
+	--bgdarker: #31313c;
+	--bgdarker2: #2a2a33;
 	--bg: #1c1c1f;
+	--bgdarkerl: #26262b;
 	--text: white;
 }
 

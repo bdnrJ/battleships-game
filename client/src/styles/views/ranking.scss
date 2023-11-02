@@ -1,15 +1,52 @@
-.ranking{
+.ranking {
   color: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-
   max-width: 1400px;
+  width: 900px;
+  gap: 30px;
+
+  .ranking__table {
+    width: 100%;
+    border-collapse: collapse;
+
+    @include tablet{
+      width: 90%;
+    }
+
+    .ranking__table--nomobile{
+      @include mobile{
+        display: none;
+      }
+    }
+
+    th, td {
+      border: 1px solid var(--border); 
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: var(--bgdarker2);
+    }
+
+    tbody {
+      tr {
+        &:nth-child(odd) {
+          background-color: var(--bgdarker);
+        }
+      }
+
+      tr{
+        background-color: var(--bgdarkerl);
+      }
+    }
+  }
 }
 
-
-.ranking--wrapper{
+.ranking--wrapper {
   display: flex;
   align-items: center;
   justify-content: center;

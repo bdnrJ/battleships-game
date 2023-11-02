@@ -19,7 +19,7 @@ const EnemyCell = ({ value, rowIdx, colIdx, turn, wasHit, setMyEnemyBoardHitLog 
 	const { user } = useContext(UserContext);
 
 	const handleClick = () => {
-		console.log(turn);
+		// console.log(turn);
 		if (value === CellType.NORMAL && user.sessionId === turn) {
 			socket.emit("missleShot", rowIdx, colIdx, room.id);
 			setMyEnemyBoardHitLog((prev) => {

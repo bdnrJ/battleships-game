@@ -47,7 +47,7 @@ const GameRoomChat = ({ closeChat, messages, arePlaying, chatScrollDownLock, set
 			const distanceFromBottom = scrollHeight - (scrollTop + clientHeight);
 
 			if(distanceFromBottom >= 300){
-				console.log("when this is");
+				// console.log("when this is");
 				
 				setChatScrollDownLock(false);
 			}
@@ -96,7 +96,7 @@ const GameRoomChat = ({ closeChat, messages, arePlaying, chatScrollDownLock, set
 
 	return (
 		<div className={`gamechat ${arePlaying ? "--playing" : ""}`} ref={gameChatRef}>
-			<button className='gamechat--chat--closebtn' onClick={closeChat} aria-label='close chat button'>
+			<button className='g__button --200w' onClick={closeChat} aria-label='close chat button'>
 				Close chat
 			</button>
 

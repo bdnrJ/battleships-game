@@ -36,13 +36,9 @@ const MyGames = () => {
 
 			if (cachedData) {
 				// Return cached data if available
-				console.log("cached");
-
 				return cachedData;
 			}
 
-			console.log("requested mygames");
-			console.log(page);
 
 			// const res = await axiosClient.get(`/getUserGamesAndStats/${loggedUser.id}?page=${page}`, {params: {
 			// 	page: page
@@ -50,12 +46,12 @@ const MyGames = () => {
 
 			const res = await axiosClient.get(`/getUserGamesAndStats/${loggedUser.id}?page=${page}`);
 
-			console.log(res);
+			// console.log(res);
 
 			queryClient.setQueryData(["mygames", page], res.data);
 			return res.data;
 		} catch (err: any) {
-			console.log(err);
+			// console.log(err);
 		}
 	};
 
@@ -80,13 +76,16 @@ const MyGames = () => {
 
 			setGames(newGames);
 
-			const totalGames = data.userStats.total_games_played;
-			const totalWins = data.userStats.total_wins;
+			if(data.userStats){
 
-			const loses = totalGames - totalWins;
-			const winrate = (totalWins / totalGames) * 100;
-
-			setStats({ total_games_played: totalGames, total_wins: totalWins, win_rate: winrate, total_loses: loses });
+				const totalGames = data.userStats.total_games_played;
+				const totalWins = data.userStats.total_wins;
+				
+				const loses = totalGames - totalWins;
+				const winrate = (totalWins / totalGames) * 100;
+				
+				setStats({ total_games_played: totalGames, total_wins: totalWins, win_rate: winrate, total_loses: loses });
+			}
 		}
 	}, [data]);
 
@@ -125,7 +124,7 @@ const MyGames = () => {
 								className={`mygames__games--elem ${hasWon === "Victory" ? "--victory" : "--defeat"}`}
 								key={game.id + game.player1_id + game.player2_id}
 							>
-								<div>{game.id}</div>
+								<div>id: {game.id}</div>
 								<div>
 									{game.player1_nickname === null ? "Anon" : game.player1_nickname} VS{" "}
 									{game.player2_nickname === null ? "Anon" : game.player2_nickname}

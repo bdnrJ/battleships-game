@@ -22,7 +22,7 @@ export function setupWaitingListEvents(io: Server, playersWaitingRoom: WaitingRo
         socket.emit("inWaitingList");
   
         if (playersWaitingRoom.waitingList.length > 1) {
-          console.log(playersWaitingRoom);
+          // console.log(playersWaitingRoom);
           const randomRoomId = v4();
   
           const newRoom: GameRoom = {
@@ -39,7 +39,7 @@ export function setupWaitingListEvents(io: Server, playersWaitingRoom: WaitingRo
           rooms.push(newRoom);
   
           const socketsInRoom = io.sockets.adapter.rooms.get("GlobalWaitingRoom");
-          console.log("Sockets in GlobalWaitingRoom:", socketsInRoom);
+          // console.log("Sockets in GlobalWaitingRoom:", socketsInRoom);
   
           //this is where the fun begins
           //so idk why but it seems like when someone joins waiting room as the second player
