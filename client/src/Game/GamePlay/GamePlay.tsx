@@ -6,6 +6,7 @@ import { gameplayState } from "../../views/GameRoom";
 import socket from "../../utils/socket";
 import { useCenterModal } from "../../hooks/useCenterModal";
 import VictoryModal from "../../components/modals/VictoryModal";
+import { useAlert } from "../../hooks/useAlert";
 
 type Props = {
 	myBoard: number[][];
@@ -30,6 +31,7 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 	const enemyNickname = nicknames.find((nickname) => nickname !== user.nickname) || "unknown";
 	const [playerTimer, setPlayerTimer] = useState<number>(30);
 	const [hasGameEnded, setHasGameEnded] = useState<boolean>(false);
+	const {showAlert} = useAlert();
 
 	const { showCenterModal, closePopup } = useCenterModal();
 
@@ -148,6 +150,11 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 				});
 			}
 		}
+
+		if(playerTimer === -5){
+			showAlert("Your enemy has connection problems, or he closed his phone", 'failure')
+		}
+
 	}, [playerTimer]);
 
 	return (

@@ -4,9 +4,6 @@ import { UserContext } from "../context/UserContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-//TODO
-// make this with infiite scroll or smth to not display fucking 1000 games at once :D
-
 type MyGame = {
 	id: number;
 	player1_id: number;
@@ -92,20 +89,6 @@ const MyGames = () => {
 			setStats({ total_games_played: totalGames, total_wins: totalWins, win_rate: winrate, total_loses: loses });
 		}
 	}, [data]);
-
-	// if (isError) {
-	// 	return (
-	// 		<div className='mygames--wrapper'>
-	// 			<div className='mygames'>Error while trying to get your games</div>
-	// 		</div>
-	// 	);
-	// }
-
-	// if (isLoading) {
-	// 	<div className='mygames--wrapper'>
-	// 		<div className='mygames'>Loading...</div>
-	// 	</div>;
-	// }
 
 	return (
 		<div className='mygames--wrapper'>
