@@ -151,7 +151,7 @@ const GamePlay = ({ myBoard, setMyBoard, nicknames, gameplayStageRoom, setGamepl
 			}
 		}
 
-		if(playerTimer === -5){
+		if(playerTimer === -4){
 			showAlert("Your enemy has connection problems, or he closed his phone", 'failure')
 		}
 

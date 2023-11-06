@@ -1,4 +1,3 @@
-import logo from "../../assets/logo.gif";
 import { Link, useNavigate } from "react-router-dom";
 import { BiUser } from "react-icons/bi";
 import BurgerMenu from "./BurgerMenu";
@@ -50,7 +49,7 @@ const Navbar = () => {
 	return (
 		<div className='navbar'>
 			<div className='navbar--logo' onClick={() => navigate("/rooms")}>
-				<img src={logo} alt='logo' />
+				<h1>Battleships</h1>
 				<span>Players online: {playersOnline}</span>
 			</div>
 			<section className='navbar--links'>

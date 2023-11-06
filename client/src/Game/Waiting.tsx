@@ -9,7 +9,7 @@ const Waiting = () => {
 	const { user } = useContext(UserContext);
 
 	// const inviteLink = `http://localhost:5173/invite/${room.id}`;
-	const inviteLink = `http://battleships-front.s3-website.eu-north-1.amazonaws.com/invite/${room.id}`;
+	const inviteLink = `https://battleships-game.xyz/invite/${room.id}`;
 
 	const inviteLinkRef = useRef<HTMLInputElement | null>(null);
 
